@@ -11,7 +11,13 @@
       },
       {
         "title": "Create Custom Namespace",
-        "text": "step2.md"
+        "text": "step2.md",
+        "verify": "step2-verify.sh"
+      },
+      {
+        "title": "Create a Pod",
+        "text": "step3.md",
+        "verify": "step3-verify.sh"
       }
     ],
     "finish": {
@@ -20,8 +26,7 @@
   },
   "environment": {
     "hideintro": true,
-    "uilayout": "terminal-terminal",
-    "uimessage": "Your Terminal Here"
+    "uilayout": "terminal"
   },
   "backend": {
     "imageid": "kubernetes-cluster"
