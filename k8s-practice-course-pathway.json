@@ -13,6 +13,11 @@
       "description": ""
     },
     {
+      "course_id": "k8s-pods-advanced",
+      "title": "Managing Pods. Advanced",
+      "description": ""
+    },
+    {
       "course_id": "k8s-volumes",
       "title": "Volumes",
       "description": ""
