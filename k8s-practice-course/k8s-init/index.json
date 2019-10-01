@@ -1,6 +1,6 @@
 {
-  "title": "Kubernetes",
-  "description": "Multi node Kubernetes cluster",
+  "title": "Creating Kubernetes Cluster",
+  "description": "Creating multi node Kubernetes cluster with kubeadm",
   "time": "10 minutes",
   "details": {
     "steps": [
