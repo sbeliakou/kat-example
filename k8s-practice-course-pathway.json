@@ -11,6 +11,21 @@
       "course_id": "k8s-pods",
       "title": "Managing Pods",
       "description": "Game #1"
+    },
+    {
+      "course_id": "k8s-volumes",
+      "title": "Managing Volumes",
+      "description": "Game #1"
+    },
+    {
+      "course_id": "k8s-secrets",
+      "title": "Managing Secrets",
+      "description": "Game #1"
+    },
+    {
+      "course_id": "k8s-configmaps",
+      "title": "Managing Configpaps",
+      "description": "Game #1"
     }
   ]
 }
