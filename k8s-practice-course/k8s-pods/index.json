@@ -12,9 +12,10 @@
         "courseData": "cluster-init.sh"
       },
       {
-        "title": "Game 2",
+        "title": "Simple Pod",
         "text": "step2.md",
-        "verify": "step2-verify.sh"
+        "verify": "step2-verify.sh",
+        "courseData": "step2-failure.sh"
       }
     ],
     "finish": {
