@@ -1,8 +1,5 @@
 #!/bin/bash
 
-export KUBECONFIG=/etc/kubernetes/admin.conf
-
-[ `kubectl get deployment -n kube-system kubernetes-dashboard -o jsonpath='{.spec.template.spec.containers[0].name}'` == "kubernetes-dashboard" ] &&
-[ `kubectl get svc -n kube-system kubernetes-dashboard -o jsonpath='{.spec.ports[0].targetPort}'` == "8443" ] &&
-[ `kubectl get ep -n kube-system kubernetes-dashboard -o jsonpath="{.subsets[*].addresses[0].nodeName}"` == 'node01' ] &&
+[ `kubectl get pods web -n webservices -o jsonpath='{.status.phase}'` == "Running" ] &&
+[ `kubectl get pods web -n webservices -o jsonpath='{.spec.containers[0].image}'` == "nginx:1.16-alpine" ] &&
 echo done
