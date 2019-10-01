@@ -1,7 +1,7 @@
 ## First, you should create a cluster.
 1. Initialize Master node with `kubeadm`
 2. Deploy `waeve` POD Network
-3. Join node01 to the cluster
+3. Join node01 to the cluster (use `ssh node01` to connect to node01 host)
 
 ## Make sure that:
 - All Nodes in `Running` state: `kubectl get nodes`
