@@ -28,7 +28,8 @@ subjects:
 ### 3. Get Admin Secret
 
 ```
-kubectl get secret -n kube-system $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}') -o jsonpath='{.data.token}'
+SECRET_NAME="$(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')"
+kubectl get secret -n kube-system ${SECRET_NAME} -o jsonpath='{.data.token}' | base64 -d
 ```
 
 ### 4. Proxy Dashboard

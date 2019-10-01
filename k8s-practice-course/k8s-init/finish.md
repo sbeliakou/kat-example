@@ -3,6 +3,7 @@
 Some useful commands to know:
 
 <pre class="file">
+
 kubectl get nodes
 kubectl cluster-info
 kubectl get componentstatus
