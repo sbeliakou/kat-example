@@ -4,15 +4,10 @@ Some useful commands to know:
 
 <pre class="file">
 
-kubectl get nodes
-kubectl cluster-info
-kubectl get componentstatus
+kubectl run web --image=httpd --generator=run-pod/v1
+kubectl run web --image=httpd --generator=run-pod/v1 --dry-run -o wide
+kubectl label pod app=web
 
-kubectl get pods
-kubectl get deployments
-kubectl get svc
-
-kubectl top nodes
-kubectl top pods 
-kubectl top pods --all-namespaces
+kubectl describe pod web
+kubectl get pod web -o yaml
 </pre>

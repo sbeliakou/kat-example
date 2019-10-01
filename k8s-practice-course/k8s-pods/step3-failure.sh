@@ -16,7 +16,7 @@ spec:
   - image: busybox
     name: starter
     command: 
-    - sleeep
+    - s1eep
     - "10"
   restartPolicy: Never
 EOF
