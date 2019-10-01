@@ -1,4 +1,3 @@
 #!/bin/bash
 
-kubectl get nodes
-exit $?
+kubectl get nodes && echo "done"
