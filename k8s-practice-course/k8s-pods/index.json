@@ -21,7 +21,7 @@
       "text": "finish.md"
     },
     "assets": {
-      "master": [
+      "client": [
         {
           "file": "wait.sh",
           "target": "~/.wait.sh",
