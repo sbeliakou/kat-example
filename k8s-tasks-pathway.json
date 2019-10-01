@@ -1,0 +1,11 @@
+{
+  "title": "Kubernetes Tasks",
+  "description": "Kubernetes Tasks",
+  "courses": [
+    {
+      "course_id": "kubernetes-cluster",
+      "title": "Kubernetes",
+      "description": "Multi node Kubernetes cluster"
+    }
+  ]
+}
