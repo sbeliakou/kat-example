@@ -19,6 +19,11 @@
       "text": "finish.md"
     }
   },
+  "intro": {
+    "text": "intro.md",
+    "courseData": "cluster-init.sh",
+    "credits": ""
+  },
   "environment": {
     "hideintro": true,
     "uilayout": "terminal"
