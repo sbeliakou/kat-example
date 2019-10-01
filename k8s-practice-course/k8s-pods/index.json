@@ -1,0 +1,29 @@
+{
+  "title": "Pod Game",
+  "description": "Managing Pods and all about them",
+  "time": "10 minutes",
+  "details": {
+    "steps": [
+      {
+        "title": "Game 1",
+        "text": "step1.md",
+        "verify": "step1-verify.sh"
+      },
+      {
+        "title": "Game 2",
+        "text": "step2.md",
+        "verify": "step2-verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "environment": {
+    "hideintro": true,
+    "uilayout": "terminal"
+  },
+  "backend": {
+    "imageid": "kubernetes-cluster"
+  }
+}

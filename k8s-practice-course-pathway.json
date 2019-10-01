@@ -6,6 +6,11 @@
       "course_id": "k8s-init",
       "title": "Creating Kubernetes Cluster",
       "description": "Creating multi node Kubernetes cluster with kubeadm, deploying such components as pod network, dashboard, metrics-server"
+    },
+    {
+      "course_id": "k8s-pods",
+      "title": "Creating Kubernetes Cluster",
+      "description": "Creating multi node Kubernetes cluster with kubeadm"
     }
   ]
 }
