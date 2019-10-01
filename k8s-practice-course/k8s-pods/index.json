@@ -24,7 +24,7 @@
       "master": [
         {
           "file": "wait.sh",
-          "target": "~/",
+          "target": "~/.wait.sh",
           "chmod": "+x"
         }
       ]
