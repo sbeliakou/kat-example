@@ -11,6 +11,11 @@
       "course_id": "verified-steps",
       "title": "Verifying user actions during scenario",
       "description": "Run checks to make sure the user can proceed. Scenario also offers user solutions if they struggle"
+    },
+    {
+      "course_id": "kubernetes-cluster",
+      "title": "Kubernetes",
+      "description": "Multi node Kubernetes cluster configured using Kubeadm"
     }
   ]
 }
