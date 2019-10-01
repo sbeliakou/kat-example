@@ -8,6 +8,11 @@
         "title": "Create Kubernetes Cluster",
         "text": "step1.md",
         "verify": "step1-verify.sh"
+      },
+      {
+        "title": "Deploy Kubernetes Dashboard",
+        "text": "step2.md",
+        "verify": "step2-verify.sh"
       }
     ],
     "finish": {
@@ -16,9 +21,15 @@
   },
   "environment": {
     "hideintro": true,
-    "uilayout": "terminal"
+    "showdashboards": true,
+    "uilayout": "terminal-iframe",
+    "dashboards": [
+      {"name": "Docs", "href": "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/"},
+      {"name": "Dashboard Placeholder", "port": 8001}
+    ]
   },
   "backend": {
-    "imageid": "kubernetes-cluster"
+    "imageid": "kubernetes-cluster",
+    "port": 8001
   }
 }
