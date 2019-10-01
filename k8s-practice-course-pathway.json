@@ -4,8 +4,8 @@
   "courses": [
     {
       "course_id": "k8s-init",
-      "title": "Kubernetes",
-      "description": "Multi node Kubernetes cluster"
+      "title": "Creating Kubernetes Cluster",
+      "description": "Creating multi node Kubernetes cluster with kubeadm"
     }
   ]
 }
