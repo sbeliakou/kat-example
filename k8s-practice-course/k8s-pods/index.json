@@ -24,7 +24,7 @@
       "client": [
         {
           "file": "wait.sh",
-          "target": "~/.wait.sh",
+          "target": "~/",
           "chmod": "+x"
         }
       ]
@@ -34,7 +34,7 @@
     }
   },
   "environment": {
-    "hideintro": false,
+    "hideintro": true,
     "uilayout": "terminal"
   },
   "backend": {
