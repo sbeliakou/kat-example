@@ -25,11 +25,10 @@
     "uilayout": "terminal-iframe",
     "dashboards": [
       {"name": "Docs", "href": "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/"},
-      {"name": "Dashboard Placeholder", "port": 8001}
+      {"name": "Dashboard", "href": "https://[[HOST_SUBDOMAIN]]-8001-[[KATACODA_HOST]].environments.katacoda.com//api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"}
     ]
   },
   "backend": {
-    "imageid": "kubernetes-cluster",
-    "port": 8001
+    "imageid": "kubernetes-cluster"
   }
 }

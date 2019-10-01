@@ -1,11 +1,12 @@
 ## Deploy Kubernetes Dashboard
 
-1. Dashboard
+### 1. Dashboard
 
-Deploy Dashboard Manifest from here: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+Deploy Dashboard Manifest from [here](https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
 
-2. Create Admin User
-```
+### 2. Create Admin User
+
+```yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -26,16 +27,16 @@ subjects:
   namespace: kube-system
 ```
 
-3. Get Admin Secret
+### 3. Get Admin Secret
 
 ```
 kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
 ```
 
-4. Proxy Dashboard
+### 4. Proxy Dashboard
 
 ```
-kubectl --address='0.0.0.0' --accept-hosts='^*$'
+kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
 ```
 
 ## Documentation:
