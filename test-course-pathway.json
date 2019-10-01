@@ -1,0 +1,11 @@
+{
+  "title": "test-course",
+  "description": "description",
+  "courses": [
+    {
+      "course_id": "visualise-docker",
+      "title": "Visualise Environment Tab",
+      "description": "Learn how to add the Visualise Tab"
+    }
+  ]
+}
