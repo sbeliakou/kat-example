@@ -19,19 +19,19 @@
     ],
     "finish": {
       "text": "finish.md"
+    },
+    "assets": {
+      "master": [
+        {
+          "file": "wait.sh",
+          "target": "~/.wait.sh",
+          "chmod": "+x"
+        }
+      ]
+    },
+    "intro": {
+      "text": "intro.md"
     }
-  },
-  "assets": {
-    "host01": [
-      {
-        "file": "wait.sh",
-        "target": "~/.wait.sh",
-        "chmod": "+x"
-      }
-    ]
-  },
-  "intro": {
-    "text": "intro.md"
   },
   "environment": {
     "hideintro": false,
