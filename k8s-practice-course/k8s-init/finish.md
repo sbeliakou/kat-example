@@ -1,4 +1,9 @@
-# Congrads!
+# It's Done!
 
-You have crated Kubernetes Cluster on 2 nodes with `kubeadm`.
-But it was simple. Wasn't it?
+Some useful commands to know:
+```bash
+kubectl get nodes
+kubectl cluster-info
+kubectl get componentstatus
+kubectl get pods -n kube-system
+```
