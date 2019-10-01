@@ -1,12 +1,4 @@
-Start using the Multi-node Kubernetes environment for your content by setting the `imageid` to `kubernetes-cluster`.
+# Congrads!
 
-For example:
-
-<pre class="file">
-"environment": {
-  "uilayout": "terminal"
-},
-"backend": {
-  "imageid": "kubernetes-cluster"
-}
-</pre>
+You have crated Kubernetes Cluster on 2 nodes with `kubeadm`.
+But it was simple. Wasn't it?
