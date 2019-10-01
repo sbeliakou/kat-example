@@ -12,10 +12,16 @@
         "courseData": "cluster-init.sh"
       },
       {
-        "title": "Simple Pod",
+        "title": "Failed Pod 1",
         "text": "step2.md",
         "verify": "step2-verify.sh",
         "courseData": "step2-failure.sh"
+      },
+      {
+        "title": "Failed Pod 2",
+        "text": "step3.md",
+        "verify": "step3-verify.sh",
+        "courseData": "step3-failure.sh"
       }
     ],
     "finish": {
