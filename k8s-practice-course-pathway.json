@@ -1,9 +1,9 @@
 {
-  "title": "Kubernetes Tasks",
-  "description": "Kubernetes Tasks",
+  "title": "Kubernetes Practice",
+  "description": "Practical Kubernetes Tasks",
   "courses": [
     {
-      "course_id": "kubernetes-cluster",
+      "course_id": "k8s-init",
       "title": "Kubernetes",
       "description": "Multi node Kubernetes cluster"
     }

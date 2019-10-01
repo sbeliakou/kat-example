@@ -1,12 +1,13 @@
 {
   "title": "Kubernetes",
-  "description": "Single node Kubernetes cluster configured using Kubeadm",
+  "description": "Multi node Kubernetes cluster",
+  "time": "10 minutes",
   "details": {
     "steps": [
       {
-        "title": "Step 1",
-        "code": "foreground.sh",
-        "text": "step1.md"
+        "title": "Create Kubernetes Cluster",
+        "text": "step1.md",
+        "verify": "step1-verify.sh"
       }
     ],
     "finish": {
@@ -18,6 +19,6 @@
     "uilayout": "terminal"
   },
   "backend": {
-    "imageid": "kubernetes"
+    "imageid": "kubernetes-cluster"
   }
 }
