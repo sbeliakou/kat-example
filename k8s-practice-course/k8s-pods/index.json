@@ -8,7 +8,7 @@
         "title": "Game 1",
         "text": "step1.md",
         "verify": "step1-verify.sh",
-        "code": "set-env.sh",
+        "code": "foreground.sh",
         "courseData": "cluster-init.sh"
       },
       {
@@ -20,6 +20,15 @@
     "finish": {
       "text": "finish.md"
     }
+  },
+  "assets": {
+    "master": [
+      {
+        "file": "wait.sh",
+        "target": "~/.wait.sh",
+        "chmod": "+x"
+      }
+    ]
   },
   "intro": {
     "text": "intro.md"
