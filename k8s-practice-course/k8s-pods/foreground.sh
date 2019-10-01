@@ -1,3 +1,3 @@
 #!/bin/bash 
 
-~/.wait.sh
+/var/tmp/wait.sh
