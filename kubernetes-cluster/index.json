@@ -5,9 +5,8 @@
   "details": {
     "steps": [
       {
-        "title": "Step 1",
+        "title": "Create Kubernetes Cluster",
         "text": "step1.md",
-        "code": "step1-run.sh",
         "verify": "step1-verify.sh"
       },
       {
