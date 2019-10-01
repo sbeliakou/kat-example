@@ -51,6 +51,11 @@
       "course_id": "k8s-ingress",
       "title": "API Cluster Access",
       "description": ""
+    },
+    {
+      "course_id": "k8s-ingress",
+      "title": "Scheduling",
+      "description": "Scheduling, Taints, Tolerations"
     }
   ]
 }
