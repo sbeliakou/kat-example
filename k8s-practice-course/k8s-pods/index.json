@@ -5,7 +5,7 @@
   "details": {
     "steps": [
       {
-        "title": "Game 1",
+        "title": "Simple Pod",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "code": "foreground.sh",
@@ -19,15 +19,6 @@
     ],
     "finish": {
       "text": "finish.md"
-    },
-    "assets": {
-      "master": [
-        {
-          "file": "wait.sh",
-          "target": "/var/tmp/",
-          "chmod": "+x"
-        }
-      ]
     },
     "intro": {
       "text": "intro.md"
