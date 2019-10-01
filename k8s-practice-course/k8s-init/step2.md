@@ -1,5 +1,3 @@
-## Deploy Kubernetes Dashboard
-
 ### 1. Dashboard
 
 Deploy Dashboard Manifest from [here](https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
@@ -30,14 +28,20 @@ subjects:
 ### 3. Get Admin Secret
 
 ```
-kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+kubectl get secret -n kube-system $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}') -o jsonpath='{.data.token}'
 ```
 
 ### 4. Proxy Dashboard
 
+Expose Dashord from inside cluster with `kubectl proxy` command:
+
 ```
 kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
 ```
+
+### 5. Explore Kubernetes Cluster on "Dashboard" Tab
+
+Please use token authentication from previous step
 
 ## Documentation:
 - https://github.com/kubernetes/dashboard

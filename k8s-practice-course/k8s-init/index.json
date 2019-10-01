@@ -13,6 +13,11 @@
         "title": "Deploy Kubernetes Dashboard",
         "text": "step2.md",
         "verify": "step2-verify.sh"
+      },
+      {
+        "title": "Deploy Metrics-server",
+        "text": "step3.md",
+        "verify": "step3-verify.sh"
       }
     ],
     "finish": {

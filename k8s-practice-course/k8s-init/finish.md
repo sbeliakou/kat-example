@@ -1,9 +1,17 @@
 # It's Done!
 
 Some useful commands to know:
-```bash
+
+<pre class="file">
 kubectl get nodes
 kubectl cluster-info
 kubectl get componentstatus
-kubectl get pods -n kube-system
-```
+
+kubectl get pods
+kubectl get deployments
+kubectl get svc
+
+kubectl top nodes
+kubectl top pods 
+kubectl top pods --all-namespaces
+</pre>
