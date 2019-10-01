@@ -10,22 +10,42 @@
     {
       "course_id": "k8s-pods",
       "title": "Managing Pods",
-      "description": "Game #1"
+      "description": ""
     },
     {
       "course_id": "k8s-volumes",
-      "title": "Managing Volumes",
-      "description": "Game #1"
+      "title": "Volumes",
+      "description": ""
     },
     {
       "course_id": "k8s-secrets",
-      "title": "Managing Secrets",
-      "description": "Game #1"
+      "title": "Secrets",
+      "description": ""
     },
     {
       "course_id": "k8s-configmaps",
-      "title": "Managing Configmaps",
-      "description": "Game #1"
+      "title": "Configmaps",
+      "description": ""
+    },
+    {
+      "course_id": "k8s-deployments",
+      "title": "Deployments",
+      "description": ""
+    },
+    {
+      "course_id": "k8s-jobs",
+      "title": "Jobs",
+      "description": ""
+    },
+    {
+      "course_id": "k8s-ingress",
+      "title": "Ingress",
+      "description": ""
+    },
+    {
+      "course_id": "k8s-ingress",
+      "title": "API Cluster Access",
+      "description": ""
     }
   ]
 }
