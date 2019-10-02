@@ -12,16 +12,21 @@
         "courseData": "cluster-init.sh"
       },
       {
-        "title": "Failed Pod 1",
+        "title": "A Pod with Multiple Containers",
         "text": "step2.md",
-        "verify": "step2-verify.sh",
-        "courseData": "step2-failure.sh"
+        "verify": "step2-verify.sh"
       },
       {
-        "title": "Failed Pod 2",
+        "title": "Failed Web Service",
         "text": "step3.md",
         "verify": "step3-verify.sh",
         "courseData": "step3-failure.sh"
+      },
+      {
+        "title": "Failed Redis DB",
+        "text": "step4.md",
+        "verify": "step4-verify.sh",
+        "courseData": "step4-failure.sh"
       }
     ],
     "finish": {

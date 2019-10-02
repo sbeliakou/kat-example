@@ -1,6 +1,12 @@
-A new Pod `web` has been deployed. It failed. 
-Please fix it.
+Create a pod called `multi-pod` with two containers. 
 
-Requirements:
-- image: `nginx` v1.16 build on `alpine`
-- pod should be running
+**Container 1**:
+- name: alpha
+- image: nginx
+- environment variables: type=main
+
+**Container 2**:
+- name: beta
+- image: busybox
+- environment variables: type=sidecar
+- command: sleep 4800
