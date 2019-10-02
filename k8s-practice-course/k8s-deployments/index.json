@@ -7,9 +7,7 @@
       {
         "title": "Simple Deployment",
         "text": "step1.md",
-        "verify": "step1-verify.sh",
-        "code": "foreground.sh",
-        "courseData": "cluster-init.sh"
+        "verify": "step1-verify.sh"
       }
     ],
     "finish": {
@@ -21,6 +19,6 @@
     "uilayout": "terminal"
   },
   "backend": {
-    "imageid": "kubernetes-cluster"
+    "imageid": "kubernetes"
   }
 }
