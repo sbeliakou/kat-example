@@ -13,6 +13,11 @@
       "description": ""
     },
     {
+      "course_id": "k8s-deployments",
+      "title": "Deployments",
+      "description": ""
+    },
+    {
       "course_id": "k8s-static-pods",
       "title": "Staic Pods",
       "description": ""
@@ -35,11 +40,6 @@
     {
       "course_id": "k8s-configmaps",
       "title": "Configmaps",
-      "description": ""
-    },
-    {
-      "course_id": "k8s-deployments",
-      "title": "Deployments",
       "description": ""
     },
     {
