@@ -47,7 +47,7 @@
     ],
     "assets": {
       "master": [
-          {"file": "main.sh", "target": "/root"}
+          {"file": "main", "target": "/root"}
       ]
     },
     "intro": {
