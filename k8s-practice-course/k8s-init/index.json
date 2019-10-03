@@ -49,7 +49,6 @@
       "client": [
           {"file": "my-custom-realm.json", "target": "/root"}
       ]
-    }
     },
     "intro": {
       "text": "intro.md"
