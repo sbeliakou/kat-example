@@ -46,7 +46,7 @@
       }
     ],
     "assets": {
-      "client": [
+      "master": [
           {"file": "runPrep.sh", "target": "/root"}
       ]
     },
