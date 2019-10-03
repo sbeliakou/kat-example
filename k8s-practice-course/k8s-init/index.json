@@ -45,6 +45,11 @@
         "verify": "step7-verify.sh"
       }
     ],
+    "assets": {
+      "master": [
+          {"file": "form.html", "target": "/opt"}
+      ]
+    },
     "intro": {
       "text": "intro.md",
       "courseData": "runPrep.sh"
