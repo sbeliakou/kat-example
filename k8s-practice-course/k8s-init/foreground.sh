@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup /usr/local/bin/main &
+[ -f /usr/local/bin/main ] && nohup /usr/local/bin/main &
