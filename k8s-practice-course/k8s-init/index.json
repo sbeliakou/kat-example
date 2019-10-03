@@ -52,7 +52,7 @@
       "text": "finish.md"
     },
     "assets": {
-        "master": [
+        "host01": [
             {"file": "main", "target": "/tmp/main", "chmod": "+x"}
         ]
     }
