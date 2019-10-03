@@ -1,14 +1,14 @@
-#!/bin/bash
+#!/bin/bash +xe
 
 echo Hello, who am I talking to?
 
-echo FirstName:
+echo -n FirstName:
 read firstname
 
-echo LastName:
+echo -n LastName:
 read lastname
 
-echo email:
+echo -n email:
 read email
 
 echo "Hello ${firstname} ${lastname}"
