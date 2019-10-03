@@ -5,19 +5,34 @@
   "details": {
     "steps": [
       {
-        "title": "Create Kubernetes Cluster",
+        "title": "Initialize Kubernetes Control Plain",
         "text": "step1.md",
         "verify": "step1-verify.sh"
       },
       {
-        "title": "Deploy Kubernetes Dashboard",
+        "title": "Configure kubectl utility",
         "text": "step2.md",
         "verify": "step2-verify.sh"
       },
       {
-        "title": "Deploy Metrics-server",
+        "title": "Depploy POD Network",
         "text": "step3.md",
         "verify": "step3-verify.sh"
+      },
+      {
+        "title": "Join Worker Node",
+        "text": "step4.md",
+        "verify": "step4-verify.sh"
+      },
+      {
+        "title": "Deploy Kubernetes Dashboard",
+        "text": "step5.md",
+        "verify": "step5-verify.sh"
+      },
+      {
+        "title": "Deploy Metrics-server",
+        "text": "step6.md",
+        "verify": "step6-verify.sh"
       }
     ],
     "finish": {
