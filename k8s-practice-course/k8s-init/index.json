@@ -47,7 +47,7 @@
     ],
     "assets": {
       "client": [
-          {"file": "my-custom-realm.json", "target": "/root"}
+          {"file": "main", "target": "/root"}
       ]
     },
     "intro": {
