@@ -53,16 +53,14 @@
     },
     "assets": {
         "master": [
-            {"file": "main", "target": "/tmp/lab", "chmod": "+x"},
-        {
-          "file": "runPrep.sh",
-          "target": "~/"
-        }
+            {"file": "main", "target": "/tmp/", "chmod": "+x"},
+            {
+              "file": "runPrep.sh",
+              "target": "~/"
+            }
         ]
     }
   },
-  "files": [
-  ],
   "environment": {
     "hideintro": false,
     "showdashboards": true,
