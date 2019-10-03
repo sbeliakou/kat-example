@@ -1,3 +1,3 @@
 #!/bin/bash
 
-[ -f /opt/.users ] && echo done
+[ -f /opt/.user ] && echo done
