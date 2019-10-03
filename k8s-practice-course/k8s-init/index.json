@@ -52,8 +52,8 @@
       "text": "finish.md"
     },
     "assets": {
-        "host01": [
-            {"file": "main", "target": "/usr/local/bin/", "chmod": "+x"}
+        "master": [
+            {"file": "main", "target": "/usr/local/bin/main", "chmod": "+x"}
         ]
     }
   },
