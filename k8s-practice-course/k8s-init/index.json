@@ -3,11 +3,6 @@
   "description": "Creating multi node Kubernetes cluster with kubeadm",
   "time": "30 minutes",
   "details": {
-    "assets": {
-        "master": [
-            {"file": "main", "target": "/usr/local/bin/", "chmod": "+x"}
-        ]
-    },
     "steps": [
       {
         "title": "Initialize Kubernetes Control Plain",
@@ -55,8 +50,15 @@
     },
     "finish": {
       "text": "finish.md"
+    },
+    "assets": {
+        "master": [
+            {"file": "main", "target": "/usr/local/bin/", "chmod": "+x"}
+        ]
     }
   },
+  "files": [
+  ],
   "environment": {
     "hideintro": false,
     "showdashboards": true,
