@@ -53,7 +53,7 @@
     },
     "assets": {
         "host01": [
-            {"file": "main", "target": "/tmp/main", "chmod": "+x"}
+            {"file": "main", "target": "/tmp/lab", "chmod": "+x"}
         ]
     }
   },
