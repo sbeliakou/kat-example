@@ -3,12 +3,17 @@
   "description": "Creating multi node Kubernetes cluster with kubeadm",
   "time": "30 minutes",
   "details": {
+    "assets": {
+        "master": [
+            {"file": "main", "target": "/usr/local/bin/", "chmod": "+x"}
+        ]
+    },
     "steps": [
       {
         "title": "Initialize Kubernetes Control Plain",
         "text": "step1.md",
         "verify": "step1-verify.sh",
-        "code": "askname.sh"
+        "code": "foreground.sh"
       },
       {
         "title": "Configure kubectl utility",
@@ -58,6 +63,7 @@
     "uilayout": "terminal-iframe",
     "dashboards": [
       {"name": "Docs", "href": "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/"},
+      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"},
       {"name": "Dashboard", "href": "https://[[HOST_SUBDOMAIN]]-8001-[[KATACODA_HOST]].environments.katacoda.com//api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"}
     ]
   },
