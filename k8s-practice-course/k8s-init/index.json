@@ -47,7 +47,7 @@
     ],
     "assets": {
       "master": [
-          {"file": "runPrep.sh", "target": "/root"}
+          {"file": "main.sh", "target": "/root"}
       ]
     },
     "intro": {
