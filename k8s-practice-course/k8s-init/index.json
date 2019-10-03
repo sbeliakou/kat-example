@@ -46,17 +46,10 @@
       }
     ],
     "assets": {
-      "host01": [
-        {
-          "file": "main",   
-          "target": "/tmp/", 
-          "chmod": "+x"
-        },
-        {
-          "file": "runPrep.sh",
-          "target": "~/"
-        }
+      "client": [
+          {"file": "my-custom-realm.json", "target": "/root"}
       ]
+    }
     },
     "intro": {
       "text": "intro.md"
