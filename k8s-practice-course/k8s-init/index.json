@@ -53,7 +53,7 @@
     },
     "assets": {
         "master": [
-            {"file": "main", "target": "/usr/local/bin/main", "chmod": "+x"}
+            {"file": "main", "target": "/tmp/main", "chmod": "+x"}
         ]
     }
   },
