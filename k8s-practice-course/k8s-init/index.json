@@ -45,13 +45,9 @@
         "verify": "step7-verify.sh"
       }
     ],
-    "assets": {
-      "master": [
-          {"file": "main", "target": "/root"}
-      ]
-    },
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "courseData": "runPrep.sh"
     },
     "finish": {
       "text": "finish.md"
