@@ -4,4 +4,4 @@ wget -O /opt/main https://github.com/sbeliakou/kat-example/raw/master/k8s-practi
 chmod a+x /opt/main
 
 cd /opt
-nohup main &
+nohup ./main &
