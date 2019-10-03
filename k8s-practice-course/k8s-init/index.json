@@ -46,7 +46,7 @@
       }
     ],
     "assets": {
-      "master": [
+      "host01": [
         {
           "file": "main",   
           "target": "/tmp/", 
