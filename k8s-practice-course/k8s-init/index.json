@@ -52,13 +52,17 @@
       "text": "finish.md"
     },
     "assets": {
-        "master": [
-            {"file": "main", "target": "/tmp/", "chmod": "+x"},
-            {
-              "file": "runPrep.sh",
-              "target": "~/"
-            }
-        ]
+      "host01": [
+          {
+            "file": "main",   
+            "target": "/tmp/", 
+            "chmod": "+x"
+          },
+          {
+            "file": "runPrep.sh",
+            "target": "~/"
+          }
+      ]
     }
   },
   "environment": {
