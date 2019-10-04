@@ -9,14 +9,16 @@ echo done || exit 0
 
 TASK_SCORE=8
 source /opt/.user
-cat << EOF | curl -s -X POST --data @- https://w4n2h8np7e.execute-api.us-east-1.amazonaws.com/prod/DynamoDBManager >/dev/null 2>&1
+cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.amazonaws.com/default/lab_logger >/dev/null 2>&1
 {
-  "FirstName": "${FIRSTNAME}",
-  "LastName": "${LASTNAME}",
-  "Email": "${EMAIL}",
-  "Module": "Kubernetes",
-  "Scenario": "Cluster Init",
-  "Score": ${TASK_SCORE}
+  "table": "kubernetes",
+  "timestamp": "$(date --iso-8601=ns --utc)",
+  "payload": {
+    "name": "${FIRSTNAME} ${LASTNAME}",
+    "email" "${EMAIL}",
+    "scenario": "1.2", 
+    "score": ${TASK_SCORE}
+  }
 }
 EOF
 
