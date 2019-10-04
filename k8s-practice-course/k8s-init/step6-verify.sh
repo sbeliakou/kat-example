@@ -13,7 +13,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "timestamp": "$(date --iso-8601=ns --utc)",
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
-    "email" "${EMAIL}",
+    "email": "${EMAIL}",
     "scenario": "1.7", 
     "score": ${TASK_SCORE}
   }
