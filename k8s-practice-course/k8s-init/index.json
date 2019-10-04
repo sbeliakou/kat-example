@@ -41,8 +41,8 @@
       },
       {
         "title": "Deploy Kubernetes Dashboard",
-        "text": "step7.md",
-        "verify": "step7-verify.sh"
+        "text": "step6.md",
+        "verify": "step6-verify.sh"
       },
       {
         "title": "Deploy Metrics-server",
