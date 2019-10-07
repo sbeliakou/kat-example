@@ -25,6 +25,7 @@ spec:
         name: orange
       initContainers:
       - image: busybox:latest-alpine
+        name: busybox
         command:
         - sleep
         - "1O"
