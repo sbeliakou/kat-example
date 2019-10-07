@@ -18,7 +18,7 @@
       {
         "title": "Secrets in other namespaces"
         "text": "step2.md",
-        "courseData": "step2-courseData.sh"
+        "courseData": "step2-courseData.sh",
         "verify": "step2-verify.sh",
         "code": "clear.sh"
       },
