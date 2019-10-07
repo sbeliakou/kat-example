@@ -27,5 +27,5 @@ spec:
         name: busybox
         command:
         - sleep
-        - "1O"
+        - "10"
 EOF

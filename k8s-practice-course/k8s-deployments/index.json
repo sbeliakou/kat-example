@@ -10,10 +10,15 @@
         "verify": "step1-verify.sh"
       },
       {
-        "title" : "Broken deployment",
+        "title" : "Rolling update",
 	"text": "step2.md",
-	"verify": "step2-verify.sh",
-	"courseData": "step2-failure.sh"
+	"verify": "step2-verify.sh"
+      },
+      {
+        "title": "Broken deployment",
+	"text": "step3.md",
+	"courseData": "step3-failure.sh",
+	"verify": "step3-verify.sh"
       }
     ],
     "intro": {
