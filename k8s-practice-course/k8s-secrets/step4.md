@@ -1,11 +1,11 @@
 Create a simple secret with the following requirements:
 
 ## Requirements
-- secret name: devops_secret
-- namespace: default
-- field `username`: `devops`
-- field `password`: `devops_password`
-- field `email`: `devops@devops.dev`
+- secret name: `devops_secret`
+- namespace: `default`
+- `username` field: `devops`
+- `password` field: `devops_password`
+- `email` field: `devops@devops.dev`
 - all string data schould be encoded (using base64)
 
 
