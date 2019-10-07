@@ -6,7 +6,7 @@ cat << EOF | kubectl apply -n orange -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
+  namespace: ornge
   labels:
     run: orange
   name: orange
@@ -15,21 +15,17 @@ spec:
   selector:
     matchLabels:
       run: orange
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         run: orange
     spec:
       containers:
       - image: nginx
         name: orange
-        resources: {}
       initContainers:
-      - image: busybox:3521
+      - image: busybox:latest-alpine
         command:
         - sleep
         - "1O"
-status: {}
 EOF
