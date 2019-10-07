@@ -7,8 +7,7 @@
       {
         "title": "Simple Deployment",
         "text": "step1.md",
-        "verify": "step1-verify.sh",
-	"code": "foreground.sh"
+        "verify": "step1-verify.sh"
       },
       {
         "title" : "Broken deployment",
@@ -17,6 +16,10 @@
 	"courseData": "step2-failure.sh"
       }
     ],
+    "intro": {
+      "text": "intro.md",
+      "code": "foreground.sh"
+    },
     "finish": {
       "text": "finish.md"
     }
