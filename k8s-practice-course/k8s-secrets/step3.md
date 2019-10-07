@@ -1,4 +1,4 @@
-Decode the `ingridients` field of `recipe5` secret from `safe` namaspace. Write the result of decoding in `/tmp/ingridients` file.
+Decode the `ingridients` field of `recipe5` secret from `safe` namespace. Write the result of decoding in `/tmp/ingridients` file.
 
 
 ## Documentation:

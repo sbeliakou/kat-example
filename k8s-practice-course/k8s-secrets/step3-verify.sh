@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kubectl get nodes >/dev/null 2>&1 &&
+[[ $(kubectl get secrets -n safe recipe5 -o yaml | grep ingridients: | awk '{print $2}' | base64 -d) == 'flour_sugar_and_5_apples' ]] &&
 echo done || exit 0
 
 TASK_SCORE=3

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-kubectl get nodes >/dev/null 2>&1 &&
+[[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}' | base64 -d) == "devops" ]] &&
+[[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.password}' | base64 -d) == "devops_password" ]] &&
+[[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.email}' | base64 -d) == "devops@devops.dev" ]] &&
 echo done || exit 0
 
 TASK_SCORE=3

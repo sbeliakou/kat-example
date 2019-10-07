@@ -1,7 +1,7 @@
 Create a simple secret with the following requirements:
 
 ## Requirements
-- secret name: `devops_secret`
+- secret name: `devops-secret`
 - namespace: `default`
 - `username` field: `devops`
 - `password` field: `devops_password`

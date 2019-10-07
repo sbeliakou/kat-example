@@ -10,7 +10,7 @@ metadata:
 type: Opaque
 data:
   author: $(echo -n 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' | base64 -w0)
-  ingridients: $(echo -n "flour_sugar_ and_${item}_apples" | base64 -w0)
+  ingridients: $(echo -n "flour_sugar_and_${item}_apples" | base64 -w0)
 EOF
 done
 
