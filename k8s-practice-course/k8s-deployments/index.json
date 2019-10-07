@@ -9,6 +9,12 @@
         "text": "step1.md",
         "verify": "step1-verify.sh",
 	"code": "foreground.sh"
+      },
+      {
+        "title" : "Broken deployment",
+	"text": "step2.md",
+	"verify": "step2-verify.sh",
+	"courseData": "step2-failure.sh"
       }
     ],
     "finish": {
