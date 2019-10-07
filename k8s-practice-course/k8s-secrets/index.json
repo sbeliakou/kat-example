@@ -10,13 +10,13 @@
         "verify": "step0-verify.sh"
       },
       {
-        "title": "Secrets in default namespace"
+        "title": "Secrets in default namespace",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "code": "foreground.sh"
       },
       {
-        "title": "Secrets in other namespaces"
+        "title": "Secrets in other namespaces",
         "text": "step2.md",
         "courseData": "step2-courseData.sh",
         "verify": "step2-verify.sh",
