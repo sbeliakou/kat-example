@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ $(kubectl get secrets -n safe recipe5 -o yaml | grep ingridients: | awk '{print $2}' | base64 -d) == 'flour_sugar_and_5_apples' ]] &&
+[[ $(kubectl get secrets -n safe recipe5 -o yaml -o jsonpath='{.data.ingridients}' | base64 -d) == $(cat /tmp/ingridients) ]] &&
 echo done || exit 0
 
 TASK_SCORE=3

@@ -4,15 +4,14 @@ Some useful commands to know:
 
 <pre class="file">
 
-kubectl get nodes
-kubectl cluster-info
-kubectl get componentstatus
+kubectl get secrets
+kubectl get secrets -n namespace
+kubectl get secrets --all-namespaces
 
-kubectl get pods
-kubectl get deployments
-kubectl get svc
+kubectl get secrets -n namespace secretname -o yaml
 
-kubectl top nodes
-kubectl top pods 
-kubectl top pods --all-namespaces
+echo -n 'username' | base64 -w0   # dXNlcm5hbWU=
+echo 'dXNlcm5hbWU=' | base64 -d   # username
+
+
 </pre>
