@@ -1,9 +1,9 @@
 #!/bin/bash
 
-kubectl get nodes >/dev/null 2>&1 &&
+[[ $(cat /tmp/secrets_safe) == '6' ]] &&
 echo done || exit 0
 
-TASK_SCORE=3
+TASK_SCORE=2
 source /opt/.user
 cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.amazonaws.com/default/lab_logger >/dev/null 2>&1
 {
