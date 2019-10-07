@@ -1,6 +1,6 @@
 {
-  "title": "Creating Kubernetes Cluster",
-  "description": "Creating multi node Kubernetes cluster with kubeadm",
+  "title": "Secrets in Kubernetes",
+  "description": "Working with secrets in Kubernetes",
   "time": "30 minutes",
   "details": {
     "steps": [
@@ -12,7 +12,9 @@
       {
         "title": "Secrets in default namespace",
         "text": "step1.md",
-        "verify": "step1-verify.sh"
+        "verify": "step1-verify.sh",
+        "code": "foreground.sh",
+        "courseData": "cluster-init.sh"
       },
       {
         "title": "Secrets in other namespaces",
