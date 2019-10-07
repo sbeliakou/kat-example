@@ -6,4 +6,4 @@ Create a simple pod with name `dev_pod` which get all fields from `devops_secret
 - pod should have env variables `USERNAME`, `PASSWORD`, `EMAIL` with values from `devops_secret` secret correspondingly.
 
 ## Documentation:
-- https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+- https://kubernetes.io/docs/concepts/configuration/secret/

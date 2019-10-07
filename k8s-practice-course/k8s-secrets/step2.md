@@ -2,4 +2,4 @@ Examine the number of secrets in `safe` namespace and write the result (only one
 
 
 ## Documentation:
-- https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+- https://kubernetes.io/docs/concepts/configuration/secret/

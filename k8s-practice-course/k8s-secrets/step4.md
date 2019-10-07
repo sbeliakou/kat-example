@@ -10,4 +10,4 @@ Create a simple secret with the following requirements:
 
 
 ## Documentation:
-- https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+- https://kubernetes.io/docs/concepts/configuration/secret/
