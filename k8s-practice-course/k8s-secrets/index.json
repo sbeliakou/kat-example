@@ -13,7 +13,8 @@
         "title": "Secrets in default namespace",
         "text": "step1.md",
         "verify": "step1-verify.sh",
-        "code": "foreground.sh"
+        "code": "foreground.sh",
+        "courseData": "cluster-init.sh"
       },
       {
         "title": "Secrets in other namespaces",
