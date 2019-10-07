@@ -6,7 +6,7 @@ cat << EOF | kubectl apply -n orange -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: ornge
+  namespace: orange
   labels:
     run: orange
   name: orange
