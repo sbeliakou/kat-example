@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir /data &&
-echo 'superhacker' > /data/username_file &&
-echo 'verystrongpassword' > /data/password_file
+echo "superhacker.$(hostname -I | awk '{print $1}')" > /data/username_file &&
+echo "verystrongpassword.$(hostname -I | awk '{print $1}')" > /data/password_file
 
 
