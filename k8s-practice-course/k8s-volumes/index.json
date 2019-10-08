@@ -1,0 +1,33 @@
+{
+  "title": "Volumes Game",
+  "description": "Managing Volumes and all about them",
+  "time": "10 minutes",
+  "details": {
+    "steps": [
+      {
+        "title": "Welcome",
+	"text": "step0.md",
+	"verify": "step0-verify.sh"
+      },
+      {
+        "title": "EmptyDir",
+        "text": "step1.md",
+        "verify": "step1-verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "foreground.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "environment": {
+    "hideintro": true,
+    "uilayout": "terminal"
+  },
+  "backend": {
+    "imageid": "kubernetes"
+  }
+}
