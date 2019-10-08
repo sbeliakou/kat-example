@@ -6,7 +6,7 @@ Examine the secrets in `default` namespace and answer the questions below.
 >>Q2: Enter the type of secret(s) in default namespace<<
 === kubernetes.io/service-account-token
 
->>Q3: Which of these does NOT contained in `data` field of secret(s) in default namespace<<
+>>Q3: Which of these does NOT contained in data field of secret(s) in default namespace<<
 () namespace
 () token
 (*) cluster

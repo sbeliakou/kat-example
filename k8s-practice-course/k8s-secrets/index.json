@@ -18,6 +18,7 @@
       {
         "title": "Secrets in other namespaces",
         "text": "step2.md",
+        "code": "foreground-step2-preparing.sh"
         "courseData": "step2-courseData.sh"
       },
       {
