@@ -1,14 +1,13 @@
-Examine the secrets in `safe` namespace and answer the questions below.
+Create a Pod with the following parameters:
 
->>Q1: Enter the number of secrets in safe namespace<<
-=== 6
-
->>Q2: Enter the type of recipe* secret(s) in safe namespace<<
-=== Opaque
-
->>Q3: Examine and decode the content of ingridients field in data section of recipe5 secret<<
-=== flour_sugar_and_5_apples
+- Pod name: `green-pod`
+- namespace: `default`
+- Pod image: `nginx`
+- Pod should have port with parameters:
+  - name: `nginx-port`
+  - container port: `80`
+- label: `app: green-pod`
 
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/configuration/secret/
+- https://kubernetes.io/docs/concepts/services-networking/service/

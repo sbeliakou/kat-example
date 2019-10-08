@@ -16,11 +16,29 @@
         "code": "foreground.sh"
       },
       {
-        "title": "",
+        "title": "Exposing Pods. Create Pod",
         "text": "step2.md",
-        "code": "foreground-step2-preparing.sh",
-        "courseData": "step2-courseData.sh"
+        "verify": "step2-verify.sh"
+      },
+      {
+        "title": "Exposing Pods. Expose Pod",
+        "text": "step3.md",
+        "verify": "step3-verify.sh"
+      },
+      {
+        "title": "Exposing Pods. Checking",
+        "text": "step4.md"
+      },
+      {
+        "title": "Manually service creating",
+        "text": "step5.md",
+        "verify": "step5-verify.sh"
+      },
+      {
+        "title": "Manually service creating. Checking",
+        "text": "step6.md"
       }
+
     ],
     "assets": {
       "master": [

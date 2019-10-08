@@ -29,4 +29,4 @@ Examine the services in cluster and answer the questions below.
 
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/configuration/secret/
+- https://kubernetes.io/docs/concepts/services-networking/service/
