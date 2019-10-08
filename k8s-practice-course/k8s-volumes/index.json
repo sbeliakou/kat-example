@@ -15,11 +15,11 @@
         "verify": "step1-verify.sh"
       }
     ],
-        "assets": {
-		      "master": [
-			                {"file": "form.html", "target": "/opt"}
-					      ]
-					          },
+     "assets": {
+        "master": [
+	   {"file": "form.html", "target": "/opt"}
+	]
+    },
     "intro": {
       "text": "intro.md",
       "code": "foreground.sh",
@@ -30,8 +30,6 @@
     }
   },
   "environment": {
-    "hideintro": true,
-    "uilayout": "terminal",
         "hideintro": false,
 	    "showdashboards": true,
 	        "uilayout": "terminal-iframe",
