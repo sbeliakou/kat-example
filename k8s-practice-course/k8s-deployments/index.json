@@ -27,9 +27,14 @@
 	"verify": "step4-verify.sh"
       }
     ],
+        "assets": {
+		      "master": [
+			                {"file": "form.html", "target": "/opt"}
+					      ]},
     "intro": {
       "text": "intro.md",
-      "code": "foreground.sh"
+      "code": "foreground.sh",
+      "courseData": "runPrep.sh"
     },
     "finish": {
       "text": "finish.md"
