@@ -22,6 +22,13 @@
         "courseData": "step2-courseData.sh"
       },
       {
+        "title": "Creating secrets from files",
+        "text": "step3.md",
+        "code": "foreground-step3-preparing.sh",
+        "courseData": "step3-courseData.sh",
+        "verify": "step3-verify.sh"
+      },
+      {
         "title": "Secrets creating",
         "text": "step4.md",
         "verify": "step4-verify.sh"
