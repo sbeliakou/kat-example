@@ -9,23 +9,40 @@ Examine the services in cluster and answer the questions below.
 >>Q3: What type of the service?<<
 === ClusterIP
 
->>Q3: What port of the service?<<
-=~= 443
 
->>Q4: What target port of the service?<<
-=== 6443
 
->>Q5: Enter the number of services in all namespaces<<
-=== 2
+>>Q4: How many services are there in all namespaces<<
+=== 5
 
->>Q6: What name of the other service?<<
-=== kube-dns
+>>Q5: What types of ports are there in "red" namespace<<
+[*] LoadBalancer
+[ ] TelePort
+[*] ClusterIP
+[*] NodePort 
 
->>Q7: What namespace the service belongs to?<<
-=== kube-system
+>>Q6: What the nodePort of "red-cluster-svc" service?<<
+( ) 6443
+( ) 32435
+(*) service doesn't have nodePort
+( ) 31200
 
->>Q8: How many ports does the service listen?<<
-=== 3
+>>Q7: What the nodePort of "red-node-svc" service?<<
+( ) 6443
+( ) 32435
+( ) service doesn't have nodePort
+(*) 31200
+
+>>Q8: What the targetPort of "red-lb-svc" service?<<
+(*) 8000
+( ) 32435
+( ) service doesn't have targetPort
+( ) 31200
+
+>>Q9: What the selector does "red-cluster-svc" service have?<<
+(*) app: red-pod
+( ) run: red-pod
+( ) app: red-cluster-svc
+( ) run: red-cluster-svc
 
 
 ## Documentation:
