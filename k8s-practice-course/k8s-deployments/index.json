@@ -19,6 +19,12 @@
 	"text": "step3.md",
 	"courseData": "step3-failure.sh",
 	"verify": "step3-verify.sh"
+      },
+      {
+        "title": "Managing replicas",
+	"text": "step4.md",
+	"courseData": "step4-failure.sh",
+	"verify": "step4-verify.sh"
       }
     ],
     "intro": {
