@@ -33,6 +33,11 @@
       "description": ""
     },
     {
+      "course_id": "k8s-services",
+      "title": "Services",
+      "description": ""
+    },
+    {
       "course_id": "k8s-secrets",
       "title": "Secrets",
       "description": ""
