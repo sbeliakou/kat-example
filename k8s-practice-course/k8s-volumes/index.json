@@ -22,7 +22,6 @@
     },
     "intro": {
       "text": "intro.md",
-      "code": "foreground.sh",
       "courseData": "runPrep.sh"
     },
     "finish": {
