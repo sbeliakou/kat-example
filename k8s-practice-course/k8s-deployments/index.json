@@ -7,6 +7,7 @@
       {
         "title": "Simple Deployment",
         "text": "step1.md",
+	"code": "foreground.sh",
         "verify": "step1-verify.sh"
       },
       {
@@ -33,7 +34,6 @@
 					      ]},
     "intro": {
       "text": "intro.md",
-      "code": "foreground.sh",
       "courseData": "runPrep.sh"
     },
     "finish": {
