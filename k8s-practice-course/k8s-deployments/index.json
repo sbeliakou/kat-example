@@ -5,9 +5,14 @@
   "details": {
     "steps": [
       {
+        "title": "Welcome!",
+	"text": "step0.md",
+	"code": "foreground.sh",
+	"verify": "step0-verify.sh"
+      },
+      {
         "title": "Simple Deployment",
         "text": "step1.md",
-	"code": "foreground.sh",
         "verify": "step1-verify.sh"
       },
       {
