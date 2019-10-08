@@ -9,6 +9,5 @@
 [ `kubectl get pv pv-first -o jsonpath='{.spec.capacity.storage}'` == "10Mi" ] &&
 [ `kubectl get pvc pvc-first -o jsonpath='{.metadata.name}'` == "pvc-first" ] &&
 [ `kubectl get pod nginx-pod -o jsonpath='{.spec.volumes[0].persistentVolumeClaim.claimName}'` == "pvc-first" ] &&
-[ `kubectl get pod nginx-pod -o jsonpath='{.spec.containers[0].volumeMounts[0].name}'` == "pv-first" ]
 echo done 
 
