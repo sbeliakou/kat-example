@@ -20,33 +20,6 @@
         "text": "step2.md",
         "code": "foreground-step2-preparing.sh",
         "courseData": "step2-courseData.sh"
-      },
-      {
-        "title": "Creating secrets from files",
-        "text": "step3.md",
-        "code": "foreground-step3-preparing.sh",
-        "courseData": "step3-courseData.sh",
-        "verify": "step3-verify.sh"
-      },
-      {
-        "title": "Secrets creating",
-        "text": "step4.md",
-        "verify": "step4-verify.sh"
-      },
-      {
-        "title": "Secrets in environvent variables",
-        "text": "step5.md",
-        "verify": "step5-verify.sh"
-      },
-      {
-        "title": "Secrets in environment variables 2",
-        "text": "step6.md",
-        "verify": "step6-verify.sh"
-      },
-      {
-        "title": "Secrets as volume",
-        "text": "step7.md",
-        "verify": "step7-verify.sh"
       }
     ],
     "assets": {
