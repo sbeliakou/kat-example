@@ -61,6 +61,11 @@
       "course_id": "k8s-ingress",
       "title": "Scheduling",
       "description": "Scheduling, Taints, Tolerations"
+    },
+    {
+      "course_id": "quiz",
+      "title": "Quiz",
+      "description": "Quiz"
     }
   ]
 }
