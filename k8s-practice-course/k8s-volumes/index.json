@@ -7,6 +7,7 @@
       {
         "title": "Welcome",
 	"text": "step0.md",
+	"code": "foreground.sh",
 	"verify": "step0-verify.sh"
       },
       {
