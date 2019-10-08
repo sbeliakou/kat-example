@@ -12,19 +12,20 @@
       {
         "title": "Secrets in default namespace",
         "text": "step1.md",
-        "verify": "step1-verify.sh",
         "code": "foreground.sh",
         "courseData": "cluster-init.sh"
       },
       {
         "title": "Secrets in other namespaces",
         "text": "step2.md",
-        "courseData": "step2-courseData.sh",
-        "verify": "step2-verify.sh"
+        "code": "foreground-step2-preparing.sh",
+        "courseData": "step2-courseData.sh"
       },
       {
-        "title": "Decoding secrets",
+        "title": "Creating secrets from files",
         "text": "step3.md",
+        "code": "foreground-step3-preparing.sh",
+        "courseData": "step3-courseData.sh",
         "verify": "step3-verify.sh"
       },
       {
