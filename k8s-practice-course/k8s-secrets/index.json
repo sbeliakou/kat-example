@@ -18,13 +18,7 @@
       {
         "title": "Secrets in other namespaces",
         "text": "step2.md",
-        "courseData": "step2-courseData.sh",
-        "verify": "step2-verify.sh"
-      },
-      {
-        "title": "Decoding secrets",
-        "text": "step3.md",
-        "verify": "step3-verify.sh"
+        "courseData": "step2-courseData.sh"
       },
       {
         "title": "Secrets creating",
