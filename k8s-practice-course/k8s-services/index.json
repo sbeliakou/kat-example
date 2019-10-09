@@ -13,7 +13,7 @@
       {
         "title": "Services in different namespaces",
         "text": "step1.md",
-        "courseData": "step1-courseData.sh"
+        "courseData": "step1-courseData.sh",
         "code": "step1-foreground.sh"
       },
       {
