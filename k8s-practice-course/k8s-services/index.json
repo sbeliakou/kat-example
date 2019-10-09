@@ -37,6 +37,11 @@
       {
         "title": "Manually service creating. Checking",
         "text": "step6.md"
+      },
+      {
+        "title": "Exposing service to another site",
+        "text": "step7.md",
+        "verify": "step7-verify.sh"
       }
 
     ],
@@ -59,7 +64,9 @@
     "uilayout": "terminal-iframe",
     "dashboards": [
       {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"},
-      {"name": "Green", "href": "https://[[HOST_SUBDOMAIN]]-32000-[[KATACODA_HOST]].environments.katacoda.com"}
+      {"name": "Green", "href": "https://[[HOST_SUBDOMAIN]]-32000-[[KATACODA_HOST]].environments.katacoda.com"},
+{"name": "tut.by", "href": "https://[[HOST_SUBDOMAIN]]-32700-[[KATACODA_HOST]].environments.katacoda.com"},
+{"name": "Trouble", "href": "https://[[HOST_SUBDOMAIN]]-32200-[[KATACODA_HOST]].environments.katacoda.com"}
     ]
   },
   "backend": {
