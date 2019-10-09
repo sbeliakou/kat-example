@@ -8,13 +8,13 @@
         "title": "Welcome",
 	"text": "step0.md",
 	"verify": "step0-verify.sh",
-	"courseData": "cluster-init.sh"
+	"courseData": "cluster-init.sh",
+	"code": "foreground.sh"
       },
       {
         "title": "EmptyDir",
-        "text": "step1.md",
-        "verify": "step1-verify.sh",
-	"code": "foreground.sh"
+        "text": "step1.md", 
+        "courseData": "step1-create.sh"
       }
     ],
      "assets": {
