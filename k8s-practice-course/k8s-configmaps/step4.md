@@ -1,14 +1,15 @@
-Create a simple secret with the following requirements:
+Create a simple ConfigMap with the following requirements:
 
 ## Requirements
-- secret name: `devops-secret`
+- ConfigMap name: `users-cm`
 - namespace: `default`
-- type: `Opaque`
-- `username` field: `devops`
-- `password` field: `devops_password`
-- `email` field: `devops@devops.dev`
-- all string data schould be encoded (using base64)
-
+- data field:
+  - `cluster-admin` field: `admin`
+  - `devops` field: `devops`
+  - `db-admin` field: `db-admin`
+  - `user1` field: `Jack`
+  - `user2` field: `John`
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/configuration/secret/
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+

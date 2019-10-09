@@ -24,12 +24,12 @@
         "verify": "step3-verify.sh"
       },
       {
-        "title": "Secrets creating",
+        "title": "ConfigMaps creating",
         "text": "step4.md",
         "verify": "step4-verify.sh"
       },
       {
-        "title": "Secrets in environvent variables",
+        "title": "ConfigMaps in environvent variables",
         "text": "step5.md",
         "verify": "step5-verify.sh"
       },
@@ -62,8 +62,7 @@
     "showdashboards": true,
     "uilayout": "terminal-iframe",
     "dashboards": [
-      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"},
-      {"name": "K8s Dashboard", "href": "https://[[HOST_SUBDOMAIN]]-8001-[[KATACODA_HOST]].environments.katacoda.com//api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"}
+      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
     ]
   },
   "backend": {

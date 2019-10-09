@@ -1,8 +1,8 @@
 # In this section you will do following:
 
-- discover secrets in different namespaces
-- create secret
-- pass the secrets data to environment variables
-- mount secrets as volume
+- discover ConfigMaps in different namespaces
+- create ConfigMaps
+- pass the ConfigMaps data to environment variables
+- mount ConfigMaps as volume
 
 # Good Luck!

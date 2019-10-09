@@ -1,9 +1,11 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}' | base64 -d) == "devops" ]] &&
-[[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.password}' | base64 -d) == "devops_password" ]] &&
-[[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.email}' | base64 -d) == "devops@devops.dev" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.cluster-admin}') == "admin" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.devops}') == "devops" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.db-admin}') == "db-admin" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user1}') == "Jack" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user2}') == "John" ]] &&
 echo done || exit 0
 
 TASK_SCORE=3
