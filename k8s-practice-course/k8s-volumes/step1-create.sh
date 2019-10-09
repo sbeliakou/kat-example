@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p /opt/data{1..5}
-&&
+
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
@@ -19,7 +19,7 @@ spec:
     path: "/opt/data1"
 
 EOF
-&&
+
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
@@ -37,7 +37,7 @@ spec:
     path: "/opt/data2"
 
 EOF
-&&
+
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
@@ -54,7 +54,7 @@ spec:
   hostPath:
     path: "/opt/data3"
 EOF
-&&
+
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
@@ -72,7 +72,7 @@ spec:
     path: "/opt/data4"
 
 EOF
-&&
+
 cat << EOF | kubectl apply -f -
 apiVersion: v1
 kind: PersistentVolume
