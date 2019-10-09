@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[ -f /.ok ] && echo done ||
 [[ $(kubectl get pods email-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
 [[ $(kubectl get pods email-pod -o jsonpath='{.spec.containers[?(@.name=="email-pod")].image}') == "busybox" ]] &&
 [[ $(kubectl get pods email-pod -o jsonpath='{.spec.containers[?(@.name=="email-pod")].env[?(@.name=="EMAIL")].valueFrom.secretKeyRef.name}') == "devops-secret" ]] &&

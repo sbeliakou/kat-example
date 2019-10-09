@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[ -f /.ok ] && echo done ||
 $(curl -Ls 127.0.0.1:32500 | grep "title.*TUT.BY" >/dev/null 2>&1) &&
 echo done || exit 0
 

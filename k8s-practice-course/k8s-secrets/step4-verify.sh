@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[ -f /.ok ] && echo done ||
 [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}' | base64 -d) == "devops" ]] &&
 [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.password}' | base64 -d) == "devops_password" ]] &&
 [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.email}' | base64 -d) == "devops@devops.dev" ]] &&

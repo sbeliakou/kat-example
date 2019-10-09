@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[ -f /.ok ] && echo done ||
 [[ $(kubectl get svc -n trouble trouble-svc -o jsonpath='{.spec.selector.app}') == 'trouble' ]] &&
 echo done || exit 0
 

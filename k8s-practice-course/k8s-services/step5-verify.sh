@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[ -f /.ok ] && echo done ||
 [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
 [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
 [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].targetPort}') == '80' ]] &&
