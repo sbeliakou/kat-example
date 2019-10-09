@@ -1,4 +1,4 @@
-Go to the `Green` tab again and enter the earlier set nodePort value into box.  
+Go to the `Green` tab again and enter the earlier set nodePort value into box. (click refresh button in tab title for reset to default port)  
 
 Make sure start page of nginx is available again.  
 
