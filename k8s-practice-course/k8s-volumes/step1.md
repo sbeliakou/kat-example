@@ -1,8 +1,10 @@
-Create 30 Mi persistent volume `pv-first`. Create claim `pvc-first` which will bound this volume. Attach created volume to pod `nginx-pod` with image `nginx:mainline-perl`.
+Examine existing persistent volumes and answer the questions below:
 
-Requirements:
-- pod `nginx-pod` uses proper image
-- pod mounts volume to `/opt`
-- volume `pv-first` is mounted to `nginx-pod` 
-- volume `pv-first` uses host path `/opt/data1`
-- volume `pv-first` has reclaim policy `Reatin` and access mode `ReadWriteOnce`
+>>Q1. Enter the number of persistent volumes<<
+=== 5
+
+>>Q2. Enter the size of biggest volume<<
+() 20
+() 30
+() 5
+(*) 10
