@@ -1,4 +1,4 @@
-Discover the `nodePort` value of `green-svc` service.  
+Find out the `nodePort` value of `green-svc` service.  
 Go to the `Green` tab and enter the nodePort value into box.  
 
 Make sure start page of nginx is available.  
