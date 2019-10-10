@@ -15,4 +15,4 @@ kubeadm reset -f || true
 ps -ef | grep /usr/bin/kubelet | grep -v grep | awk '{print $2}' | xargs -r kill -9
 systemctl stop kubelet
 systemctl disable kubelet
-docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom)' | awk '{print $3}' | xargs -r docker image rm
+docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' | awk '{print $3}' | xargs -r docker image rm
