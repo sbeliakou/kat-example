@@ -6,7 +6,7 @@ WorkingDirectory=TMPDIR
 ExecStart=TMPDIR/main
 KillMode=process
 Restart=on-failure
-Type=notify
+Type=exec
 
 [Install]
 WantedBy=multi-user.target
