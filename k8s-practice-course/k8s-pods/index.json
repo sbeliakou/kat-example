@@ -5,6 +5,11 @@
   "details": {
     "steps": [
       {
+        "title": "Welcome",
+        "text": "step0.md",
+        "verify": "step0-verify.sh"
+      },
+      {
         "title": "Simple Pod",
         "text": "step1.md",
         "verify": "step1-verify.sh",
@@ -39,7 +44,10 @@
   },
   "environment": {
     "hideintro": true,
-    "uilayout": "terminal"
+    "uilayout": "terminal",
+    "dashboards": [
+      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
+    ]
   },
   "backend": {
     "imageid": "kubernetes-cluster"
