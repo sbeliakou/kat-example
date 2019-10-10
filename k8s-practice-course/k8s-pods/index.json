@@ -33,7 +33,8 @@
       "text": "finish.md"
     },
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "courseData": "runPrep.sh"
     }
   },
   "environment": {

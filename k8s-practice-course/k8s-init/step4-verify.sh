@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[ -f /.ok ] && echo done ||
 echo done || exit 0
 
 TASK_SCORE=3

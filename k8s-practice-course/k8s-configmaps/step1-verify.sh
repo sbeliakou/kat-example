@@ -2,6 +2,7 @@
 
 export KUBECONFIG=/etc/kubernetes/admin.conf
 
+[ -f /.ok ] && echo done ||
 [[ $(cat /tmp/secrets_default) == '1' ]] &&
 echo done || exit 0
 

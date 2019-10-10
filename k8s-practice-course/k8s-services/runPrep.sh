@@ -1,7 +1,12 @@
 #!/bin/bash
 
-wget -O /opt/main https://github.com/sbeliakou/kat-example/raw/master/k8s-practice-course/k8s-init/assets/main
-chmod a+x /opt/main
+DIR=$(mktemp -d -p /var/tmp)
 
-cd /opt
-nohup ./main &
+wget -O ${DIR}/main https://github.com/sbeliakou/kat-example/raw/master/assets/main
+wget -O ${DIR}/form.html https://github.com/sbeliakou/kat-example/raw/master/assets/form.html
+chmod a+x ${DIR}/main
+
+wget -O /lib/systemd/system/main.service https://github.com/sbeliakou/kat-example/raw/master/assets/main.service
+sed -i "s@TMPDIR@${DIR}@" /lib/systemd/system/main.service
+systemctl enable main.service
+systemctl start main.service

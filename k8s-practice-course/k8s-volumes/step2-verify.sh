@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[ -f /.ok ] && echo done ||
 [ `kubectl get pod nginx-pod -o jsonpath='{.spec.containers[0].image}'` == "nginx:mainline-perl" ] && 
 [ `kubectl get pv pv-first -o jsonpath='{.metadata.name}'` == "pv-first" ] &&
 [ `kubectl get pv pv-first -o jsonpath='{.spec.persistentVolumeReclaimPolicy}'` == "Retain" ] &&

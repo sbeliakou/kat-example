@@ -2,6 +2,7 @@
 
 export KUBECONFIG=/etc/kubernetes/admin.conf
 
+[ -f /.ok ] && echo done ||
 kubectl get nodes >/dev/null 2>&1 &&
 kubeadm token list | grep abcdef.0123456789abcdef >/dev/null &&
 [ `kubeadm token list | grep abcdef.0123456789abcdef | awk '{print $2}' | sed 's/[^0-9]//g'` -le 20 ] &&

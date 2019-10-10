@@ -6,10 +6,10 @@
     "steps": [
       {
         "title": "Welcome",
-	"text": "step0.md",
-	"verify": "step0-verify.sh",
-	"courseData": "cluster-init.sh",
-	"code": "foreground.sh"
+        "text": "step0.md",
+        "verify": "step0-verify.sh",
+        "courseData": "cluster-init.sh",
+        "code": "foreground.sh"
       },
       {
         "title": "Quiz",
@@ -18,15 +18,10 @@
       },
       {
         "title": "Pod",
-	"text": "step2.md",
-	"verify": "step2-verify.sh"
+        "text": "step2.md",
+        "verify": "step2-verify.sh"
       }
     ],
-     "assets": {
-        "master": [
-	   {"file": "form.html", "target": "/opt"}
-	]
-    },
     "intro": {
       "text": "intro.md",
       "courseData": "runPrep.sh"
@@ -36,13 +31,13 @@
     }
   },
   "environment": {
-        "hideintro": false,
-	    "showdashboards": true,
-	        "uilayout": "terminal-iframe",
-		    "dashboards": [
-			          {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"},
-				        {"name": "K8s Dashboard", "href": "https://[[HOST_SUBDOMAIN]]-8001-[[KATACODA_HOST]].environments.katacoda.com//api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"}
-					    ]
+    "hideintro": false,
+    "showdashboards": true,
+    "uilayout": "terminal-iframe",
+    "dashboards": [
+      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"},
+      {"name": "K8s Dashboard", "href": "https://[[HOST_SUBDOMAIN]]-8001-[[KATACODA_HOST]].environments.katacoda.com//api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"}
+    ]
   },
   "backend": {
     "imageid": "kubernetes-cluster"
