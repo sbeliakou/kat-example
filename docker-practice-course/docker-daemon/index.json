@@ -12,12 +12,12 @@
       {
         "title": "Docker Daemon",
         "text": "step1.md",
-        "verify": "step1-verify.sh",
-        "code": "foreground.sh"
+        "verify": "step1-verify.sh"
       }
     ],
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "courseData": "runPrep.sh"
     },
     "finish": {
       "text": "finish.md"
