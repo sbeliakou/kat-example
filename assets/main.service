@@ -1,0 +1,12 @@
+[Unit]
+Description=
+
+[Service]
+WorkingDirectory=TMPDIR
+ExecStart=./main
+KillMode=process
+Restart=on-failure
+Type=notify
+
+[Install]
+WantedBy=multi-user.target
