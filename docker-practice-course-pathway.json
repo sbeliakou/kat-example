@@ -1,0 +1,46 @@
+{
+  "title": "Docker Practice",
+  "description": "Practical Docker Tasks",
+  "courses": [
+    {
+      "course_id": "docker-daemon",
+      "title": "Working with Docker Daemon",
+      "description": ""
+    },
+    {
+      "course_id": "docker-images",
+      "title": "Working with Docker Images",
+      "description": ""
+    },
+    {
+      "course_id": "docker-containers",
+      "title": "Working with Docker Containers",
+      "description": ""
+    },
+    {
+      "course_id": "docker-volumes",
+      "title": "Working with Docker Volumes",
+      "description": ""
+    },
+    {
+      "course_id": "docker-networks",
+      "title": "Working with Docker Networks",
+      "description": ""
+    },
+    {
+      "course_id": "docker-cgroups",
+      "title": "Working with CGroups",
+      "description": ""
+    },
+    {
+      "course_id": "docker-ns",
+      "title": "Working with Docker Namespaces",
+      "description": ""
+    },
+    {
+      "course_id": "docker-compoose",
+      "title": "Working with Docker Compose",
+      "description": ""
+    }
+  ]
+}
