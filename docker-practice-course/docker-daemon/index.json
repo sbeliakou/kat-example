@@ -1,7 +1,7 @@
 {
   "title": "Inspecting Docker Daemon",
   "description": "Docker Daemon Specification",
-  "time": "30 minutes",
+  "time": "15 minutes",
   "details": {
     "steps": [
       {
@@ -10,9 +10,13 @@
         "verify": "step0-verify.sh"
       },
       {
-        "title": "Docker Daemon",
-        "text": "step1.md",
-        "verify": "step1-verify.sh"
+        "title": "Docker Daemon settings overview",
+        "text": "step1.md"
+      },
+      {
+        "title": "Docker Daemon settings setup",
+        "text": "step2.md",
+        "verify": "step2-verify.sh"
       }
     ],
     "intro": {
