@@ -68,9 +68,9 @@
       "description": "Scheduling, Taints, Tolerations"
     },
     {
-      "course_id": "quiz",
-      "title": "Quiz",
-      "description": "Quiz"
+      "course_id": "k8s-exam-1",
+      "title": "Exam #1",
+      "description": "Exam #1"
     }
   ]
 }
