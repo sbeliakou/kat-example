@@ -3,7 +3,7 @@ Description=
 
 [Service]
 WorkingDirectory=TMPDIR
-ExecStart=./main
+ExecStart=TMPDIR/main
 KillMode=process
 Restart=on-failure
 Type=notify
