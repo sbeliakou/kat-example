@@ -21,6 +21,11 @@
     },
     "finish": {
       "text": "finish.md"
+    },
+    "assets": {
+      "master": [
+        {"file": "launch-kubeadm.sh", "target": "/opt/launch-kubeadm.sh"}
+      ]
     }
   },
   "environment": {
