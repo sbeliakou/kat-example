@@ -34,12 +34,12 @@
         "verify": "step5-verify.sh"
       },
       {
-        "title": "Secrets in environment variables 2",
+        "title": "ConfigMaps in environment variables 2",
         "text": "step6.md",
         "verify": "step6-verify.sh"
       },
       {
-        "title": "Secrets as volume",
+        "title": "ConfigMaps as volume",
         "text": "step7.md",
         "verify": "step7-verify.sh"
       }

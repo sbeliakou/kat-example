@@ -1,11 +1,11 @@
-Create a simple pod with name `dev-pod` which get all fields from `devops-secret` as environment variable with names `USERNAME`, `PASSWORD`, `EMAIL` correspondingly.
+Create a simple pod with name `team-pod` which get all fields from `users-cm` ConfigMap as environment variable.
 
 ## Requirements
 - namespace: `default`
-- pod name: `dev-pod`
+- pod name: `team-pod`
 - image: `busybox`
 - command: `sleep 4800`
-- pod should have env variables `USERNAME`, `PASSWORD`, `EMAIL` with values from `devops-secret` secret correspondingly (hint: envFrom).
+- pod should have env variables from all `users-cm` ConfigMap fields (hint: envFrom).
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/configuration/secret/
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
