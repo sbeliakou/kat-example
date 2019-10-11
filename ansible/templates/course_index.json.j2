@@ -25,8 +25,8 @@
     }
   },
 "environment": {
-    "hideintro": "{{ course.environment.hideintro }}",
-    "showdashboards": "{{ course.environment.showdashboards }}",
+    "hideintro": {{ course.environment.hideintro }},
+    "showdashboards": {{ course.environment.showdashboards }},
     "uilayout": "{{ course.environment.uilayout }}",
     "dashboards": [
 {% for item in course.environment.dashboards %}
