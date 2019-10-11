@@ -22,3 +22,4 @@ ssh -o StrictHostKeyChecking=no node01 "kubeadm join --token abcdef.0123456789ab
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
 
+echo 'test' > /tmp/test_file
