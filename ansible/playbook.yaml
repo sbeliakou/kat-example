@@ -15,14 +15,43 @@
   - name: creating pathway json
     template:
       src: module_index.json.j2
-      dest: "{{ path }}/{{ kubernetes.name }}-pathway.json"
+      dest: "{{ path }}/{{ module.name }}-pathway.json"
   - name: create module directory
     file:
-      path: "{{ path }}/{{ kubernetes.name }}"
+      path: "{{ path }}/{{ module.name }}"
       state: directory
   - name: filling the courses
     include_tasks: tasks/course_tasks.yaml
-    loop: "{{ kubernetes.courses }}"
+    loop: "{{ module.courses }}"
     loop_control:
       loop_var: course
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+#  - debug: msg={{ kubernetes }}
+
+
+
+    
+
+
+
+#  - include_role: 
+#      name: module_creator
+#    vars:
+#    - module_content: "{{ module }}"
+#    - module_path: "{{ path }}"
+#    loop: "{{ modules }}"
+#    loop_control:
+#      loop_var: module

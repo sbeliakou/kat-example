@@ -16,7 +16,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
     "email": "${EMAIL}",
-    "scenario": "1.3", 
+    "scenario": "k8s-init.6", 
     "score": ${TASK_SCORE}
   }
 }

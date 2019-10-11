@@ -1,51 +1,51 @@
 - name: create directories for courses
   file:
-    path: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}"
+    path: "{{ path }}/{{ module.name }}/{{ course.course_id }}"
     state: directory
 
 - name: create course index json
   template:
     src: course_index.json.j2
-    dest: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}/index.json"
+    dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/index.json"
 
 - name: create intro.md
   template:
     src: intro.md.j2
-    dest: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}/intro.md"
+    dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/intro.md"
 
 
 - name: create finish.md
   template:
     src: finish.md.j2
-    dest: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}/finish.md"
+    dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/finish.md"
 
 - name: copy runPrep.sh
   template:
     src: runPrep.sh.j2
-    dest: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}/runPrep.sh"
+    dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/runPrep.sh"
 
 - name: step task creating
   template:
     src: step.md.j2
-    dest: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}/step{{ item.0 }}.md"
+    dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}.md"
   with_indexed_items: "{{ course.steps }}"
 
 - name: step courseData creating
   template:
     src: step-courseData.sh.j2
-    dest: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}/step{{ item.0 }}-courseData.sh"
+    dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}-courseData.sh"
   with_indexed_items: "{{ course.steps }}"
 
 - name: step foreground creating
   template:
     src: step-foreground.sh.j2
-    dest: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}/step{{ item.0 }}-foreground.sh"
+    dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}-foreground.sh"
   with_indexed_items: "{{ course.steps }}"
 
 - name: step verify creating
   template:
     src: step-verify.sh.j2
-    dest: "{{ path }}/{{ kubernetes.name }}/{{ course.course_id }}/step{{ item.0 }}-verify.sh"
+    dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}-verify.sh"
   with_indexed_items: "{{ course.steps }}"
 
 

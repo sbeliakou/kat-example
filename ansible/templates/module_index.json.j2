@@ -1,8 +1,8 @@
 { 
-  "title": "{{ kubernetes.title }}",
-  "description": "{{ kubernetes.description }}",
+  "title": "{{ module.title }}",
+  "description": "{{ module.description }}",
   "courses": [
-{% for item in kubernetes.courses %}
+{% for item in module.courses %}
 {% if not loop.first %}   ,
 {% endif %}
    {
