@@ -8,7 +8,7 @@
 - name: Kubernetes
   hosts: localhost
   vars:
-    path: devops-katacoda
+    path: ..
   vars_files:
   - courses/kubernetes.yaml
   tasks:

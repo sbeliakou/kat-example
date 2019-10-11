@@ -659,7 +659,7 @@ module:
         verify: |-
           [ -f /opt/.user ]
       - title: Services in different namespaces
-        task: |-
+        task: |
           Examine the services in cluster and answer the questions below.
 
           >>Q1: Enter the number of services in default namespace<<
@@ -709,60 +709,14 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |-
+        courseData: |
           kubectl create ns red
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-cluster-svc
-            namespace: red
-          spec:
-            type: ClusterIP
-            selector:
-              app: red-pod
-            ports:
-              - port: 80
-          EOF
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-node-svc
-            namespace: red
-          spec:
-            type: NodePort
-            selector:
-              app: red-pod
-            ports:
-              - port: 8080
-                targetPort: 80
-                nodePort: 31200
-          EOF
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-lb-svc
-            namespace: red
-          spec:
-            type: LoadBalancer
-            selector:
-              app: red-pod
-            ports:
-              - port: 80
-                targetPort: 8000
-          EOF
-
-        foreground: |-
+        foreground: |
           clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
+        verify: |
           [[ $(cat /tmp/secrets_default) == '1' ]]
       - title: Exposing Pods. Create Pod
-        task: |-
+        task: |
           Create a Pod with the following parameters:
 
           - Pod name: `green-pod`
@@ -776,7 +730,7 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |-
+        courseData: |
           kubectl create ns safe &&
           for item in {1..5}; do
             cat << EOF | kubectl apply --namespace=safe -f-
@@ -790,12 +744,12 @@ module:
             ingridients: $(echo -n "flour_sugar_and_${item}_apples" | base64 -w0)
           EOF
           done
-        verify: |-
+        verify: |
           [[ $(kubectl get pods green-pod -o jsonpath='{.status.phase}') == 'Running' ]] &&
           [[ $(kubectl get pods green-pod -o jsonpath='{.metadata.labels.app}') == "green-pod" ]] &&
           [[ $(kubectl get pods green-pod -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[?(@.name=="nginx-port")].containerPort}') == '80' ]]
       - title: Exposing Pods. Expose Pod
-        task: |-
+        task: |
           Using `kubectl` expose the `green-pod` with following parameters:
 
           - service name: `green-svc`
@@ -804,12 +758,12 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |-
+        verify: |
           [[ $(kubectl get svc green-svc -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
           [[ $(kubectl get svc green-svc -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
           [[ $(kubectl get svc green-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]
       - title: Exposing Pods. Checking
-        task: |-
+        task: |
           Find out the `nodePort` value of `green-svc` service.  
           Go to the `Green` tab and enter the nodePort value into box.  
 
@@ -827,7 +781,7 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
       - title: Manually service creating
-        task: |-
+        task: |
           Using `yaml` definition create another service which will be exposing `green-pod` Pod with the following requirements:
 
           - namespace: `default`
@@ -839,13 +793,13 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |-
+        verify: |
           [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
           [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
           [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].targetPort}') == '80' ]] &&
           [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].nodePort}') == '32005' ]]
       - title: Manually service creating. Checking
-        task: |-
+        task: |
           Go to the `Green` tab again and enter the earlier set nodePort value into box. (click refresh button in tab title for reset to default port)  
 
           Make sure start page of nginx is available again.  
@@ -861,7 +815,7 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
       - title: Exposing service to another site
-        task: |-
+        task: |
           Create service which will make redirecting to `tut.by` site.
 
           Requirements:
@@ -873,10 +827,10 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |-
+        verify: |
           $(curl -Ls 127.0.0.1:32500 | grep "title.*TUT.BY" >/dev/null 2>&1)
       - title: Headless service
-        task: |-
+        task: |
           You are given a `headless-pod` Pod. Create a headless service for exposing `headless-pod`.
 
           Requirements:
@@ -891,7 +845,7 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |-
+        courseData: |
           kubectl create namespace headless
           cat << EOF | kubectl apply -f-
           apiVersion: v1
@@ -909,9 +863,9 @@ module:
               - name: headless-port
                 containerPort: 80
           EOF
-        foreground: |-
+        foreground: |
           clear && echo -n "Prepairing Environment " && sleep 5 && until [[ $(kubectl get pods -n headless headless-pod -o jsonpath='{.status.phase}') == 'Running' ]]; do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
+        verify: |
           [[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.selector.app}') == 'headless-pod' ]] &&
           [[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]
       - title: Troubleshooting
