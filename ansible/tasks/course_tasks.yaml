@@ -34,6 +34,7 @@
   template:
     src: step-courseData.sh.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}-courseData.sh"
+    mode: '0777'
   with_indexed_items: "{{ course.steps }}"
 
 - name: step foreground creating
