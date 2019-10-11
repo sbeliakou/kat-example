@@ -20,38 +20,9 @@
     file:
       path: "{{ path }}/{{ kubernetes.name }}"
       state: directory
-  - name: create directories for courses
+  - name: filling the courses
     include_tasks: tasks/course_tasks.yaml
     loop: "{{ kubernetes.courses }}"
     loop_control:
       loop_var: course
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-#  - debug: msg={{ kubernetes }}
-
-
-
-    
-
-
-
-#  - include_role: 
-#      name: module_creator
-#    vars:
-#    - module_content: "{{ module }}"
-#    - module_path: "{{ path }}"
-#    loop: "{{ modules }}"
-#    loop_control:
-#      loop_var: module
