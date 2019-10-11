@@ -1,0 +1,14 @@
+
+step_content: ""
+step_index: 0
+step_path: ""
+
+step_title: "{{ step_content.title | default('') }}"
+step_task: "{{ step_content.task | default('') }}"
+step_courseData: "{{ step_content.courseData | default('') }}"
+step_foreground: "{{ step_content.foreground | default('') }}"
+step_verify: "{{ step_content.verify | default('true') }}"
+
+
+
+

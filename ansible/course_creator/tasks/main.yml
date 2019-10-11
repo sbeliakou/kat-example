@@ -1,0 +1,46 @@
+---
+# tasks file for course_creator
+
+#- debug: msg="{{ course_path }}"
+
+
+- name: Create directory
+  file:
+    path: "{{ course_path }}/{{ course_content.course_id }}"
+    state: directory
+
+
+- include_role:
+    name: step_creator
+  vars:
+  - step_content: "{{ item.1 }}"
+  - step_index: "{{ item.0}}"
+  - step_path: "{{ course_path }}/{{ course_content.course_id }}"
+  with_indexed_items: "{{ course_content.steps }}"
+
+- name: create course index.json
+  template:
+    src: index.j2
+    dest: "{{ course_path }}/{{ course_content.course_id }}/index.json"
+
+- name: create intro.md
+  copy:
+    content: "{{ course_content.intro }}"
+    dest: "{{ course_path }}/{{ course_content.course_id }}/intro.md"
+
+
+- name: create finish.md
+  copy:
+    content: "{{ course_content.finish }}"
+    dest: "{{ course_path }}/{{ course_content.course_id }}/finish.md"
+
+
+#- name: copy runPrep.sh
+#  template:
+#    src: runPrep.j2
+#    dest: "{{ course_path }}/{{ course_content.course_id }}/runPrep.sh"
+
+- copy:
+    src: runPrep.sh
+    dest: "{{ course_path }}/{{ course_content.course_id }}/runPrep.sh"
+

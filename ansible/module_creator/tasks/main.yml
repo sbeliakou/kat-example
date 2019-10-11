@@ -1,0 +1,25 @@
+
+#- debug: msg="{{ module_path }}/{{ module_content.name }}"
+
+- name: Create the common directory
+  file:
+    path: "{{ module_path }}/{{ module_content.name }}"
+    state: directory
+
+
+
+- include_role:
+    name: course_creator
+  vars:
+  - course_content: "{{ course }}"
+  - course_path: "{{ module_path }}/{{ module_content.name }}"
+  loop: "{{ module_content.courses }}"
+  loop_control:
+    loop_var: course
+
+#- name: create module index.json
+#  template:
+#    src: index.j2
+#    dest: "{{ module_path }}/{{ module_content.name }}-pathway.json"
+
+

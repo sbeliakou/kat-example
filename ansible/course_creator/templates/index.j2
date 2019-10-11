@@ -1,0 +1,47 @@
+{
+  "title": "{{ course_content.description }}",
+  "description": "{{ course_content.description }}",
+  "time": "{{ course_content.time }}",
+  "details": {
+    "steps": [
+{% for item in course_content.steps %}
+{% if not loop.first %}      ,
+{% endif %}
+      {
+        "title": "{{ item.title }}",
+        "text": "step{{ loop.index0 }}.md",
+        "verify": "step{{ loop.index0 }}-verify.sh",
+        "courseData": "step{{ loop.index0 }}-courseData.sh",
+        "code": "step{{ loop.index0 }}-foreground.sh"
+       }
+{% endfor %}
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "runPrep.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+"environment": {
+    "hideintro": "{{ course_content.environment.hideintro }}",
+    "showdashboards": "{{ course_content.environment.showdashboards }}",
+    "uilayout": "{{ course_content.environment.uilayout }}",
+    "dashboards": [
+{% for item in course_content.environment.dashboards %}
+{% if not loop.first %}      ,
+{% endif %}
+      {"name": "{{ item.name }}", "href": "https://[[HOST_SUBDOMAIN]]-{{ item.port }}-[[KATACODA_HOST]].environments.katacoda.com"}
+{% endfor %}
+    ]
+  },
+  "backend": {
+    "imageid": "{{ course_content.environment.imageid }}"
+  }
+}
+
+
+
+
+

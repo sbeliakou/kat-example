@@ -1,0 +1,345 @@
+modules:
+- name: k8s-practice-course
+  title: Kubernetes Practice
+  description: Practical Kubernetes Tasks
+  courses:
+  - course_id: k8s-services
+    title: Services
+    description: Services in Kubernetes
+    time: 45 minutes
+    steps:
+      - title: Welcome
+        task: |-
+          ## Let us know who you are.
+
+          Please open "**User**" Tab and fill required information
+
+          `touch /.ok`{% raw %}{{ execute }}{% endraw %}
+        verify: |-
+          [ -f /opt/.user ]
+      - title: Services in different namespaces
+        task: |-
+          Examine the services in cluster and answer the questions below.
+
+          >>Q1: Enter the number of services in default namespace<<
+          === 1
+
+          >>Q2: What name of the service?<<
+          === kubernetes
+
+          >>Q3: What type of the service?<<
+          === ClusterIP
+
+
+
+          >>Q4: How many services are there in all namespaces<<
+          === 5
+
+          >>Q5: What types of ports are there in "red" namespace<<
+          [*] LoadBalancer
+          [ ] TelePort
+          [*] ClusterIP
+          [*] NodePort 
+
+          >>Q6: What the nodePort of "red-cluster-svc" service?<<
+          ( ) 6443
+          ( ) 32435
+          (*) service doesn't have nodePort
+          ( ) 31200
+
+          >>Q7: What the nodePort of "red-node-svc" service?<<
+          ( ) 6443
+          ( ) 32435
+          ( ) service doesn't have nodePort
+          (*) 31200
+
+          >>Q8: What the targetPort of "red-lb-svc" service?<<
+          (*) 8000
+          ( ) 32435
+          ( ) service doesn't have targetPort
+          ( ) 31200
+
+          >>Q9: What the selector does "red-cluster-svc" service have?<<
+          (*) app: red-pod
+          ( ) run: red-pod
+          ( ) app: red-cluster-svc
+          ( ) run: red-cluster-svc
+
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+        courseData: |-
+          kubectl create ns red
+
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-cluster-svc
+            namespace: red
+          spec:
+            type: ClusterIP
+            selector:
+              app: red-pod
+            ports:
+              - port: 80
+          EOF
+
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-node-svc
+            namespace: red
+          spec:
+            type: NodePort
+            selector:
+              app: red-pod
+            ports:
+              - port: 8080
+                targetPort: 80
+                nodePort: 31200
+          EOF
+
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-lb-svc
+            namespace: red
+          spec:
+            type: LoadBalancer
+            selector:
+              app: red-pod
+            ports:
+              - port: 80
+                targetPort: 8000
+          EOF
+
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+        verify: |-
+          [[ $(cat /tmp/secrets_default) == '1' ]]
+      - title: Exposing Pods. Create Pod
+        task: |-
+          Create a Pod with the following parameters:
+
+          - Pod name: `green-pod`
+          - namespace: `default`
+          - Pod image: `nginx`
+          - Pod should have port with parameters:
+            - name: `nginx-port`
+            - container port: `80`
+          - label: `app: green-pod`
+          - make sure Pod has `Running` state
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+        courseData: |-
+          kubectl create ns safe &&
+          for item in {1..5}; do
+            cat << EOF | kubectl apply --namespace=safe -f-
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: recipe${item}
+          type: Opaque
+          data:
+            author: $(echo -n 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' | base64 -w0)
+            ingridients: $(echo -n "flour_sugar_and_${item}_apples" | base64 -w0)
+          EOF
+          done
+        verify: |-
+          [[ $(kubectl get pods green-pod -o jsonpath='{.status.phase}') == 'Running' ]] &&
+          [[ $(kubectl get pods green-pod -o jsonpath='{.metadata.labels.app}') == "green-pod" ]] &&
+          [[ $(kubectl get pods green-pod -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[?(@.name=="nginx-port")].containerPort}') == '80' ]]
+      - title: Exposing Pods. Expose Pod
+        task: |-
+          Using `kubectl` expose the `green-pod` with following parameters:
+
+          - service name: `green-svc`
+          - type: `NodePort`
+
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+        verify: |-
+          [[ $(kubectl get svc green-svc -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
+          [[ $(kubectl get svc green-svc -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
+          [[ $(kubectl get svc green-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]
+      - title: Exposing Pods. Checking
+        task: |-
+          Find out the `nodePort` value of `green-svc` service.  
+          Go to the `Green` tab and enter the nodePort value into box.  
+
+          Make sure start page of nginx is available.  
+
+
+          Moreover, you can reach nginx page with curl:  
+          `curl hostIP:nodePort`  
+          where `hostIP` is from `.status.hostIP` section of our Pod (`green-pod`)  
+                `nodePort` the value from `green-svc` service.  
+
+          Try to execute it.
+
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+      - title: Manually service creating
+        task: |-
+          Using `yaml` definition create another service which will be exposing `green-pod` Pod with the following requirements:
+
+          - namespace: `default`
+          - service name: `green-svc-2`
+          - selector: `app: green-pod`
+          - type: `NodePort`
+          - nodePort: 32005
+
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+        verify: |-
+          [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
+          [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
+          [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].targetPort}') == '80' ]] &&
+          [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].nodePort}') == '32005' ]]
+      - title: Manually service creating. Checking
+        task: |-
+          Go to the `Green` tab again and enter the earlier set nodePort value into box. (click refresh button in tab title for reset to default port)  
+
+          Make sure start page of nginx is available again.  
+
+
+          Moreover, you can reach nginx page with curl:  
+          `curl hostIP:nodePort`  
+          where `hostIP` is from `.status.hostIP` section of our Pod (`green-pod`)  
+                `nodePort` the value from `green-svc-2` service.  
+          Try to execute it.
+
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+      - title: Exposing service to another site
+        task: |-
+          Create service which will make redirecting to `tut.by` site.
+
+          Requirements:
+          - service nodePort: 32500
+
+          For self-cheking open `tut.by` tab. You should see `tut.by` homepage.
+
+
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+        verify: |-
+          $(curl -Ls 127.0.0.1:32500 | grep "title.*TUT.BY" >/dev/null 2>&1)
+      - title: Headless service
+        task: |-
+          You are given a `headless-pod` Pod. Create a headless service for exposing `headless-pod`.
+
+          Requirements:
+          - service name: `headless-svc`
+          - namespace: `headless`
+
+          For self-checking run another pod with `centos` image and try to get content of `headless-pod`:  
+          `curl headless-svc.headless.svc.cluster.local`  
+
+          You should see nginx default page.
+
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+        courseData: |-
+          kubectl create namespace headless
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            labels:
+              app: headless-pod
+            name: headless-pod
+            namespace: headless
+          spec:
+            containers:
+            - image: nginx
+              name: headless-pod
+              ports:
+              - name: headless-port
+                containerPort: 80
+          EOF
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && sleep 5 && until [[ $(kubectl get pods -n headless headless-pod -o jsonpath='{.status.phase}') == 'Running' ]]; do echo -n .; sleep 1; done; echo; history -c
+        verify: |-
+          [[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.selector.app}') == 'headless-pod' ]] &&
+          [[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]
+      - title: Troubleshooting
+        task: |
+          You are given the `trouble-dep` deployment and `trouble-svc` service which should expose that deployment. But something with the service went wrong. Find and correct mistakes.  
+          For self-checking use `Trouble` tab. You should see nginx default page from `troule-dep`.  
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/service/
+        courseData: |
+          kubectl create namespace trouble
+          kubectl run trouble-dep --namespace=trouble --image=nginx --restart=Always --replicas=3 --labels="app=trouble"
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: trouble-svc
+            namespace: default
+          spec:
+            type: NodePort
+            ports:
+              - nodePort: 32200
+                protocol: TCP
+                port: 80
+          EOF
+        foreground: |
+          clear && echo -n "Prepairing Environment " && sleep 5 && until [[ $(kubectl get deployments -n trouble trouble-dep | awk 'FNR==2 {print $2}') == '3/3' ]]; do echo -n .; sleep 1; done; echo; history -c
+        verify: |
+          [[ $(kubectl get svc -n trouble trouble-svc -o jsonpath='{.spec.selector.app}') == 'trouble' ]]
+    intro: |
+      # In this section you will do following:
+
+      - explore services in different namespaces
+      - find out services parameters
+      - expose Pods/Deployments with services
+      - make service which redirects to external site
+      - make headless service
+      - troubleshoot services
+
+
+      # Good Luck!
+    finish: |
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      kubectl get services
+      kubectl get services --all-namespaces
+      kubectl get services -n <namespaceName>
+
+      kubectl expose pod green-pod --name=green-svc --target-port=80 --type=NodePort
+      kubectl expose deployment green-dep --name=green-svc-2 --target-port=80 --type=LoadBalancer
+
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: "kubernetes-cluster"
+      dashboards:
+        - name: User
+          port: 8080
+        - name: Green
+          port: 32000
+        - name: tut.by
+          port: 32500
+        - name: Trouble
+          port: 32200
+
+

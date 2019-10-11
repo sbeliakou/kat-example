@@ -1,0 +1,16 @@
+{ 
+  "title": "{{ module_content.title }}",
+  "description": "{{ module_content.description }}",
+  "courses": [
+    {
+{% for item in module_content.courses %}
+{% if not loop.first %}      ,
+{% endif %}
+      "course_id": "{{ item.course_id }}",
+      "title": "{{ item.title }}",
+      "description": "{{ item.description }}"
+{% endfor %}      
+    }
+  ]
+}
+
