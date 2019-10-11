@@ -1,0 +1,16 @@
+{ 
+  "title": "{{ kubernetes.title }}",
+  "description": "{{ kubernetes.description }}",
+  "courses": [
+{% for item in kubernetes.courses %}
+{% if not loop.first %}   ,
+{% endif %}
+   {
+      "course_id": "{{ item.course_id }}",
+      "title": "{{ item.title | default('') }}",
+      "description": "{{ item.description | default('')}}"
+   }
+{% endfor %}
+  ]
+}
+

@@ -1,0 +1,57 @@
+- hosts: localhost
+  tasks:
+  - name: Create the course directory
+    file:
+      path: devops-katacoda
+      state: directory
+
+- name: Kubernetes
+  hosts: localhost
+  vars:
+    path: devops-katacoda
+  vars_files:
+  - courses/kubernetes.yaml
+  tasks:
+  - name: creating pathway json
+    template:
+      src: module_index.json.j2
+      dest: "{{ path }}/{{ kubernetes.name }}-pathway.json"
+  - name: create module directory
+    file:
+      path: "{{ path }}/{{ kubernetes.name }}"
+      state: directory
+  - name: create directories for courses
+    include_tasks: tasks/course_tasks.yaml
+    loop: "{{ kubernetes.courses }}"
+    loop_control:
+      loop_var: course
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+#  - debug: msg={{ kubernetes }}
+
+
+
+    
+
+
+
+#  - include_role: 
+#      name: module_creator
+#    vars:
+#    - module_content: "{{ module }}"
+#    - module_path: "{{ path }}"
+#    loop: "{{ modules }}"
+#    loop_control:
+#      loop_var: module
