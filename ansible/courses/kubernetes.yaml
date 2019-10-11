@@ -1,7 +1,8 @@
-kubernetes:
+module:
   name: k8s-practice-course
   title: Kubernetes Practice
   description: Practical Kubernetes Tasks
+  db_name: kubernetes
   courses:
   - course_id: k8s-init
     title: Creating Kubernetes Cluster
@@ -1389,4 +1390,3 @@ kubernetes:
       dashboards:
         - name: User
           port: 8080
-
