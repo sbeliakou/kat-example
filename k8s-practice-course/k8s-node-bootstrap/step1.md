@@ -1,6 +1,14 @@
 ## Join Node01 with TLS Bootstrap
 
-<details><summary>Create Bootstrap Token Secret: `07401b.f395accd246ae52d`</summary><p>
+
+### Based on following documentation
+- https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/
+- https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/
+
+
+### Steps:
+
+<details><summary>1. Create Bootstrap Token Secret: `07401b.f395accd246ae52d`</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -34,7 +42,7 @@ EOF
 ```{{execute master}}
 </p></details>
 
-<details><summary>Create Signing ConfigMap in `kube-public` namespace</summary><p>
+<details><summary>2. Create Signing ConfigMap in `kube-public` namespace</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -62,7 +70,7 @@ EOF
 </p></details>
 
 
-<details><summary>Enable bootstrapping nodes to create CSR</summary><p>
+<details><summary>3. Enable bootstrapping nodes to create CSR</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -82,7 +90,7 @@ EOF
 ```{{execute master}}
 </p></details>
 
-<details><summary>Approve all CSRs for the group "system:bootstrappers"</summary><p>
+<details><summary>4. Approve all CSRs for the group "system:bootstrappers"</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -102,7 +110,7 @@ EOF
 ```{{execute master}}
 </p></details>
 
-<details><summary>Approve renewal CSRs for the group "system:nodes"</summary><p>
+<details><summary>5. Approve renewal CSRs for the group "system:nodes"</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -122,7 +130,7 @@ EOF
 ```{{execute master}}
 </p></details>
 
-<details><summary>Generate `bootstrap-kubelet.conf`</summary><p>
+<details><summary>6. Generate `bootstrap-kubelet.conf`</summary><p>
 
 ```
 kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
@@ -150,7 +158,3 @@ scp /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
 ```{{execute master}}
 </p></details>
 
-
-### Documentation
-- https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/
-- https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/
