@@ -1,7 +1,7 @@
-### Create a Pod
+### Join Node01 with TLS Bootstrap
 
-- Deploy a pod named `nginx-pod` using the `nginx:alpine` image
-- Label: `app=nginx`
 
-## Documentation:
-- https://kubernetes.io/docs/concepts/workloads/pods/pod/
+
+### Documentation
+- https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/
+- https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/
