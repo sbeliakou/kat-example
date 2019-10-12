@@ -8,6 +8,11 @@
         "title": "Node Bootstrapping",
         "text": "step1.md",
         "code": "foreground.sh"
+      },
+      {
+        "title": "Verifying",
+        "text": "step2.md",
+        "verify": "step2-verify.sh"
       }
     ],
     "finish": {

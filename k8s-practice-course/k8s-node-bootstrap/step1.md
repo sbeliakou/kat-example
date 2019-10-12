@@ -154,7 +154,7 @@ kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
 
 And Copy it to node01:
 ```
-scp /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
+scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
 ```{{execute master}}
 </p></details>
 
