@@ -1,6 +1,6 @@
 ## Join Node01 with TLS Bootstrap
 
-<details><summary><b>Create Bootstrap Token Secret: `07401b.f395accd246ae52d`</b></summary><p>
+<details><summary>Create Bootstrap Token Secret: `07401b.f395accd246ae52d`</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -34,7 +34,7 @@ EOF
 ```
 </p></details>
 
-<details><summary><b>Create Signing ConfigMap in `kube-public` namespace</b></summary><p>
+<details><summary>Create Signing ConfigMap in `kube-public` namespace</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -62,7 +62,7 @@ EOF
 </p></details>
 
 
-<details><summary><b>Enable bootstrapping nodes to create CSR</b></summary><p>
+<details><summary>Enable bootstrapping nodes to create CSR</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -82,7 +82,7 @@ EOF
 ```
 </p></details>
 
-<details><summary><b>Approve all CSRs for the group "system:bootstrappers"</b></summary><p>
+<details><summary>Approve all CSRs for the group "system:bootstrappers"</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -102,7 +102,7 @@ EOF
 ```
 </p></details>
 
-<details><summary><b>Approve renewal CSRs for the group "system:nodes"</b></summary><p>
+<details><summary>Approve renewal CSRs for the group "system:nodes"</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -122,7 +122,7 @@ EOF
 ```
 </p></details>
 
-<details><summary><b>Generate `bootstrap-kubelet.conf`</b></summary><p>
+<details><summary>Generate `bootstrap-kubelet.conf`</summary><p>
 
 ```
 kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
