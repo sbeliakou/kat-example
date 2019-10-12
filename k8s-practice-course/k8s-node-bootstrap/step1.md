@@ -158,3 +158,20 @@ scp /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
 ```{{execute master}}
 </p></details>
 
+
+
+<details><summary>7. Go to node01 and start kubelet</summary><p>
+
+```
+ssh -o StrictHostKeyChecking=no node01 "systemctl start kubelet"
+```{{execute master}}
+</p></details>
+
+
+<details><summary>8. Check that `node01` has joined the cluster</summary><p>
+
+```
+kubectl get nodes
+```{{execute master}}
+</p></details>
+
