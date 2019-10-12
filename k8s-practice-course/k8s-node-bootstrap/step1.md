@@ -31,7 +31,7 @@ stringData:
   # Extra groups to authenticate the token as. Must start with "system:bootstrappers:"
   auth-extra-groups: system:bootstrappers:worker,system:bootstrappers:ingress
 EOF
-```
+```{{execute master}}
 </p></details>
 
 <details><summary>Create Signing ConfigMap in `kube-public` namespace</summary><p>
@@ -58,7 +58,7 @@ data:
     preferences: {}
     users: []
 EOF
-```
+```{{execute master}}
 </p></details>
 
 
@@ -79,7 +79,7 @@ roleRef:
   name: system:node-bootstrapper
   apiGroup: rbac.authorization.k8s.io
 EOF
-```
+```{{execute master}}
 </p></details>
 
 <details><summary>Approve all CSRs for the group "system:bootstrappers"</summary><p>
@@ -99,7 +99,7 @@ roleRef:
   name: system:certificates.k8s.io:certificatesigningrequests:nodeclient
   apiGroup: rbac.authorization.k8s.io
 EOF
-```
+```{{execute master}}
 </p></details>
 
 <details><summary>Approve renewal CSRs for the group "system:nodes"</summary><p>
@@ -119,7 +119,7 @@ roleRef:
   name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient
   apiGroup: rbac.authorization.k8s.io
 EOF
-```
+```{{execute master}}
 </p></details>
 
 <details><summary>Generate `bootstrap-kubelet.conf`</summary><p>
@@ -142,12 +142,12 @@ kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
 
 kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
   use-context bootstrap
-```
+```{{execute master}}
 
 And Copy it to node01:
 ```
 scp /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
-```
+```{{execute master}}
 </p></details>
 
 
