@@ -1,0 +1,29 @@
+{
+  "title": "Node Bootstrapping",
+  "description": "TLS Bootstraping",
+  "time": "1 hour",
+  "details": {
+    "steps": [
+      {
+        "title": "Node Bootstrapping",
+        "text": "step1.md",
+        "code": "foreground.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    },
+    "intro": {
+      "text": "intro.md",
+      "courseData": "runPrep.sh"
+    }
+  },
+  "environment": {
+    "hideintro": false,
+    "showdashboards": false,
+    "uilayout": "terminal-iframe"
+  },
+  "backend": {
+    "imageid": "kubernetes-cluster"
+  }
+}

@@ -68,6 +68,11 @@
       "description": "Scheduling, Taints, Tolerations"
     },
     {
+      "course_id": "k8s-node-bootstrap",
+      "title": "Node Bootstraping",
+      "description": ""
+    },
+    {
       "course_id": "k8s-exam-1",
       "title": "Exam #1",
       "description": "Exam #1"
