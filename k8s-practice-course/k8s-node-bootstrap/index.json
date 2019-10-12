@@ -21,7 +21,7 @@
   "environment": {
     "hideintro": false,
     "showdashboards": false,
-    "uilayout": "terminal-iframe"
+    "uilayout": "terminal"
   },
   "backend": {
     "imageid": "kubernetes-cluster"
