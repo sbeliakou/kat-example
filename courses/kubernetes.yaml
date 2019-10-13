@@ -957,7 +957,7 @@ module:
           >>Q2: Enter the type of secret(s) in default namespace<<
           === kubernetes.io/service-account-token
 
-          >>Q3: The secret has three fields in "data" section. What of the following is redundant?
+          >>Q3: The secret has three fields in "data" section. What of the following is redundant?<<
           ( ) namespace
           ( ) token
           (*) cluster
@@ -1099,8 +1099,35 @@ module:
           [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.spec.containers[?(@.name=="dev-volume-pod")].image}') == "busybox" ]] &&
           [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.spec.volumes[?(@.name=="devops-volume")].secret.secretName}') == "devops-secret" ]] &&
           [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.spec.containers[?(@.name=="dev-volume-pod")].volumeMounts[?(@.name=="devops-volume")].mountPath}') == "/etc/devops-secret" ]]
-    intro: 
-    finish: 
+    intro: |-
+      # In this section you will do following:
+
+      - discover secrets in different namespaces
+      - create secret
+      - pass the secrets data to environment variables
+      - mount secrets as volume
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      kubectl get secrets
+      kubectl get secrets -n namespace
+      kubectl get secrets --all-namespaces
+
+      kubectl get secrets -n namespace secretname -o yaml
+
+      echo -n 'username' | base64 -w0   # dXNlcm5hbWU=
+      echo 'dXNlcm5hbWU=' | base64 -d   # username
+
+      kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}'               # dXNlcm5hbWU=
+      kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}' | base64 -d   # username
+
+      </pre>
     environment:
       hideintro: false
       showdashboards: true
