@@ -15,7 +15,7 @@ spec:
   capacity:
     storage: 10Mi
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   hostPath:
     path: "/opt/data${i}"
 EOF
