@@ -1,0 +1,54 @@
+{ 
+  "title": "Kubernetes Practice",
+  "description": "Practical Kubernetes Tasks",
+  "courses": [
+   {
+      "course_id": "k8s-init",
+      "title": "Creating Kubernetes Cluster",
+      "description": "Creating multi node Kubernetes cluster with kubeadm"
+   }
+   ,
+   {
+      "course_id": "k8s-pods",
+      "title": "Pod Game",
+      "description": "Managing Pods and all about them"
+   }
+   ,
+   {
+      "course_id": "k8s-deployments",
+      "title": "Deployment Game",
+      "description": "Managing Deployments and all about them"
+   }
+   ,
+   {
+      "course_id": "k8s-volumes",
+      "title": "Volumes Game",
+      "description": "Managing Volumes and all about them"
+   }
+   ,
+   {
+      "course_id": "k8s-services",
+      "title": "Services",
+      "description": "Services in Kubernetes"
+   }
+   ,
+   {
+      "course_id": "k8s-secrets",
+      "title": "Secrets in Kubernetes",
+      "description": "Working with secrets in Kubernetes"
+   }
+   ,
+   {
+      "course_id": "k8s-configmaps",
+      "title": "ConfigMaps in Kubernetes",
+      "description": "Working with ConfigMaps in Kubernetes"
+   }
+   ,
+   {
+      "course_id": "k8s-exam-1",
+      "title": "Exam 1",
+      "description": "Exam 1"
+   }
+  ]
+}
+
