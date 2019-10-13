@@ -5,13 +5,14 @@
   "details": {
     "steps": [
 {% for item in course.steps %}
-      {
+       {% if not loop.first %},{% endif %}
+       {
         "title": "{{ item.title }}",
         "text": "step{{ loop.index0 }}.md",
         "verify": "step{{ loop.index0 }}-verify.sh",
         "courseData": "step{{ loop.index0 }}-courseData.sh",
         "code": "step{{ loop.index0 }}-foreground.sh"
-       }{% if not loop.first %},{% endif %}
+       }
 {% endfor %}
     ],
     "intro": {
@@ -28,7 +29,8 @@
     "uilayout": "{{ course.environment.uilayout }}",
     "dashboards": [
 {% for item in course.environment.dashboards %}
-      {"name": "{{ item.name }}", "href": "https://[[HOST_SUBDOMAIN]]-{{ item.port }}-[[KATACODA_HOST]].environments.katacoda.com"}{% if not loop.first %},{% endif %}
+      {% if not loop.first %},{% endif %}
+      {"name": "{{ item.name }}", "href": "https://[[HOST_SUBDOMAIN]]-{{ item.port }}-[[KATACODA_HOST]].environments.katacoda.com"}
 {% endfor %}
     ]
   },
