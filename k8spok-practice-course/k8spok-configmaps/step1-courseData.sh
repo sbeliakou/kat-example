@@ -1,8 +1,6 @@
 #!/bin/bash
 
         
-
-
 kubectl create ns safe &&
 for item in {1..5}; do
   cat << EOF | kubectl apply -f-

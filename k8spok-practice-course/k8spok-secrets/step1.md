@@ -8,10 +8,10 @@ Examine the secrets in `default` namespace and answer the questions below.
 === kubernetes.io/service-account-token
 
 >>Q3: The secret has three fields in "data" section. What of the following is redundant?
-() namespace
-() token
+( ) namespace
+( ) token
 (*) cluster
-() ca.crt
+( ) ca.crt
 
 
 ## Documentation:

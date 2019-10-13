@@ -1,8 +1,6 @@
 #!/bin/bash
 
         
-
-
 kubectl create ns db
 cat << EOF | kubectl apply -n db -f -
 apiVersion: v1

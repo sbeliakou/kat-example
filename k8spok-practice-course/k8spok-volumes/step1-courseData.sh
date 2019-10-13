@@ -1,8 +1,6 @@
 #!/bin/bash
 
         
-
-
 mkdir -p /opt/data{1..5}
 cat << EOF | kubectl apply -f -
 apiVersion: v1

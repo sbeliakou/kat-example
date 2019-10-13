@@ -1,6 +1,7 @@
 #!/bin/bash
 
-      kubeadm init --token abcdef.0123456789abcdef --token-ttl 0
+      
+kubeadm init --token abcdef.0123456789abcdef --token-ttl 0
 
 mkdir ~/.kube
 cp /etc/kubernetes/admin.conf ~/.kube/config
@@ -10,6 +11,4 @@ ssh -o StrictHostKeyChecking=no node01 "kubeadm join --token abcdef.0123456789ab
 
 kubectl taint nodes --all node-role.kubernetes.io/master-
       
-
-
 

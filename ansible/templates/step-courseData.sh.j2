@@ -3,6 +3,7 @@
 {% if module.db_name == "kubernetes" %}
   {% if course.course_id != "k8s-init" %}
     {% if item.0 == 0 %}
+
 kubeadm init --token abcdef.0123456789abcdef --token-ttl 0
 
 mkdir ~/.kube
@@ -15,8 +16,6 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
     {% endif %}
   {% endif %}
 {% endif %}
-
-
 
 {{ item.1.courseData | default('') }}
 

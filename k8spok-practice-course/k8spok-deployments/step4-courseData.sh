@@ -1,8 +1,6 @@
 #!/bin/bash
 
         
-
-
 kubectl create ns lemon &&
 cat << EOF | kubectl apply -n lemon -f -
 apiVersion: apps/v1

@@ -5,7 +5,7 @@ Examine existing persistent volumes and answer the questions below:
 === 5
 
 >>Q2. Enter the size of biggest volume<<
-() 20
-() 30
-() 5
+( ) 20
+( ) 30
+( ) 5
 (*) 10
