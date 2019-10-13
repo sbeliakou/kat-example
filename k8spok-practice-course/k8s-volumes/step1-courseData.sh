@@ -1,14 +1,13 @@
 #!/bin/bash
 
 
-kubectl create ns temp &&
-for i in {1..5}; do
-  mkdir -p /opt/data${i} &&
-  cat << EOF | kubectl apply -f-
+mkdir /opt/data{1..5}
+for item in {1..5}; do
+cat << EOF > /tmp/temp${item}.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv-${i}
+  name: pv-${item}
   labels:
     type: local
 spec:
@@ -18,7 +17,9 @@ spec:
   accessModes:
   - ReadWriteOnce
   hostPath:
-    path: "/opt/data${i}"
-EOF
+    path: "/opt/data${item}"
+done
+for item in {1..5}; do
+kubectl apply -f /tmp/temp${item}.yaml
 done
 
