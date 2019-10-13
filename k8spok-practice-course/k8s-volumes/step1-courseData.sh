@@ -1,9 +1,9 @@
 #!/bin/bash
 
 
-mkdir /opt/data{1..5}
 for item in {1..5}; do
-cat << EOF > /opt/data${item}/temp${item}.yaml
+mkdir /opt/data${item}
+cat << EOF | kubectl apply -f-
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -18,8 +18,6 @@ spec:
   - ReadWriteOnce
   hostPath:
     path: "/opt/data${item}"
-done
-for item in {1..5}; do
-kubectl apply -f /opt/data${item}/temp${item}.yaml
+EOF
 done
 
