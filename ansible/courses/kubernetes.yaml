@@ -658,7 +658,7 @@ module:
           `touch /.ok`
         verify: |-
           [ -f /opt/.user ]
-      - title: Services in different namespaces
+      - title: Services in default namespace
         task: |-
           Examine the services in cluster and answer the questions below.
 
@@ -670,37 +670,38 @@ module:
 
           >>Q3: What type of the service?<<
           === ClusterIP
+      - title: Services in different namespaces
+        task: |-
+          Examine the services in cluster and answer the questions below.
 
-
-
-          >>Q4: How many services are there in all namespaces<<
+          >>Q1: How many services are there in all namespaces<<
           === 5
 
-          >>Q5: What types of ports are there in "red" namespace<<
+          >>Q2: What types of ports are there in "red" namespace<<
           [*] LoadBalancer
           [ ] TelePort
           [*] ClusterIP
           [*] NodePort 
 
-          >>Q6: What the nodePort of "red-cluster-svc" service?<<
+          >>Q3: What the nodePort of "red-cluster-svc" service?<<
           ( ) 6443
           ( ) 32435
           (*) service doesn't have nodePort
           ( ) 31200
 
-          >>Q7: What the nodePort of "red-node-svc" service?<<
+          >>Q4: What the nodePort of "red-node-svc" service?<<
           ( ) 6443
           ( ) 32435
           ( ) service doesn't have nodePort
           (*) 31200
 
-          >>Q8: What the targetPort of "red-lb-svc" service?<<
+          >>Q5: What the targetPort of "red-lb-svc" service?<<
           (*) 8000
           ( ) 32435
           ( ) service doesn't have targetPort
           ( ) 31200
 
-          >>Q9: What the selector does "red-cluster-svc" service have?<<
+          >>Q6: What the selector does "red-cluster-svc" service have?<<
           (*) app: red-pod
           ( ) run: red-pod
           ( ) app: red-cluster-svc
@@ -751,11 +752,8 @@ module:
               - port: 80
                 targetPort: 8000
           EOF
- 
         foreground: |-
           clear && echo -n "Prepairing Environment " && until $(kubectl get svc -n red red-lb-svc >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(cat /tmp/secrets_default) == '1' ]]
       - title: Exposing Pods. Create Pod
         task: |-
           Create a Pod with the following parameters:
