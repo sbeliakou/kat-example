@@ -13,7 +13,7 @@
        }
        ,
        {
-        "title": "test",
+        "title": "Quiz",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "courseData": "step1-courseData.sh",
@@ -21,19 +21,11 @@
        }
        ,
        {
-        "title": "Quiz",
+        "title": "Pod",
         "text": "step2.md",
         "verify": "step2-verify.sh",
         "courseData": "step2-courseData.sh",
         "code": "step2-foreground.sh"
-       }
-       ,
-       {
-        "title": "Pod",
-        "text": "step3.md",
-        "verify": "step3-verify.sh",
-        "courseData": "step3-courseData.sh",
-        "code": "step3-foreground.sh"
        }
     ],
     "intro": {

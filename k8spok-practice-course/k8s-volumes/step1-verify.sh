@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-echo  &&
+[[ $(cat /tmp/secrets_safe) == '6' ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
