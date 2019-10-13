@@ -27,7 +27,7 @@ spec:
       - image: busybox:latest-alpine
         name: busybox
         command:
-        - sleep
-        - 10
+        - s11eep
+        - "10"
 EOF
 

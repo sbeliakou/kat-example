@@ -1,5 +1,6 @@
 # In this section you will do following:
 
-- working with volumes
+- working with persistent volumes
+- working with persistent volume claims
 
 # Good Luck!

@@ -9,3 +9,7 @@ Examine existing persistent volumes and answer the questions below:
 ( ) 30
 ( ) 5
 (*) 10
+
+## Documentation:
+- https://kubernetes.io/docs/concepts/storage/volumes/
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/

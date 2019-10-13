@@ -4,10 +4,10 @@ Some useful commands to know:
 
 <pre class="file">
 
-kubectl run web --image=httpd --generator=run-pod/v1
-kubectl run web --image=httpd --generator=run-pod/v1 --dry-run -o yaml
-kubectl label pod app=web
+kubectl get pv
+kubectl get pv -o yaml
 
-kubectl describe pod web
-kubectl get pod web -o yaml
+kubectl get pvc
+kubectl get pvc -o yaml
+
 </pre>

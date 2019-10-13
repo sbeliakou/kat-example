@@ -1,1 +1,8 @@
-[u'working with deployments', u'rollout deployments', u'troubleshooting deployments']
+# In this section you will do following:
+
+- working with deployments
+- rollout deployments
+- scaling deployments
+- troubleshooting deployments
+
+# Good Luck!
