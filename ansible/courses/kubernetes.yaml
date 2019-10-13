@@ -670,6 +670,8 @@ module:
 
           >>Q3: What type of the service?<<
           === ClusterIP
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
       - title: Services in different namespaces
         task: |-
           Examine the services in cluster and answer the questions below.
