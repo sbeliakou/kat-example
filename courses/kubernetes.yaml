@@ -301,6 +301,7 @@ module:
 
       - create Pods
       - label Pods
+      - troubleshooting Pods
 
       # Good Luck!
     finish: |-
@@ -343,11 +344,14 @@ module:
         task: |-
           Create a new deployment called `nginx-deploy`:
 
-          Requirements:
+          ## Requirements:
           - name: nginx-deploy
           - image: nginx:1.16-alpine
           - replicas: 1
           - make sure that deployment and pod are running
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
         verify: |-
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.metadata.name}'` == "nginx-deploy" ] && 
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
@@ -357,24 +361,30 @@ module:
         task: |-
           Record current version of `nginx-deploy` deployment. Use rolling upgrade to provide it with the `1.17` version of `nginx:alpine`. Make sure, that both `1.16` and `1.17` versions are in the rollout history. Then, rollback to `1.16` version
 
-          Requirements:
+          ## Requirements:
           - deployment image is `nginx:1.16-alpine`
           - deployment has been upgraded to version `1.17-alpine` using rolling update
           - upgraded version is recorded in the resource annotation
           - deployment has been rollbacked to version `1.16`
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
         verify: |-
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
-          [ `kubectl rollout history deployment nginx-deploy | grep -c "nginx=nginx:1.16-alpine"` -ge 1 ] && 
-          [ `kubectl rollout history deployment nginx-deploy | grep -c "nginx=nginx:1.17-alpine"` -ge 1 ] &&
+          [ `kubectl rollout history deployment nginx-deploy | grep -c "nginx:1.16-alpine"` -ge 1 ] && 
+          [ `kubectl rollout history deployment nginx-deploy | grep -c "nginx:1.17-alpine"` -ge 1 ] &&
           [ `kubectl rollout history deployment nginx-deploy | grep -c "set image"` -ge 2 ]
       - title: Broken deployment
         task: |-
           New deployment has been created, but it doesn't work properly. Find out and fix the issue.
 
-          Requirements:
+          ## Requirements:
           - deployment "orange" is running
           - pod, associated with this deployment, is up and running
           - pod waits for 10 seconds before creating a container
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
         courseData: |-
           kubectl create ns orange &&
           cat << EOF | kubectl apply -n orange -f -
@@ -416,10 +426,13 @@ module:
         task: |-
           New deployment has been created, but there are no `replcaSet`s associated with it. Find out and fix the issue
 
-          Requirements:
+          ## Requirements:
           - deployment `lemon` is up and running
           - deployment has 1 `replicaSet` associated with it
           - there are 3 pods managed by this replicaSet
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
         courseData: |-
           kubectl create ns lemon &&
           cat << EOF | kubectl apply -n lemon -f -
@@ -453,7 +466,9 @@ module:
     intro:
       # In this section you will do following:
 
-      - working with deployment
+      - working with deployments
+      - rollout deployments
+      - troubleshooting deployments
 
       # Good Luck!
     finish: |-
@@ -463,12 +478,17 @@ module:
 
       <pre class="file">
 
-      kubectl run web --image=httpd --generator=run-pod/v1
-      kubectl run web --image=httpd --generator=run-pod/v1 --dry-run -o yaml
-      kubectl label pod app=web
+      kubectl get deployments
+      kubectl describe deployments web
 
-      kubectl describe pod web
-      kubectl get pod web -o yaml
+      kubectl run nginx-deploy --image=nginx --restart=Always --replicas=3
+      kubectl create deployment nginx --image=nginx --dry-run -o yaml
+
+      kubectl set image deployment/nginx-deployment nginx=nginx:1.91 --record
+      kubectl rollout hostory deployment nginx
+
+      kubectl scale deployment nginx-deploy --replicas=10
+
       </pre>
     environment:
       hideintro: false
