@@ -2,7 +2,7 @@
 
         
 kubectl create ns db
-cat << EOF | kubectl apply -n db -f -
+cat << EOF | kubectl apply -n db -f-
 apiVersion: v1
 kind: Pod
 metadata:

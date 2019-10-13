@@ -4,10 +4,15 @@ Some useful commands to know:
 
 <pre class="file">
 
-kubectl run web --image=httpd --generator=run-pod/v1
-kubectl run web --image=httpd --generator=run-pod/v1 --dry-run -o yaml
-kubectl label pod app=web
+kubectl get deployments
+kubectl describe deployments web
 
-kubectl describe pod web
-kubectl get pod web -o yaml
+kubectl run nginx-deploy --image=nginx --restart=Always --replicas=3
+kubectl create deployment nginx --image=nginx --dry-run -o yaml
+
+kubectl set image deployment/nginx-deployment nginx=nginx:1.91 --record
+kubectl rollout hostory deployment nginx
+
+kubectl scale deployment nginx-deploy --replicas=10
+
 </pre>

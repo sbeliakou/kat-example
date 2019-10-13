@@ -2,8 +2,8 @@
 Initialize Master node with `kubeadm`
 
 ## Parameters:
-- token: abcdef.0123456789abcdef
-- token life duration: 20m
+- token: `abcdef.0123456789abcdef`
+- token life duration: `20m`
 
 ## Tips:
 - You can destroy cluster configuration with `kubeadm reset cluster`

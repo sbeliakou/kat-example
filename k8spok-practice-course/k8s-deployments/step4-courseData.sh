@@ -2,7 +2,7 @@
 
         
 kubectl create ns lemon &&
-cat << EOF | kubectl apply -n lemon -f -
+cat << EOF | kubectl apply -n lemon -f-
 apiVersion: apps/v1
 kind: Deployment
 metadata:

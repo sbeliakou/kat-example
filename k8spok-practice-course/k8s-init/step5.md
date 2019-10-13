@@ -1,5 +1,5 @@
 
-Label node01 as `worker`
+Label *node01* as `worker`
 
 ```
 kubectl get nodes

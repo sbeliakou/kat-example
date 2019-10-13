@@ -1,5 +1,7 @@
 # In this section you will do following:
 
-- working with Pods
+- create Pods
+- label Pods
+- troubleshooting Pods
 
 # Good Luck!

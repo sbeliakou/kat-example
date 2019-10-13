@@ -1,1 +1,1 @@
-[u'working with deployment']
+[u'working with deployments', u'rollout deployments', u'troubleshooting deployments']

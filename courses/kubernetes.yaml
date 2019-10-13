@@ -279,7 +279,7 @@ module:
           [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.containers[0].image}'` == "redis:alpine" ]
         courseData: |-
           kubectl create ns db
-          cat << EOF | kubectl apply -n db -f -
+          cat << EOF | kubectl apply -n db -f-
           apiVersion: v1
           kind: Pod
           metadata:
@@ -387,7 +387,7 @@ module:
           - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
         courseData: |-
           kubectl create ns orange &&
-          cat << EOF | kubectl apply -n orange -f -
+          cat << EOF | kubectl apply -n orange -f-
           apiVersion: apps/v1
           kind: Deployment
           metadata:
@@ -435,7 +435,7 @@ module:
           - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
         courseData: |-
           kubectl create ns lemon &&
-          cat << EOF | kubectl apply -n lemon -f -
+          cat << EOF | kubectl apply -n lemon -f-
           apiVersion: apps/v1
           kind: Deployment
           metadata:
@@ -526,7 +526,7 @@ module:
           (*) 10
         courseData: |-
           mkdir -p /opt/data{1..5}
-          cat << EOF | kubectl apply -f -
+          cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -543,7 +543,7 @@ module:
               path: "/opt/data1"
           EOF
 
-          cat << EOF | kubectl apply -f -
+          cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -560,7 +560,7 @@ module:
               path: "/opt/data2"
           EOF
 
-          cat << EOF | kubectl apply -f -
+          cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -577,7 +577,7 @@ module:
               path: "/opt/data3"
           EOF
 
-          cat << EOF | kubectl apply -f -
+          cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -594,7 +594,7 @@ module:
               path: "/opt/data4"
           EOF
 
-          cat << EOF | kubectl apply -f -
+          cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: PersistentVolume
           metadata:

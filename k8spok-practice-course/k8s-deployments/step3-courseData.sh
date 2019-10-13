@@ -2,7 +2,7 @@
 
         
 kubectl create ns orange &&
-cat << EOF | kubectl apply -n orange -f -
+cat << EOF | kubectl apply -n orange -f-
 apiVersion: apps/v1
 kind: Deployment
 metadata:

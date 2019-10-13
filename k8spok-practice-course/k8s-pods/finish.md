@@ -6,7 +6,7 @@ Some useful commands to know:
 
 kubectl run web --image=httpd --generator=run-pod/v1
 kubectl run web --image=httpd --generator=run-pod/v1 --dry-run -o yaml
-kubectl label pod app=web
+kubectl label pod foo app=web
 
 kubectl describe pod web
 kubectl get pod web -o yaml
