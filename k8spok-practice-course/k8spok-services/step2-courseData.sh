@@ -1,17 +1,45 @@
 #!/bin/bash
 
         
-kubectl create ns safe &&
-for item in {1..5}; do
-  cat << EOF | kubectl apply --namespace=safe -f-
+kubectl create ns red &&
+cat << EOF | kubectl apply -f-
 apiVersion: v1
-kind: Secret
+kind: Service
 metadata:
-  name: recipe${item}
-type: Opaque
-data:
-  author: $(echo -n 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' | base64 -w0)
-  ingridients: $(echo -n "flour_sugar_and_${item}_apples" | base64 -w0)
+  name: red-cluster-svc
+  namespace: red
+spec:
+  type: ClusterIP
+  selector:
+    app: red-pod
+  ports:
+    - port: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: red-node-svc
+  namespace: red
+spec:
+  type: NodePort
+  selector:
+    app: red-pod
+  ports:
+    - port: 8080
+      targetPort: 80
+      nodePort: 31200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: red-lb-svc
+  namespace: red
+spec:
+  type: LoadBalancer
+  selector:
+    app: red-pod
+  ports:
+    - port: 80
+      targetPort: 8000
 EOF
-done
 

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(kubectl get svc -n trouble trouble-svc -o jsonpath='{.spec.selector.app}') == 'trouble' ]]  &&
+[[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.selector.app}') == 'headless-pod' ]] &&
+[[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

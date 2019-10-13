@@ -1,14 +1,11 @@
 
-Go to the `Green` tab again and enter the earlier set nodePort value into box. (click refresh button in tab title for reset to default port)  
+Using `yaml` definition create another service which will be exposing `green-pod` Pod with the following requirements:
 
-Make sure start page of nginx is available again.  
-
-
-Moreover, you can reach nginx page with curl:  
-`curl hostIP:nodePort`  
-where `hostIP` is from `.status.hostIP` section of our Pod (`green-pod`)  
-      `nodePort` the value from `green-svc-2` service.  
-Try to execute it.
+- namespace: `default`
+- service name: `green-svc-2`
+- selector: `app: green-pod`
+- type: `NodePort`
+- nodePort: 32005
 
 
 ## Documentation:

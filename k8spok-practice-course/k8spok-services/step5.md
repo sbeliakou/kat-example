@@ -1,11 +1,16 @@
 
-Using `yaml` definition create another service which will be exposing `green-pod` Pod with the following requirements:
+Find out the `nodePort` value of `green-svc` service.  
+Go to the `Green` tab and enter the nodePort value into box.  
 
-- namespace: `default`
-- service name: `green-svc-2`
-- selector: `app: green-pod`
-- type: `NodePort`
-- nodePort: 32005
+Make sure start page of nginx is available.  
+
+
+Moreover, you can reach nginx page with curl:  
+`curl hostIP:nodePort`  
+where `hostIP` is from `.status.hostIP` section of our Pod (`green-pod`)  
+      `nodePort` the value from `green-svc` service.  
+
+Try to execute it.
 
 
 ## Documentation:

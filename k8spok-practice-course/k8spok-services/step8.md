@@ -1,14 +1,11 @@
 
-You are given a `headless-pod` Pod. Create a headless service for exposing `headless-pod`.
+Create service which will make redirecting to `tut.by` site.
 
 Requirements:
-- service name: `headless-svc`
-- namespace: `headless`
+- service nodePort: 32500
 
-For self-checking run another pod with `centos` image and try to get content of `headless-pod`:  
-`curl headless-svc.headless.svc.cluster.local`  
+For self-cheking open `tut.by` tab. You should see `tut.by` homepage.
 
-You should see nginx default page.
 
 
 ## Documentation:

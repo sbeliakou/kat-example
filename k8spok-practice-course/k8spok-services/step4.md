@@ -1,16 +1,8 @@
 
-Find out the `nodePort` value of `green-svc` service.  
-Go to the `Green` tab and enter the nodePort value into box.  
+Using `kubectl` expose the `green-pod` with following parameters:
 
-Make sure start page of nginx is available.  
-
-
-Moreover, you can reach nginx page with curl:  
-`curl hostIP:nodePort`  
-where `hostIP` is from `.status.hostIP` section of our Pod (`green-pod`)  
-      `nodePort` the value from `green-svc` service.  
-
-Try to execute it.
+- service name: `green-svc`
+- type: `NodePort`
 
 
 ## Documentation:

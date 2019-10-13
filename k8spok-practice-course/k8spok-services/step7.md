@@ -1,11 +1,14 @@
 
-Create service which will make redirecting to `tut.by` site.
+Go to the `Green` tab again and enter the earlier set nodePort value into box. (click refresh button in tab title for reset to default port)  
 
-Requirements:
-- service nodePort: 32500
+Make sure start page of nginx is available again.  
 
-For self-cheking open `tut.by` tab. You should see `tut.by` homepage.
 
+Moreover, you can reach nginx page with curl:  
+`curl hostIP:nodePort`  
+where `hostIP` is from `.status.hostIP` section of our Pod (`green-pod`)  
+      `nodePort` the value from `green-svc-2` service.  
+Try to execute it.
 
 
 ## Documentation:

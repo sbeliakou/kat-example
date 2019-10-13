@@ -1,19 +1,21 @@
 #!/bin/bash
 
         
-kubectl create namespace trouble
-kubectl run trouble-dep --namespace=trouble --image=nginx --restart=Always --replicas=3 --labels="app=trouble"
+kubectl create namespace headless
 cat << EOF | kubectl apply -f-
 apiVersion: v1
-kind: Service
+kind: Pod
 metadata:
-  name: trouble-svc
-  namespace: default
+  labels:
+    app: headless-pod
+  name: headless-pod
+  namespace: headless
 spec:
-  type: NodePort
-  ports:
-    - nodePort: 32200
-      protocol: TCP
-      port: 80
+  containers:
+  - image: nginx
+    name: headless-pod
+    ports:
+    - name: headless-port
+      containerPort: 80
 EOF
 
