@@ -513,6 +513,20 @@ module:
           `touch /.ok`
         verify: |-
           [ -f /opt/.user ]
+      - title: Volumes in default namespace
+        task: |-
+          Examine persistent volumes in `default` namespace and answer the questions below.
+
+          >>Q1: Enter the number of persistent volumes in default namespace<<
+          === 0
+
+          >>Q2: Enter the number of persistent volume claims in default namespace<<
+          === 0
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/configuration/secret/
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
       - title: Quiz
         task: |-
           Examine existing persistent volumes and answer the questions below:
