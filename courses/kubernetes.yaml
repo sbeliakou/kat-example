@@ -296,12 +296,31 @@ module:
               - "10"
             restartPolicy: Never
           EOF
+      - title: Static Pods
+        task: |-
+          ### Create a static Pod on `node01` node.
+
+          ## Requirements:
+          - Pod name in metadata: `static-nginx` (might be automatically added `-node01` postfix in `kubectl get pods`)
+          - should be runned on `node01`
+          - image: `nginx`
+
+          For self-checking and discovering of static Pod's mechanism try to delete static Pod using `kubectl`. 
+
+          ## Documentation:
+          - https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/
+        verify: |-
+          [ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.phase}') == "Running" ] &&
+          [ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.hostIP}') == $(kubectl get nodes node01 -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}') ]
+        foreground: |-
+          clear && echo -n "Preparing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+        courseData: 
     intro: |-
       # In this section you will do following:
 
-      - create Pods
-      - label Pods
-      - troubleshooting Pods
+      - create, label and troubleshooting Pods
+      - create static Pods
+      - create Pods with many containers
 
       # Good Luck!
     finish: |-
