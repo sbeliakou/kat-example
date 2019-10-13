@@ -1,9 +1,10 @@
 #!/bin/bash
 
 
+kubectl create ns temp &&
 for i in {1..5}; do
-mkdir -p /opt/data${i} &&
-cat << EOF | kubectl apply -f-
+  mkdir -p /opt/data${i} &&
+  cat << EOF | kubectl apply -f-
 apiVersion: v1
 kind: PersistentVolume
 metadata:
