@@ -23,8 +23,8 @@ module:
           Initialize Master node with `kubeadm`
 
           ## Parameters:
-          - token: abcdef.0123456789abcdef
-          - token life duration: 20m
+          - token: `abcdef.0123456789abcdef`
+          - token life duration: `20m`
 
           ## Tips:
           - You can destroy cluster configuration with `kubeadm reset cluster`
@@ -76,7 +76,7 @@ module:
         foreground: clear
       - title: Decorate Worker Node with Custom Label
         task: |-
-          Label node01 as `worker`
+          Label *node01* as `worker`
 
           ```
           kubectl get nodes
@@ -249,13 +249,11 @@ module:
           - command: `sleep 4800`
         verify: |-
           [ `kubectl get po multi-pod -o jsonpath='{.status.phase}'` == "Running" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[0].name}'` == "alpha" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[0].image}'` == "nginx:alpine" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[0].env[?(@.name=="type")].value}'` == "main" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[1].name}'` == "beta" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[1].image}'` == "busybox" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[1].env[?(@.name=="type")].value}'` == "sidecar" ] &&
-          [ "`kubectl get po multi-pod -o jsonpath='{.spec.containers[1].command}'`" == "[sleep 4800]" ]
+          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="alpha")].image}'` == "nginx:alpine" ] &&
+          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="alpha")].env[?(@.name=="type")].value}'` == "main" ] &&
+          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="beta")].image}'` == "busybox" ] &&
+          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="beta")].env[?(@.name=="type")].value}'` == "sidecar" ] &&
+          [ "`kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="beta")].command}'`" == "[sleep 4800]" ]
       - title: Failed Web Service
         task: |-
           A new Pod `web` has been deployed. It failed. 
@@ -268,7 +266,7 @@ module:
           [ `kubectl get pods web -n webservices -o jsonpath='{.status.phase}'` == "Running" ] &&
           [ `kubectl get pods web -n webservices -o jsonpath='{.spec.containers[0].image}'` == "nginx:1.16-alpine" ]
         courseData: |-
-          kubectl create ns webservices
+          kubectl create ns webservices &&
           kubectl run web --image=nginx:alpine-1.16 --generator=run-pod/v1 -n webservices
       - title: Failed Redis DB
         task: |-
@@ -301,7 +299,8 @@ module:
     intro: |-
       # In this section you will do following:
 
-      - working with Pods
+      - create Pods
+      - label Pods
 
       # Good Luck!
     finish: |-
@@ -313,7 +312,7 @@ module:
 
       kubectl run web --image=httpd --generator=run-pod/v1
       kubectl run web --image=httpd --generator=run-pod/v1 --dry-run -o yaml
-      kubectl label pod app=web
+      kubectl label pod foo app=web
 
       kubectl describe pod web
       kubectl get pod web -o yaml
