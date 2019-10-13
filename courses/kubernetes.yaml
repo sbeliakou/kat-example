@@ -530,9 +530,9 @@ module:
           - https://kubernetes.io/docs/concepts/storage/volumes/
           - https://kubernetes.io/docs/concepts/storage/persistent-volumes/
         courseData: |-
-          mkdir /opt/data{1..5}
           for item in {1..5}; do
-          cat << EOF > /opt/data${item}/temp${item}.yaml
+          mkdir /opt/data{1..5}
+          cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -547,9 +547,7 @@ module:
             - ReadWriteOnce
             hostPath:
               path: "/opt/data${item}"
-          done
-          for item in {1..5}; do
-          kubectl apply -f /opt/data${item}/temp${item}.yaml
+          EOF
           done
         foreground: |-
           clear && echo -n "Prepairing kubelet" && 
