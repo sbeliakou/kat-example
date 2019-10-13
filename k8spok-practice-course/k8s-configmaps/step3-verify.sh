@@ -1,11 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.cluster-admin}') == "admin" ]] &&
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.devops}') == "devops" ]] &&
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.db-admin}') == "db-admin" ]] &&
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user1}') == "Jack" ]] &&
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user2}') == "John" ]]  &&
+[[ $(kubectl get configmaps os-config -o jsonpath='{.data.data_file}' | awk 'FNR==2') == $(cat /etc/os-release | awk 'FNR==1') ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

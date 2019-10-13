@@ -1,4 +1,4 @@
 #!/bin/bash
 
-clear && echo -n "Prepairing Environment " && until $([ -f "/data/data_file" ]); do echo -n .; sleep 1; done; echo; history -c
+clear && echo -n "Prepairing Environment " && until $(kubectl get configmaps -n safe recipe5 >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
 

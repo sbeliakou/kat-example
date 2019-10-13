@@ -1,10 +1,9 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(kubectl get pods team-volume-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
-[[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.containers[?(@.name=="team-volume-pod")].image}') == "busybox" ]] &&
-[[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.volumes[?(@.name=="team-volume")].configMap.name}') == "users-cm" ]] &&
-[[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.containers[?(@.name=="team-volume-pod")].volumeMounts[?(@.name=="team-volume")].mountPath}') == "/etc/team-members" ]]  &&
+[[ $(kubectl get pods team-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
+[[ $(kubectl get pods team-pod -o jsonpath='{.spec.containers[?(@.name=="team-pod")].image}') == "busybox" ]] &&
+[[ $(kubectl get pods team-pod -o jsonpath='{.spec.containers[?(@.name=="team-pod")].envFrom[0].configMapRef.name}') == "users-cm" ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

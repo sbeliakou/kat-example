@@ -1,14 +1,12 @@
 
-Create a simple pod with name `team-volume-pod` which will use `users-cm` ConfigMap as volume.
+Create a simple pod with name `team-pod` which get all fields from `users-cm` ConfigMap as environment variable.
 
 ## Requirements
 - namespace: `default`
-- pod name: `team-volume-pod`
+- pod name: `team-pod`
 - image: `busybox`
-- command: `sleep 3600`
-- pod should use `users-cm` ConfigMap as attached volume
-- volume name: `team-volume`
-- mountPath: `/etc/team-members`
+- command: `sleep 4800`
+- pod should have env variables from all `users-cm` ConfigMap fields (hint: envFrom).
 
 ## Documentation:
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/

@@ -1,15 +1,10 @@
 
-Create a simple ConfigMap with the following requirements:
+You are given `/data/data_file` file. With `kubectl` create a secret using that file.
 
-## Requirements
-- ConfigMap name: `users-cm`
+## Requiremets
+- ConfigMap name: `os-config`
 - namespace: `default`
-- data field:
-  - `cluster-admin` field: `admin`
-  - `devops` field: `devops`
-  - `db-admin` field: `db-admin`
-  - `user1` field: `Jack`
-  - `user2` field: `John`
+- from files: `/data/data_file`
 
 ## Documentation:
-https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/

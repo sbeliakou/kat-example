@@ -1,9 +1,11 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(kubectl get pods user-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
-[[ $(kubectl get pods user-pod -o jsonpath='{.spec.containers[].env[?(@.name=="USER1")].valueFrom.configMapKeyRef.key}') == "user1" ]] &&
-[[ $(kubectl get pods user-pod -o jsonpath='{.spec.containers[].env[?(@.name=="USER2")].valueFrom.configMapKeyRef.key}') == "user2" ]]  &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.cluster-admin}') == "admin" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.devops}') == "devops" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.db-admin}') == "db-admin" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user1}') == "Jack" ]] &&
+[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user2}') == "John" ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
