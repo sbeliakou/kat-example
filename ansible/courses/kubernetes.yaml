@@ -501,9 +501,9 @@ module:
           === 5
 
           >>Q2. Enter the size of biggest volume<<
-          () 20
-          () 30
-          () 5
+          ( ) 20
+          ( ) 30
+          ( ) 5
           (*) 10
         courseData: |-
           mkdir -p /opt/data{1..5}
@@ -710,8 +710,7 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
         courseData: |-
-          kubectl create ns red
-
+          kubectl create ns red &&
           cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: Service
@@ -724,9 +723,7 @@ module:
               app: red-pod
             ports:
               - port: 80
-          EOF
-
-          cat << EOF | kubectl apply -f-
+          ---
           apiVersion: v1
           kind: Service
           metadata:
@@ -740,9 +737,7 @@ module:
               - port: 8080
                 targetPort: 80
                 nodePort: 31200
-          EOF
-
-          cat << EOF | kubectl apply -f-
+          ---
           apiVersion: v1
           kind: Service
           metadata:
@@ -1007,10 +1002,10 @@ module:
           === kubernetes.io/service-account-token
 
           >>Q3: The secret has three fields in "data" section. What of the following is redundant?
-          () namespace
-          () token
+          ( ) namespace
+          ( ) token
           (*) cluster
-          () ca.crt
+          ( ) ca.crt
 
 
           ## Documentation:
