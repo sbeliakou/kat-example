@@ -1,15 +1,11 @@
 
-Examine existing persistent volumes and answer the questions below:
+Examine persistent volumes in `default` namespace and answer the questions below.
 
->>Q1. Enter the number of persistent volumes<<
-=== 5
+>>Q1: Enter the number of persistent volumes in default namespace<<
+=== 0
 
->>Q2. Enter the size of biggest volume<<
-( ) 20
-( ) 30
-( ) 5
-(*) 10
+>>Q2: Enter the number of persistent volume claims in default namespace<<
+=== 0
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/storage/volumes/
-- https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+- https://kubernetes.io/docs/concepts/configuration/secret/
