@@ -544,13 +544,11 @@ module:
             capacity:
               storage: 10Mi
             accessModes:
-              - ReadWriteOnce
+            - ReadWriteOnce
             hostPath:
               path: "/opt/data${i}"
           EOF
           done
-        verify: |-
-          [[ $(cat /tmp/secrets_safe) == '6' ]]
         foreground: |-
           clear && echo -n "Prepairing kubelet" && 
           until $(kubelet --version >/dev/null 2>&1); do echo -n .; sleep 1; done; echo "\nWaiting for master to join" &&
