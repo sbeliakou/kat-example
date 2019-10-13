@@ -468,6 +468,7 @@ module:
 
       - working with deployments
       - rollout deployments
+      - scaling deployments
       - troubleshooting deployments
 
       # Good Luck!
@@ -524,8 +525,12 @@ module:
           ( ) 30
           ( ) 5
           (*) 10
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/storage/volumes/
+          - https://kubernetes.io/docs/concepts/storage/persistent-volumes/
         courseData: |-
-          mkdir -p /opt/data{1..5}
+          mkdir -p /opt/data{1..5} &&
           cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: PersistentVolume
@@ -541,9 +546,7 @@ module:
               - ReadWriteOnce
             hostPath:
               path: "/opt/data1"
-          EOF
-
-          cat << EOF | kubectl apply -f-
+          ---
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -558,9 +561,7 @@ module:
               - ReadWriteOnce
             hostPath:
               path: "/opt/data2"
-          EOF
-
-          cat << EOF | kubectl apply -f-
+          ---
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -575,9 +576,7 @@ module:
               - ReadWriteOnce
             hostPath:
               path: "/opt/data3"
-          EOF
-
-          cat << EOF | kubectl apply -f-
+          ---
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -592,9 +591,7 @@ module:
               - ReadWriteOnce
             hostPath:
               path: "/opt/data4"
-          EOF
-
-          cat << EOF | kubectl apply -f-
+          ---
           apiVersion: v1
           kind: PersistentVolume
           metadata:
@@ -614,31 +611,41 @@ module:
           clear && echo -n "Prepairing kubelet" && 
           until $(kubelet --version >/dev/null 2>&1); do echo -n .; sleep 1; done; echo "\nWaiting for master to join" &&
           until $(kubectl get componentstatus > /dev/null 2>&1); do echo -n .; sleep 1; done; echo "\nWaiting for master to get ready" &&
-          while $([ `kubectl get node master -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'` == "False" ]); do echo -n .; sleep 1; done; echo; history -c; clear; echo "Time to rock!"
+          until $(kubectl get pv pv-fifth > /dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c; clear; echo "Time to rock!"
       - title: Pod
         task: |-
-          Create 30 Mi persistent volume `pv-first`. Create claim `pvc-first` which will bound this volume. Attach created volume to pod `nginx-pod` with image `nginx:mainline-perl`.
+          Create persistent volume `pv-first`. Create claim `pvc-first` which will bound this volume. Attach created volume to pod `nginx-pod`.
 
-          Requirements:
-          - pod `nginx-pod` uses proper image
-          - pod mounts volume to `/opt`
-          - volume `pv-first` is mounted to `nginx-pod` 
-          - volume `pv-first` uses host path `/opt/data1`
-          - volume `pv-first` has reclaim policy `Reatin` and access mode `ReadWriteOnce`
+          ## Requirements:
+          - persistent volume `pv-first`:
+            - capacity: `30Mi`
+            - mounted to `nginx-pod`
+            - reclaim policy `Retain` 
+            - access mode `ReadWriteOnce`
+            - host path `/opt/data1`
+          - persistent volume claim `pvc-first`
+            - status: `Bound` to `pv-first` volume
+          - Pod `nginx-pod`:
+            - image: `nginx:mainline-perl`
+            - pod mounts volume to `/opt/`
+            
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/storage/volumes/
+          - https://kubernetes.io/docs/concepts/storage/persistent-volumes/
         verify: |-
-          [ `kubectl get pod nginx-pod -o jsonpath='{.spec.containers[0].image}'` == "nginx:mainline-perl" ] && 
-          [ `kubectl get pv pv-first -o jsonpath='{.metadata.name}'` == "pv-first" ] &&
-          [ `kubectl get pv pv-first -o jsonpath='{.spec.persistentVolumeReclaimPolicy}'` == "Retain" ] &&
-          [ `kubectl get pv pv-first -o jsonpath='{.spec.accessModes}'` == "ReadWriteOnce" ] &&
-          [ `kubectl get pv pv-first -o jsonpath='{.status.phase}'` == "Bound" ] &&
-          [ `kubectl get pv pv-first -o jsonpath='{.spec.hostPath.path}'` == "/opt/data1" ] &&
-          [ `kubectl get pv pv-first -o jsonpath='{.spec.capacity.storage}'` == "10Mi" ] &&
-          [ `kubectl get pvc pvc-first -o jsonpath='{.metadata.name}'` == "pvc-first" ] &&
-          [ `kubectl get pod nginx-pod -o jsonpath='{.spec.volumes[0].persistentVolumeClaim.claimName}'` == "pvc-first" ]
+          [[ $(kubectl get pod nginx-pod -o jsonpath='{.spec.phase}') == "Running" ]] &&
+          [[ $(kubectl get pod nginx-pod -o jsonpath='{.spec.volumes[?(@.persistentVolumeClaim.claimName=="pvc-first")].persistentVolumeClaim.claimName}') == "pvc-first" ]] &&
+          [[ $(kubectl get pvc pvc-first -o jsonpath='{.status.phase}') == "Bound" ]] &&
+          [[ $(kubectl get pvc pvc-first -o jsonpath='{.spec.volumeName}') == "pv-first" ]] &&
+          [[ $(kubectl get pv pv-first -o jsonpath='{.status.phase}') == "Bound" ]] &&
+          [[ $(kubectl get pv pv-first -o jsonpath='{.spec.capacity.storage}') == "30Mi" ]] &&
+          [[ $(kubectl get pv pv-first -o jsonpath='{.spec.claimRef.name}') == "pvc-first" ]]
     intro: |-
       # In this section you will do following:
 
-      - working with volumes
+      - working with persistent volumes
+      - working with persistent volume claims
 
       # Good Luck!
     finish: |-
@@ -648,12 +655,12 @@ module:
 
       <pre class="file">
 
-      kubectl run web --image=httpd --generator=run-pod/v1
-      kubectl run web --image=httpd --generator=run-pod/v1 --dry-run -o yaml
-      kubectl label pod app=web
+      kubectl get pv
+      kubectl get pv -o yaml
 
-      kubectl describe pod web
-      kubectl get pod web -o yaml
+      kubectl get pvc
+      kubectl get pvc -o yaml
+
       </pre>
     environment:
       hideintro: false
