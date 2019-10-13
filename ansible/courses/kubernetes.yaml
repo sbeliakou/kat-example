@@ -656,6 +656,53 @@ module:
           Please open "**User**" Tab and fill required information
 
           `touch /.ok`
+        courseData: |
+          kubectl create ns red
+
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-cluster-svc
+            namespace: red
+          spec:
+            type: ClusterIP
+            selector:
+              app: red-pod
+            ports:
+              - port: 80
+          EOF
+
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-node-svc
+            namespace: red
+          spec:
+            type: NodePort
+            selector:
+              app: red-pod
+            ports:
+              - port: 8080
+                targetPort: 80
+                nodePort: 31200
+          EOF
+
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-lb-svc
+            namespace: red
+          spec:
+            type: LoadBalancer
+            selector:
+              app: red-pod
+            ports:
+              - port: 80
+                targetPort: 8000
+          EOF
         verify: |-
           [ -f /opt/.user ]
       - title: Services in different namespaces
@@ -709,53 +756,6 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |
-          kubectl create ns red
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-cluster-svc
-            namespace: red
-          spec:
-            type: ClusterIP
-            selector:
-              app: red-pod
-            ports:
-              - port: 80
-          EOF
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-node-svc
-            namespace: red
-          spec:
-            type: NodePort
-            selector:
-              app: red-pod
-            ports:
-              - port: 8080
-                targetPort: 80
-                nodePort: 31200
-          EOF
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-lb-svc
-            namespace: red
-          spec:
-            type: LoadBalancer
-            selector:
-              app: red-pod
-            ports:
-              - port: 80
-                targetPort: 8000
-          EOF
 
         foreground: |
           clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
