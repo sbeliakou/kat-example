@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ping -c1 node01 || ( echo "Something went wrong, sorry" && shutdown -r now )
+
 kubeadm init --token abcdef.0123456789abcdef --token-ttl 0
 
 mkdir ~/.kube
@@ -10,5 +12,3 @@ ssh -o StrictHostKeyChecking=no node01 "kubeadm join --token abcdef.0123456789ab
 
 kubectl delete configmap -n kube-public cluster-info
 kubectl delete secret -n kube-system bootstrap-token-96771a
-
-nslookup node01 || ( echo "Something went wrong, sorry" && exit 0 )
