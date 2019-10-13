@@ -1,5 +1,5 @@
 
-### Create a static Pod on `node01` node.
+Create a static Pod on `node01` node.
 
 ## Requirements:
 - Pod name in metadata: `static-nginx` (might be automatically added `-node01` postfix in `kubectl get pods`)

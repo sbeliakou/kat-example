@@ -1,8 +1,8 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.phase}') == "Running" ] &&
-[ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.hostIP}') == $(kubectl get nodes node01 -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}') ]  &&
+[[ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.phase}') == "Running" ]] &&
+[[ $(ssh node01 'cat /etc/kubernetes/manifests/* | grep -c static-nginx') -ge 1 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
