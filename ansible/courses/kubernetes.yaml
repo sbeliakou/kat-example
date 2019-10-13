@@ -909,7 +909,7 @@ module:
           kind: Service
           metadata:
             name: trouble-svc
-            namespace: default
+            namespace: trouble
           spec:
             type: NodePort
             ports:
