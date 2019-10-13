@@ -531,7 +531,7 @@ module:
           - https://kubernetes.io/docs/concepts/storage/persistent-volumes/
         courseData: |-
           for item in {1..5}; do
-          mkdir /opt/data{1..5}
+          mkdir /opt/data${item}
           cat << EOF | kubectl apply -f-
           apiVersion: v1
           kind: PersistentVolume
