@@ -19,7 +19,7 @@ module:
         verify: |-
           [ -f /opt/.user ]
       - title: Initialize Kubernetes Control Plain
-        task: |
+        task: |-
           Initialize Master node with `kubeadm`
 
           ## Parameters:
@@ -31,12 +31,12 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
-        verify: |
+        verify: |-
           kubectl get nodes >/dev/null 2>&1 &&
           kubeadm token list | grep abcdef.0123456789abcdef >/dev/null &&
           [ `kubeadm token list | grep abcdef.0123456789abcdef | awk '{print $2}' | sed 's/[^0-9]//g'` -le 20 ]
       - title: Configure kubectl utility
-        task: |
+        task: |-
           Configure current user to operate with kubernetes API with `kubectl`
 
           ## Requiremets:
@@ -44,11 +44,11 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
-        verify: |
+        verify: |-
           kubectl get nodes >/dev/null 2>&1
         foreground: clear
       - title: Deploy POD Network
-        task: |
+        task: |-
           Deploy `weave` POD Network
 
           ## Tips:
@@ -57,11 +57,11 @@ module:
           ## Documentation:
           - https://www.weave.works/blog/weave-net-kubernetes-integration/
           - https://www.weave.works/docs/net/latest/kubernetes/kube-addon/
-        verify: |
+        verify: |-
           kubectl get pods -n kube-system | grep weave | grep Running >/dev/null
         foreground: clear
       - title: Join Worker Node
-        task: |
+        task: |-
           Join `node01` to the cluster 
 
           ## Tips:
@@ -75,7 +75,7 @@ module:
           - https://www.weave.works/docs/net/latest/kubernetes/kube-addon/
         foreground: clear
       - title: Decorate Worker Node with Custom Label
-        task: |
+        task: |-
           Label node01 as `worker`
 
           ```
@@ -92,10 +92,10 @@ module:
           ## Documentation:
           - http://kubernetesbyexample.com/labels/
           - https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#updating-labels
-        verify: |
+        verify: |-
           kubectl get node node01 --show-labels | grep 'node-role.kubernetes.io/worker=' >/dev/null
       - title: Deploy Kubernetes Dashboard
-        task: |
+        task: |-
           Deploy Dashboard Manifest from [here](https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
 
           ## Create Admin User
@@ -143,12 +143,12 @@ module:
           ## Documentation:
           - https://github.com/kubernetes/dashboard
           - https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
-        verify: |
+        verify: |-
           [ `kubectl get deployment -n kube-system kubernetes-dashboard -o jsonpath='{.spec.template.spec.containers[0].name}'` == "kubernetes-dashboard" ] &&
           [ `kubectl get svc -n kube-system kubernetes-dashboard -o jsonpath='{.spec.ports[0].targetPort}'` == "8443" ] &&
           [ `kubectl get ep -n kube-system kubernetes-dashboard -o jsonpath="{.subsets[*].addresses[0].nodeName}"` == 'node01' ]
       - title: Deploy Metrics-server
-        task: |
+        task: |-
           Deploy Metrics Server from [here](https://raw.githubusercontent.com/kubernetes/kops/master/addons/metrics-server/v1.8.x.yaml)
 
           ## Check that:
@@ -159,9 +159,9 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/
           - https://github.com/kubernetes-incubator/metrics-server
-        verify: |
+        verify: |-
           [ `kubectl get pods -n kube-system $(kubectl get pods -n kube-system | grep metrics | awk '{print $1}') -o jsonpath='{.status.phase}'` == "Running" ]
-    intro: |
+    intro: |-
       # In this section you will do following:
 
       - Initialize Kubernetes Control Plain
@@ -174,7 +174,7 @@ module:
 
 
       # Good Luck!
-    finish: |
+    finish: |-
       # It's Done!
 
       Some useful commands to know:
@@ -218,7 +218,7 @@ module:
         verify: |-
           [ -f /opt/.user ]
       - title: Simple Pod
-        task: |
+        task: |-
           ### Create a Pod
 
           - Deploy a pod named `nginx-pod` using the `nginx:alpine` image
@@ -226,15 +226,15 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/workloads/pods/pod/
-        verify: |
+        verify: |-
           [ `kubectl get pods nginx-pod -o jsonpath='{.status.phase}'` == "Running" ] &&
           [ `kubectl get pods nginx-pod -o jsonpath='{.spec.containers[0].image}'` == "nginx:alpine" ] &&
           [ `kubectl get pods nginx-pod -o jsonpath='{.metadata.labels.app}'` == "nginx" ]
-        foreground: |
+        foreground: |-
           clear && echo -n "Preparing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
         courseData: 
       - title: A Pod with Multiple Containers
-        task: |
+        task: |-
           Create a pod called `multi-pod` with two containers. 
 
           **Container 1**:
@@ -247,7 +247,7 @@ module:
           - image: `busybox`
           - environment variables: type=sidecar
           - command: `sleep 4800`
-        verify: |
+        verify: |-
           [ `kubectl get po multi-pod -o jsonpath='{.status.phase}'` == "Running" ] &&
           [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[0].name}'` == "alpha" ] &&
           [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[0].image}'` == "nginx:alpine" ] &&
@@ -257,29 +257,29 @@ module:
           [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[1].env[?(@.name=="type")].value}'` == "sidecar" ] &&
           [ "`kubectl get po multi-pod -o jsonpath='{.spec.containers[1].command}'`" == "[sleep 4800]" ]
       - title: Failed Web Service
-        task: |
+        task: |-
           A new Pod `web` has been deployed. It failed. 
           Please fix it.
 
           Requirements:
           - image: `nginx` v1.16 build on `alpine`
           - pod should be running
-        verify: |
+        verify: |-
           [ `kubectl get pods web -n webservices -o jsonpath='{.status.phase}'` == "Running" ] &&
           [ `kubectl get pods web -n webservices -o jsonpath='{.spec.containers[0].image}'` == "nginx:1.16-alpine" ]
-        courseData: |
+        courseData: |-
           kubectl create ns webservices
           kubectl run web --image=nginx:alpine-1.16 --generator=run-pod/v1 -n webservices
       - title: Failed Redis DB
-        task: |
+        task: |-
           A new Pod `redis-db` has been deployed. It failed. 
           Please fix it.
-        verify: |
+        verify: |-
           [ `kubectl get pods -n db redis-db -o jsonpath='{.status.phase}'` == "Running" ] &&
           [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.initContainers[0].command[0]}'` == "sleep" ] &&
           [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.initContainers[0].image}'` == "busybox" ] &&
           [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.containers[0].image}'` == "redis:alpine" ]
-        courseData: |
+        courseData: |-
           kubectl create ns db
           cat << EOF | kubectl apply -n db -f -
           apiVersion: v1
@@ -298,13 +298,13 @@ module:
               - "10"
             restartPolicy: Never
           EOF
-    intro: |
+    intro: |-
       # In this section you will do following:
 
       - working with Pods
 
       # Good Luck!
-    finish: |
+    finish: |-
       # It's Done!
 
       Some useful commands to know:
@@ -332,16 +332,16 @@ module:
     time: 45 minutes
     steps:
       - title: Welcome!
-        task: |
+        task: |-
           ## Let us know who you are.
 
           Please open "**User**" Tab and fill required information
 
           `touch /.ok`
-        verify: |
+        verify: |-
           [ -f /opt/.user ]
       - title: Simple Deployment
-        task: |
+        task: |-
           Create a new deployment called `nginx-deploy`:
 
           Requirements:
@@ -349,13 +349,13 @@ module:
           - image: nginx:1.16-alpine
           - replicas: 1
           - make sure that deployment and pod are running
-        verify: |
+        verify: |-
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.metadata.name}'` == "nginx-deploy" ] && 
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.replicas}'` == 1 ] &&
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.status.readyReplicas}'` == 1 ]
       - title: Rolling update
-        task: |
+        task: |-
           Record current version of `nginx-deploy` deployment. Use rolling upgrade to provide it with the `1.17` version of `nginx:alpine`. Make sure, that both `1.16` and `1.17` versions are in the rollout history. Then, rollback to `1.16` version
 
           Requirements:
@@ -363,20 +363,20 @@ module:
           - deployment has been upgraded to version `1.17-alpine` using rolling update
           - upgraded version is recorded in the resource annotation
           - deployment has been rollbacked to version `1.16`
-        verify: |
+        verify: |-
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
           [ `kubectl rollout history deployment nginx-deploy | grep -c "nginx=nginx:1.16-alpine"` -ge 1 ] && 
           [ `kubectl rollout history deployment nginx-deploy | grep -c "nginx=nginx:1.17-alpine"` -ge 1 ] &&
           [ `kubectl rollout history deployment nginx-deploy | grep -c "set image"` -ge 2 ]
       - title: Broken deployment
-        task: |
+        task: |-
           New deployment has been created, but it doesn't work properly. Find out and fix the issue.
 
           Requirements:
           - deployment "orange" is running
           - pod, associated with this deployment, is up and running
           - pod waits for 10 seconds before creating a container
-        courseData: |
+        courseData: |-
           kubectl create ns orange &&
           cat << EOF | kubectl apply -n orange -f -
           apiVersion: apps/v1
@@ -406,7 +406,7 @@ module:
                   - sleep
                   - 10
           EOF
-        verify: |
+        verify: |-
           [ `kubectl get deployment orange -n orange -o jsonpath='{.metadata.name}'` == "orange" ] && 
           [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx" ] && 
           [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.replicas}'` == 2 ] &&
@@ -414,14 +414,14 @@ module:
           [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].image}'` == "busybox:latest" ] &&
           [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].command[1]}'` == 10 ]
       - title: Managing replicas
-        task: |
+        task: |-
           New deployment has been created, but there are no `replcaSet`s associated with it. Find out and fix the issue
 
           Requirements:
           - deployment `lemon` is up and running
           - deployment has 1 `replicaSet` associated with it
           - there are 3 pods managed by this replicaSet
-        courseData: |
+        courseData: |-
           kubectl create ns lemon &&
           cat << EOF | kubectl apply -n lemon -f -
           apiVersion: apps/v1
@@ -446,7 +446,7 @@ module:
                   name: lemon
           EOF
         foreground: 
-        verify: |
+        verify: |-
           [ `kubectl get deployment lemon -n lemon -o jsonpath='{.metadata.name}'` == "lemon" ] && 
           [ `kubectl get deployment lemon -n lemon -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx" ] && 
           [ `kubectl get deployment lemon -n lemon -o jsonpath='{.spec.replicas}'` == 3 ] &&
@@ -457,7 +457,7 @@ module:
       - working with deployment
 
       # Good Luck!
-    finish: |
+    finish: |-
       # It's Done!
 
       Some useful commands to know:
@@ -494,7 +494,7 @@ module:
         verify: |-
           [ -f /opt/.user ]
       - title: Quiz
-        task: |
+        task: |-
           Examine existing persistent volumes and answer the questions below:
 
           >>Q1. Enter the number of persistent volumes<<
@@ -505,7 +505,7 @@ module:
           () 30
           () 5
           (*) 10
-        courseData: |
+        courseData: |-
           mkdir -p /opt/data{1..5}
           cat << EOF | kubectl apply -f -
           apiVersion: v1
@@ -591,13 +591,13 @@ module:
             hostPath:
               path: "/opt/data5"
           EOF
-        foreground: |
+        foreground: |-
           clear && echo -n "Prepairing kubelet" && 
           until $(kubelet --version >/dev/null 2>&1); do echo -n .; sleep 1; done; echo "\nWaiting for master to join" &&
           until $(kubectl get componentstatus > /dev/null 2>&1); do echo -n .; sleep 1; done; echo "\nWaiting for master to get ready" &&
           while $([ `kubectl get node master -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'` == "False" ]); do echo -n .; sleep 1; done; echo; history -c; clear; echo "Time to rock!"
       - title: Pod
-        task: |
+        task: |-
           Create 30 Mi persistent volume `pv-first`. Create claim `pvc-first` which will bound this volume. Attach created volume to pod `nginx-pod` with image `nginx:mainline-perl`.
 
           Requirements:
@@ -606,7 +606,7 @@ module:
           - volume `pv-first` is mounted to `nginx-pod` 
           - volume `pv-first` uses host path `/opt/data1`
           - volume `pv-first` has reclaim policy `Reatin` and access mode `ReadWriteOnce`
-        verify: |
+        verify: |-
           [ `kubectl get pod nginx-pod -o jsonpath='{.spec.containers[0].image}'` == "nginx:mainline-perl" ] && 
           [ `kubectl get pv pv-first -o jsonpath='{.metadata.name}'` == "pv-first" ] &&
           [ `kubectl get pv pv-first -o jsonpath='{.spec.persistentVolumeReclaimPolicy}'` == "Retain" ] &&
@@ -616,13 +616,13 @@ module:
           [ `kubectl get pv pv-first -o jsonpath='{.spec.capacity.storage}'` == "10Mi" ] &&
           [ `kubectl get pvc pvc-first -o jsonpath='{.metadata.name}'` == "pvc-first" ] &&
           [ `kubectl get pod nginx-pod -o jsonpath='{.spec.volumes[0].persistentVolumeClaim.claimName}'` == "pvc-first" ]
-    intro: |
+    intro: |-
       # In this section you will do following:
 
       - working with volumes
 
       # Good Luck!
-    finish: |
+    finish: |-
       # It's Done!
 
       Some useful commands to know:
@@ -656,57 +656,10 @@ module:
           Please open "**User**" Tab and fill required information
 
           `touch /.ok`
-        courseData: |
-          kubectl create ns red
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-cluster-svc
-            namespace: red
-          spec:
-            type: ClusterIP
-            selector:
-              app: red-pod
-            ports:
-              - port: 80
-          EOF
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-node-svc
-            namespace: red
-          spec:
-            type: NodePort
-            selector:
-              app: red-pod
-            ports:
-              - port: 8080
-                targetPort: 80
-                nodePort: 31200
-          EOF
-
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-lb-svc
-            namespace: red
-          spec:
-            type: LoadBalancer
-            selector:
-              app: red-pod
-            ports:
-              - port: 80
-                targetPort: 8000
-          EOF
         verify: |-
           [ -f /opt/.user ]
       - title: Services in different namespaces
-        task: |
+        task: |-
           Examine the services in cluster and answer the questions below.
 
           >>Q1: Enter the number of services in default namespace<<
@@ -756,13 +709,60 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
+        courseData: |-
+          kubectl create ns red
 
-        foreground: |
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-cluster-svc
+            namespace: red
+          spec:
+            type: ClusterIP
+            selector:
+              app: red-pod
+            ports:
+              - port: 80
+          EOF
+
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-node-svc
+            namespace: red
+          spec:
+            type: NodePort
+            selector:
+              app: red-pod
+            ports:
+              - port: 8080
+                targetPort: 80
+                nodePort: 31200
+          EOF
+
+          cat << EOF | kubectl apply -f-
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: red-lb-svc
+            namespace: red
+          spec:
+            type: LoadBalancer
+            selector:
+              app: red-pod
+            ports:
+              - port: 80
+                targetPort: 8000
+          EOF
+ 
+        foreground: |-
           clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |
+        verify: |-
           [[ $(cat /tmp/secrets_default) == '1' ]]
       - title: Exposing Pods. Create Pod
-        task: |
+        task: |-
           Create a Pod with the following parameters:
 
           - Pod name: `green-pod`
@@ -776,7 +776,7 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |
+        courseData: |-
           kubectl create ns safe &&
           for item in {1..5}; do
             cat << EOF | kubectl apply --namespace=safe -f-
@@ -790,12 +790,12 @@ module:
             ingridients: $(echo -n "flour_sugar_and_${item}_apples" | base64 -w0)
           EOF
           done
-        verify: |
+        verify: |-
           [[ $(kubectl get pods green-pod -o jsonpath='{.status.phase}') == 'Running' ]] &&
           [[ $(kubectl get pods green-pod -o jsonpath='{.metadata.labels.app}') == "green-pod" ]] &&
           [[ $(kubectl get pods green-pod -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[?(@.name=="nginx-port")].containerPort}') == '80' ]]
       - title: Exposing Pods. Expose Pod
-        task: |
+        task: |-
           Using `kubectl` expose the `green-pod` with following parameters:
 
           - service name: `green-svc`
@@ -804,12 +804,12 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |
+        verify: |-
           [[ $(kubectl get svc green-svc -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
           [[ $(kubectl get svc green-svc -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
           [[ $(kubectl get svc green-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]
       - title: Exposing Pods. Checking
-        task: |
+        task: |-
           Find out the `nodePort` value of `green-svc` service.  
           Go to the `Green` tab and enter the nodePort value into box.  
 
@@ -827,7 +827,7 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
       - title: Manually service creating
-        task: |
+        task: |-
           Using `yaml` definition create another service which will be exposing `green-pod` Pod with the following requirements:
 
           - namespace: `default`
@@ -839,13 +839,13 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |
+        verify: |-
           [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
           [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
           [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].targetPort}') == '80' ]] &&
           [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].nodePort}') == '32005' ]]
       - title: Manually service creating. Checking
-        task: |
+        task: |-
           Go to the `Green` tab again and enter the earlier set nodePort value into box. (click refresh button in tab title for reset to default port)  
 
           Make sure start page of nginx is available again.  
@@ -861,7 +861,7 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
       - title: Exposing service to another site
-        task: |
+        task: |-
           Create service which will make redirecting to `tut.by` site.
 
           Requirements:
@@ -873,10 +873,10 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |
+        verify: |-
           $(curl -Ls 127.0.0.1:32500 | grep "title.*TUT.BY" >/dev/null 2>&1)
       - title: Headless service
-        task: |
+        task: |-
           You are given a `headless-pod` Pod. Create a headless service for exposing `headless-pod`.
 
           Requirements:
@@ -891,7 +891,7 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |
+        courseData: |-
           kubectl create namespace headless
           cat << EOF | kubectl apply -f-
           apiVersion: v1
@@ -909,18 +909,18 @@ module:
               - name: headless-port
                 containerPort: 80
           EOF
-        foreground: |
+        foreground: |-
           clear && echo -n "Prepairing Environment " && sleep 5 && until [[ $(kubectl get pods -n headless headless-pod -o jsonpath='{.status.phase}') == 'Running' ]]; do echo -n .; sleep 1; done; echo; history -c
-        verify: |
+        verify: |-
           [[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.selector.app}') == 'headless-pod' ]] &&
           [[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]
       - title: Troubleshooting
-        task: |
+        task: |-
           You are given the `trouble-dep` deployment and `trouble-svc` service which should expose that deployment. But something with the service went wrong. Find and correct mistakes.  
           For self-checking use `Trouble` tab. You should see nginx default page from `troule-dep`.  
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |
+        courseData: |-
           kubectl create namespace trouble
           kubectl run trouble-dep --namespace=trouble --image=nginx --restart=Always --replicas=3 --labels="app=trouble"
           cat << EOF | kubectl apply -f-
@@ -936,11 +936,11 @@ module:
                 protocol: TCP
                 port: 80
           EOF
-        foreground: |
+        foreground: |-
           clear && echo -n "Prepairing Environment " && sleep 5 && until [[ $(kubectl get deployments -n trouble trouble-dep | awk 'FNR==2 {print $2}') == '3/3' ]]; do echo -n .; sleep 1; done; echo; history -c
-        verify: |
+        verify: |-
           [[ $(kubectl get svc -n trouble trouble-svc -o jsonpath='{.spec.selector.app}') == 'trouble' ]]
-    intro: |
+    intro: |-
       # In this section you will do following:
 
       - explore services in different namespaces
@@ -952,7 +952,7 @@ module:
 
 
       # Good Luck!
-    finish: |
+    finish: |-
       # It's Done!
 
       Some useful commands to know:
@@ -997,7 +997,7 @@ module:
         verify: |-
           [ -f /opt/.user ]
       - title: Secrets in default namespace
-        task: |
+        task: |-
           Examine the secrets in `default` namespace and answer the questions below.
 
           >>Q1: Enter the number of secrets in default namespace<<
@@ -1015,12 +1015,12 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/configuration/secret/
-        foreground: |
+        foreground: |-
           clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |
+        verify: |-
           [[ $(cat /tmp/secrets_default) == '1' ]]
       - title: Secrets in other namespaces
-        task: |
+        task: |-
           Examine the secrets in `safe` namespace and answer the questions below.
 
           >>Q1: Enter the number of secrets in safe namespace<<
@@ -1035,7 +1035,7 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/configuration/secret/
-        courseData: |
+        courseData: |-
           kubectl create ns safe &&
           for item in {1..5}; do
             cat << EOF | kubectl apply --namespace=safe -f-
@@ -1049,12 +1049,12 @@ module:
             ingridients: $(echo -n "flour_sugar_and_${item}_apples" | base64 -w0)
           EOF
           done
-        foreground: |
+        foreground: |-
           clear && echo -n "Prepairing Environment " && until $(kubectl get secrets -n safe recipe5 >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |
+        verify: |-
           [[ $(cat /tmp/secrets_safe) == '6' ]]
       - title: Creating secrets from files
-        task: |
+        task: |-
           You are given `username_file` and `password_file` in `/data` directory. With `kubectl` create a secret using these files.
 
           ## Requiremets
@@ -1064,17 +1064,17 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/configuration/secret/
-        courseData: |
+        courseData: |-
           mkdir /data &&
           echo "superhacker.$(hostname -I | awk '{print $1}')" > /data/username_file &&
           echo "verystrongpassword.$(hostname -I | awk '{print $1}')" > /data/password_file
-        foreground: |
+        foreground: |-
           clear && echo -n "Prepairing Environment " && until $([ -f "/data/username_file" ] && [ -f "/data/password_file" ]); do echo -n .; sleep 1; done; echo; history -c
-        verify: |
+        verify: |-
           [[ $(kubectl get secrets admin-secret -o yaml -o jsonpath='{.data.username_file}' | base64 -d) == $(cat /data/username_file) ]] &&
           [[ $(kubectl get secrets admin-secret -o yaml -o jsonpath='{.data.password_file}' | base64 -d) == $(cat /data/password_file) ]]
       - title: Secrets creating
-        task: |
+        task: |-
           Create a simple secret with the following requirements:
 
           ## Requirements
@@ -1089,12 +1089,12 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/configuration/secret/
-        verify: |
+        verify: |-
           [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}' | base64 -d) == "devops" ]] &&
           [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.password}' | base64 -d) == "devops_password" ]] &&
           [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.email}' | base64 -d) == "devops@devops.dev" ]]
       - title: Secrets in environvent variables
-        task: |
+        task: |-
           Create a simple pod with name `email-pod` which get only `email` field from `devops-secret` as environment variable with name `EMAIL`:
 
           ## Requirements
@@ -1106,13 +1106,13 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/configuration/secret/
-        verify: |
+        verify: |-
           [[ $(kubectl get pods email-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
           [[ $(kubectl get pods email-pod -o jsonpath='{.spec.containers[?(@.name=="email-pod")].image}') == "busybox" ]] &&
           [[ $(kubectl get pods email-pod -o jsonpath='{.spec.containers[?(@.name=="email-pod")].env[?(@.name=="EMAIL")].valueFrom.secretKeyRef.name}') == "devops-secret" ]] &&
           [[ $(kubectl get pods email-pod -o jsonpath='{.spec.containers[?(@.name=="email-pod")].env[?(@.name=="EMAIL")].valueFrom.secretKeyRef.key}') == "email" ]]
       - title: Secrets in environment variables 2
-        task: |
+        task: |-
           Create a simple pod with name `dev-pod` which get all fields from `devops-secret` as environment variable with names `USERNAME`, `PASSWORD`, `EMAIL` correspondingly.
 
           ## Requirements
@@ -1124,12 +1124,12 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/configuration/secret/
-        verify: |
+        verify: |-
           [[ $(kubectl get pods dev-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
           [[ $(kubectl get pods dev-pod -o jsonpath='{.spec.containers[?(@.name=="dev-pod")].image}') == "busybox" ]] &&
           [[ $(kubectl get pods dev-pod -o jsonpath='{.spec.containers[?(@.name=="dev-pod")].envFrom[0].secretRef.name}') == "devops-secret" ]]
       - title: Secrets as volume
-        task: |
+        task: |-
           Create a simple pod with name `dev-volume-pod` which will use `devops-secret` secret as volume.
 
           ## Requirements
@@ -1143,7 +1143,7 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/configuration/secret/
-        verify: |
+        verify: |-
           [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
           [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.spec.containers[?(@.name=="dev-volume-pod")].image}') == "busybox" ]] &&
           [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.spec.volumes[?(@.name=="devops-volume")].secret.secretName}') == "devops-secret" ]] &&
@@ -1173,7 +1173,7 @@ module:
         verify: |-
           [ -f /opt/.user ]
       - title: Configmaps in different namespaces
-        task: |
+        task: |-
           Examine the ConfigMaps in cluster and answer the questions below.
 
           >>Q1: Enter the number of ConfigMaps in default namespace<<
@@ -1199,9 +1199,9 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        foreground: |
+        foreground: |-
           clear && echo -n "Prepairing Environment " && until $(kubectl get configmaps -n safe recipe5 >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        courseData: |
+        courseData: |-
           kubectl create ns safe &&
           for item in {1..5}; do
             cat << EOF | kubectl apply -f-
@@ -1218,7 +1218,7 @@ module:
 
           done 
       - title: Creating ConfigMaps from files
-        task: |
+        task: |-
           You are given `/data/data_file` file. With `kubectl` create a secret using that file.
 
           ## Requiremets
@@ -1228,18 +1228,18 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        courseData: |
+        courseData: |-
           mkdir /data &&
           echo "IP=$(hostname -I | awk '{print $1}')" > /data/data_file &&
           echo "$(cat /etc/os-release | awk 'FNR==1')" >> /data/data_file &&
           echo "$(cat /etc/os-release | awk 'FNR==2')" >> /data/data_file &&
           echo "$(cat /etc/os-release | awk 'FNR==5')" >> /data/data_file
-        foreground: |
+        foreground: |-
           clear && echo -n "Prepairing Environment " && until $([ -f "/data/data_file" ]); do echo -n .; sleep 1; done; echo; history -c
-        verify: |
+        verify: |-
           [[ $(kubectl get configmaps os-config -o jsonpath='{.data.data_file}' | awk 'FNR==2') == $(cat /etc/os-release | awk 'FNR==1') ]]
       - title: ConfigMaps creating
-        task: |
+        task: |-
           Create a simple ConfigMap with the following requirements:
 
           ## Requirements
@@ -1254,14 +1254,14 @@ module:
 
           ## Documentation:
           https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        verify: |
+        verify: |-
           [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.cluster-admin}') == "admin" ]] &&
           [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.devops}') == "devops" ]] &&
           [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.db-admin}') == "db-admin" ]] &&
           [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user1}') == "Jack" ]] &&
           [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user2}') == "John" ]]
       - title: ConfigMaps in environvent variables
-        task: |
+        task: |-
           Create a simple pod with name `user-pod` which get only `user1` and `user2` fields from `users-cm` as environment variable with names `USER1` and `USER2` correspondingly:
 
           ## Requirements
@@ -1276,12 +1276,12 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
 
-        verify: |
+        verify: |-
           [[ $(kubectl get pods user-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
           [[ $(kubectl get pods user-pod -o jsonpath='{.spec.containers[].env[?(@.name=="USER1")].valueFrom.configMapKeyRef.key}') == "user1" ]] &&
           [[ $(kubectl get pods user-pod -o jsonpath='{.spec.containers[].env[?(@.name=="USER2")].valueFrom.configMapKeyRef.key}') == "user2" ]]
       - title: ConfigMaps in environment variables 2
-        task: |
+        task: |-
           Create a simple pod with name `team-pod` which get all fields from `users-cm` ConfigMap as environment variable.
 
           ## Requirements
@@ -1293,12 +1293,12 @@ module:
 
           ## Documentation:
           - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        verify: |
+        verify: |-
           [[ $(kubectl get pods team-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
           [[ $(kubectl get pods team-pod -o jsonpath='{.spec.containers[?(@.name=="team-pod")].image}') == "busybox" ]] &&
           [[ $(kubectl get pods team-pod -o jsonpath='{.spec.containers[?(@.name=="team-pod")].envFrom[0].configMapRef.name}') == "users-cm" ]]
       - title: ConfigMaps as volume
-        task: |
+        task: |-
           Create a simple pod with name `team-volume-pod` which will use `users-cm` ConfigMap as volume.
 
           ## Requirements
@@ -1313,12 +1313,12 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
 
-        verify: |
+        verify: |-
           [[ $(kubectl get pods team-volume-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
           [[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.containers[?(@.name=="team-volume-pod")].image}') == "busybox" ]] &&
           [[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.volumes[?(@.name=="team-volume")].configMap.name}') == "users-cm" ]] &&
           [[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.containers[?(@.name=="team-volume-pod")].volumeMounts[?(@.name=="team-volume")].mountPath}') == "/etc/team-members" ]]
-    intro: |
+    intro: |-
       # In this section you will do following:
 
       - discover ConfigMaps in different namespaces
@@ -1327,7 +1327,7 @@ module:
       - mount ConfigMaps as volume
 
       # Good Luck!
-    finish: |
+    finish: |-
       # It's Done!
 
       Some useful commands to know:
@@ -1366,7 +1366,7 @@ module:
         verify: |-
           [ -f /opt/.user ]
       - title: Configmaps in different namespaces
-        task: |
+        task: |-
           Please create infrastructure by following requiremets:
 
           <details><summary><b>Namespace</b></summary><p>
@@ -1378,9 +1378,9 @@ module:
           Configure drupal-pv with hostPath = /drupal-data (create the directory on Worker Nodes)
           Configure drupal-mysql-pv with hostPath = /drupal-mysql-data (create the directory on Worker Nodes)
           </p></details>
-    intro: |
+    intro: |-
       # Good Luck!
-    finish: |
+    finish: |-
       # It's Done!
     environment:
       hideintro: false
