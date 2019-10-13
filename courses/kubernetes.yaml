@@ -513,9 +513,6 @@ module:
           `touch /.ok`
         verify: |-
           [ -f /opt/.user ]
-      - title: test
-        task: |-
-          test
       - title: Quiz
         task: |-
           Examine existing persistent volumes and answer the questions below:
@@ -552,6 +549,8 @@ module:
               path: "/opt/data${i}"
           EOF
           done
+        verify: |-
+          [[ $(cat /tmp/secrets_safe) == '6' ]]
         foreground: |-
           clear && echo -n "Prepairing kubelet" && 
           until $(kubelet --version >/dev/null 2>&1); do echo -n .; sleep 1; done; echo "\nWaiting for master to join" &&
