@@ -219,10 +219,12 @@ module:
           [ -f /opt/.user ]
       - title: Simple Pod
         task: |-
-          ### Create a Pod
+          Create a simple Pod.
 
-          - Deploy a pod named `nginx-pod` using the `nginx:alpine` image
-          - Label: `app=nginx`
+          ## Requirements:
+          - Pod name: `nginx-pod`
+          - Pod image: `nginx:alpine`
+          - Pod label: `app=nginx`
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/workloads/pods/pod/
@@ -237,16 +239,20 @@ module:
         task: |-
           Create a pod called `multi-pod` with two containers. 
 
-          **Container 1**:
-          - name: `alpha`
-          - image: `nginx:alpine`
-          - environment variables: type=main
+          ## Requirements:
+          - **Container 1**:
+            - name: `alpha`
+            - image: `nginx:alpine`
+            - environment variables: type=main
 
-          **Container 2**:
-          - name: `beta`
-          - image: `busybox`
-          - environment variables: type=sidecar
-          - command: `sleep 4800`
+          - **Container 2**:
+            - name: `beta`
+            - image: `busybox`
+            - environment variables: type=sidecar
+            - command: `sleep 4800`
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/workloads/pods/pod/
         verify: |-
           [ `kubectl get po multi-pod -o jsonpath='{.status.phase}'` == "Running" ] &&
           [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="alpha")].image}'` == "nginx:alpine" ] &&
@@ -259,9 +265,12 @@ module:
           A new Pod `web` has been deployed. It failed. 
           Please fix it.
 
-          Requirements:
+          ## Requirements:
           - image: `nginx` v1.16 build on `alpine`
           - pod should be running
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/workloads/pods/pod/
         verify: |-
           [ `kubectl get pods web -n webservices -o jsonpath='{.status.phase}'` == "Running" ] &&
           [ `kubectl get pods web -n webservices -o jsonpath='{.spec.containers[0].image}'` == "nginx:1.16-alpine" ]
@@ -272,6 +281,9 @@ module:
         task: |-
           A new Pod `redis-db` has been deployed. It failed. 
           Please fix it.
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/workloads/pods/pod/
         verify: |-
           [ `kubectl get pods -n db redis-db -o jsonpath='{.status.phase}'` == "Running" ] &&
           [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.initContainers[0].command[0]}'` == "sleep" ] &&
@@ -298,7 +310,7 @@ module:
           EOF
       - title: Static Pods
         task: |-
-          ### Create a static Pod on `node01` node.
+          Create a static Pod on `node01` node.
 
           ## Requirements:
           - Pod name in metadata: `static-nginx` (might be automatically added `-node01` postfix in `kubectl get pods`)
@@ -310,8 +322,8 @@ module:
           ## Documentation:
           - https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/
         verify: |-
-          [ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.phase}') == "Running" ] &&
-          [ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.hostIP}') == $(kubectl get nodes node01 -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}') ]
+          [[ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.phase}') == "Running" ]] &&
+          [[ $(ssh node01 'cat /etc/kubernetes/manifests/* | grep -c static-nginx') -ge 1 ]]
         foreground: |-
           clear && echo -n "Preparing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
         courseData: 
