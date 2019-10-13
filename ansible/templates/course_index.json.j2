@@ -5,9 +5,9 @@
   "details": {
     "steps": [
 {% for item in course.steps %}
-{% if not loop.first %}      ,
+{% if not loop.first %}       ,
 {% endif %}
-      {
+       {
         "title": "{{ item.title }}",
         "text": "step{{ loop.index0 }}.md",
         "verify": "step{{ loop.index0 }}-verify.sh",
