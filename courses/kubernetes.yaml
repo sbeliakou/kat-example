@@ -524,7 +524,8 @@ module:
           === 0
 
           ## Documentation:
-          - https://kubernetes.io/docs/concepts/configuration/secret/
+          - https://kubernetes.io/docs/concepts/storage/volumes/
+          - https://kubernetes.io/docs/concepts/storage/persistent-volumes/
         foreground: |-
           clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
       - title: Quiz
@@ -564,9 +565,7 @@ module:
           EOF
           done
         foreground: |-
-          clear && echo -n "Prepairing kubelet" && 
-          until $(kubelet --version >/dev/null 2>&1); do echo -n .; sleep 1; done; echo "\nWaiting for master to join" &&
-          until $(kubectl get componentstatus > /dev/null 2>&1); do echo -n .; sleep 1; done; echo "\nWaiting for master to get ready" &&
+          clear && echo -n "Prepairing" &&
           until $(kubectl get pv pv-5 > /dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c; clear; echo "Time to rock!"
       - title: Pod
         task: |-
