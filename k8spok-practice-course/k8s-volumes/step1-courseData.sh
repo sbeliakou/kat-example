@@ -1,7 +1,8 @@
 #!/bin/bash
 
+
 for i in {1..5}; do
-mkdir -p /opt/data${i}
+mkdir -p /opt/data${i} &&
 cat << EOF | kubectl apply -f-
 apiVersion: v1
 kind: PersistentVolume

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-        
+
 kubectl create namespace headless
 cat << EOF | kubectl apply -f-
 apiVersion: v1

@@ -5,7 +5,8 @@
   "details": {
     "steps": [
 {% for item in course.steps %}
-       {% if not loop.first %},{% endif %}
+{% if not loop.first %}       ,
+{% endif %}
        {
         "title": "{{ item.title }}",
         "text": "step{{ loop.index0 }}.md",
@@ -29,7 +30,8 @@
     "uilayout": "{{ course.environment.uilayout }}",
     "dashboards": [
 {% for item in course.environment.dashboards %}
-      {% if not loop.first %},{% endif %}
+{% if not loop.first %}      ,
+{% endif %}
       {"name": "{{ item.name }}", "href": "https://[[HOST_SUBDOMAIN]]-{{ item.port }}-[[KATACODA_HOST]].environments.katacoda.com"}
 {% endfor %}
     ]

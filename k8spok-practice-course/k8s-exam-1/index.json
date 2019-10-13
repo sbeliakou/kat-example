@@ -4,14 +4,15 @@
   "time": "30 minutes",
   "details": {
     "steps": [
-              {
+       {
         "title": "Welcome",
         "text": "step0.md",
         "verify": "step0-verify.sh",
         "courseData": "step0-courseData.sh",
         "code": "step0-foreground.sh"
        }
-       ,       {
+       ,
+       {
         "title": "Configmaps in different namespaces",
         "text": "step1.md",
         "verify": "step1-verify.sh",
@@ -32,7 +33,7 @@
     "showdashboards": true,
     "uilayout": "terminal-iframe",
     "dashboards": [
-            {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
+      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
     ]
   },
   "backend": {

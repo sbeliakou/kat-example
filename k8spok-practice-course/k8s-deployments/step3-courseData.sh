@@ -1,6 +1,6 @@
 #!/bin/bash
 
-        
+
 kubectl create ns orange &&
 cat << EOF | kubectl apply -n orange -f-
 apiVersion: apps/v1

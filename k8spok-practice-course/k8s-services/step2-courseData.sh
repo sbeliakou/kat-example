@@ -1,6 +1,6 @@
 #!/bin/bash
 
-        
+
 kubectl create ns red &&
 cat << EOF | kubectl apply -f-
 apiVersion: v1
