@@ -1,23 +1,16 @@
 {
-  "title": "Inspecting Docker Daemon",
-  "description": "Docker Daemon Specification",
-  "time": "15 minutes",
+  "title": "Working with Docker Images",
+  "description": "",
+  "time": "45 minutes",
   "details": {
     "steps": [
-      {
+       {
         "title": "Welcome",
         "text": "step0.md",
-        "verify": "step0-verify.sh"
-      },
-      {
-        "title": "Docker Daemon settings overview",
-        "text": "step1.md"
-      },
-      {
-        "title": "Docker Daemon settings setup",
-        "text": "step2.md",
-        "verify": "step2-verify.sh"
-      }
+        "verify": "step0-verify.sh",
+        "courseData": "step0-courseData.sh",
+        "code": "step0-foreground.sh"
+       }
     ],
     "intro": {
       "text": "intro.md",
@@ -25,23 +18,22 @@
     },
     "finish": {
       "text": "finish.md"
-    },
-    "assets": {
-      "master": [
-        {"file": "launch-kubeadm.sh", "target": "/opt/launch-kubeadm.sh"}
-      ]
     }
   },
-  "environment": {
+"environment": {
     "hideintro": false,
     "showdashboards": true,
     "uilayout": "terminal-iframe",
     "dashboards": [
-      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"},
-      {"name": "Test", "href": "https://[[HOST_SUBDOMAIN]]-32000-[[KATACODA_HOST]].environments.katacoda.com"}
+      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
     ]
   },
   "backend": {
     "imageid": "kubernetes"
   }
 }
+
+
+
+
+

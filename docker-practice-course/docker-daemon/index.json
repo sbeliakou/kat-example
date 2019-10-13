@@ -1,23 +1,32 @@
 {
-  "title": "Inspecting Docker Daemon",
-  "description": "Docker Daemon Specification",
+  "title": "Working with Docker Daemon",
+  "description": "",
   "time": "15 minutes",
   "details": {
     "steps": [
-      {
+       {
         "title": "Welcome",
         "text": "step0.md",
-        "verify": "step0-verify.sh"
-      },
-      {
+        "verify": "step0-verify.sh",
+        "courseData": "step0-courseData.sh",
+        "code": "step0-foreground.sh"
+       }
+       ,
+       {
         "title": "Docker Daemon settings overview",
-        "text": "step1.md"
-      },
-      {
+        "text": "step1.md",
+        "verify": "step1-verify.sh",
+        "courseData": "step1-courseData.sh",
+        "code": "step1-foreground.sh"
+       }
+       ,
+       {
         "title": "Docker Daemon settings setup",
         "text": "step2.md",
-        "verify": "step2-verify.sh"
-      }
+        "verify": "step2-verify.sh",
+        "courseData": "step2-courseData.sh",
+        "code": "step2-foreground.sh"
+       }
     ],
     "intro": {
       "text": "intro.md",
@@ -25,14 +34,9 @@
     },
     "finish": {
       "text": "finish.md"
-    },
-    "assets": {
-      "master": [
-        {"file": "launch-kubeadm.sh", "target": "/opt/launch-kubeadm.sh"}
-      ]
     }
   },
-  "environment": {
+"environment": {
     "hideintro": false,
     "showdashboards": true,
     "uilayout": "terminal-iframe",
@@ -44,3 +48,8 @@
     "imageid": "kubernetes"
   }
 }
+
+
+
+
+
