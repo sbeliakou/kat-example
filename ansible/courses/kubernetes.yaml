@@ -4,7 +4,7 @@ module:
   description: Practical Kubernetes Tasks
   db_name: kubernetes
   courses:
-  - course_id: k8spok-init
+  - course_id: k8s-init
     title: Creating Kubernetes Cluster
     description: Creating multi node Kubernetes cluster with kubeadm
     time: 30 minutes
@@ -107,12 +107,12 @@ module:
             name: admin-user
             namespace: kube-system
           ---
-          apiVersion: rbac.authorization.k8spok.io/v1beta1
+          apiVersion: rbac.authorization.k8s.io/v1beta1
           kind: ClusterRoleBinding
           metadata:
             name: admin-user
           roleRef:
-            apiGroup: rbac.authorization.k8spok.io
+            apiGroup: rbac.authorization.k8s.io
             kind: ClusterRole
             name: cluster-admin
           subjects:
@@ -203,7 +203,7 @@ module:
           port: 8080
         - name: K8s Dashboard
           port: 8001
-  - course_id: k8spok-pods
+  - course_id: k8s-pods
     title: Pod Game
     description: Managing Pods and all about them
     time: 45 minutes
@@ -326,7 +326,7 @@ module:
       dashboards:
         - name: User
           port: 8080
-  - course_id: k8spok-deployments
+  - course_id: k8s-deployments
     title: Deployment Game
     description: Managing Deployments and all about them
     time: 45 minutes
@@ -479,7 +479,7 @@ module:
       dashboards:
         - name: User
           port: 8080
-  - course_id: k8spok-volumes
+  - course_id: k8s-volumes
     title: Volumes Game
     description: Managing Volumes and all about them
     time: 40 minutes
@@ -644,7 +644,7 @@ module:
       dashboards:
         - name: User
           port: 8080
-  - course_id: k8spok-services
+  - course_id: k8s-services
     title: Services
     description: Services in Kubernetes
     time: 45 minutes
@@ -963,7 +963,7 @@ module:
           port: 32500
         - name: Trouble
           port: 32200
-  - course_id: k8spok-secrets
+  - course_id: k8s-secrets
     title: Secrets in Kubernetes
     description: Working with secrets in Kubernetes
     time: 40 minutes
@@ -1139,7 +1139,7 @@ module:
       dashboards:
         - name: User
           port: 8080
-  - course_id: k8spok-configmaps
+  - course_id: k8s-configmaps
     title: ConfigMaps in Kubernetes
     description: Working with ConfigMaps in Kubernetes
     time: 40 minutes
@@ -1332,7 +1332,7 @@ module:
       dashboards:
         - name: User
           port: 8080
-  - course_id: k8spok-exam-1
+  - course_id: k8s-exam-1
     title: Exam 1
     description: Exam 1
     time: 30 minutes
