@@ -513,6 +513,7 @@ module:
           `touch /.ok`
         verify: |-
           [ -f /opt/.user ]
+      - title: test
       - title: Quiz
         task: |-
           Examine existing persistent volumes and answer the questions below:
@@ -1339,4 +1340,3 @@ module:
       dashboards:
         - name: User
           port: 8080
-
