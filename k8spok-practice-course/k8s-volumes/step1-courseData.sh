@@ -3,7 +3,7 @@
 
 mkdir /opt/data{1..5}
 for item in {1..5}; do
-cat << EOF > /tmp/temp${item}.yaml
+cat << EOF > /opt/data${item}/temp${item}.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -20,6 +20,6 @@ spec:
     path: "/opt/data${item}"
 done
 for item in {1..5}; do
-kubectl apply -f /tmp/temp${item}.yaml
+kubectl apply -f /opt/data${item}/temp${item}.yaml
 done
 
