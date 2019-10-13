@@ -1,8 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(cat /tmp/secrets_default) == '1' ]]
-  &&
+[[ $(cat /tmp/secrets_default) == '1' ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

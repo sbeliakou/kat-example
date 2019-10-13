@@ -1,8 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[ `kubectl get pods -n kube-system $(kubectl get pods -n kube-system | grep metrics | awk '{print $1}') -o jsonpath='{.status.phase}'` == "Running" ]
-  &&
+[ `kubectl get pods -n kube-system $(kubectl get pods -n kube-system | grep metrics | awk '{print $1}') -o jsonpath='{.status.phase}'` == "Running" ]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

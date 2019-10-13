@@ -8,8 +8,7 @@
 [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[1].name}'` == "beta" ] &&
 [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[1].image}'` == "busybox" ] &&
 [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[1].env[?(@.name=="type")].value}'` == "sidecar" ] &&
-[ "`kubectl get po multi-pod -o jsonpath='{.spec.containers[1].command}'`" == "[sleep 4800]" ]
-  &&
+[ "`kubectl get po multi-pod -o jsonpath='{.spec.containers[1].command}'`" == "[sleep 4800]" ]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

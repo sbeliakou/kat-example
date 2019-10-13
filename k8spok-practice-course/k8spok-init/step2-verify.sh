@@ -1,8 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-kubectl get nodes >/dev/null 2>&1
-  &&
+kubectl get nodes >/dev/null 2>&1  &&
 echo done || exit 0
 
 TASK_SCORE="1"

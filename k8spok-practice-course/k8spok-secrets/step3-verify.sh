@@ -2,8 +2,7 @@
 
 [ -f /.ok ] && echo done ||
 [[ $(kubectl get secrets admin-secret -o yaml -o jsonpath='{.data.username_file}' | base64 -d) == $(cat /data/username_file) ]] &&
-[[ $(kubectl get secrets admin-secret -o yaml -o jsonpath='{.data.password_file}' | base64 -d) == $(cat /data/password_file) ]]
-  &&
+[[ $(kubectl get secrets admin-secret -o yaml -o jsonpath='{.data.password_file}' | base64 -d) == $(cat /data/password_file) ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

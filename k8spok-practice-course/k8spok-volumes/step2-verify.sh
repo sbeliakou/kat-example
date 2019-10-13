@@ -9,8 +9,7 @@
 [ `kubectl get pv pv-first -o jsonpath='{.spec.hostPath.path}'` == "/opt/data1" ] &&
 [ `kubectl get pv pv-first -o jsonpath='{.spec.capacity.storage}'` == "10Mi" ] &&
 [ `kubectl get pvc pvc-first -o jsonpath='{.metadata.name}'` == "pvc-first" ] &&
-[ `kubectl get pod nginx-pod -o jsonpath='{.spec.volumes[0].persistentVolumeClaim.claimName}'` == "pvc-first" ]
-  &&
+[ `kubectl get pod nginx-pod -o jsonpath='{.spec.volumes[0].persistentVolumeClaim.claimName}'` == "pvc-first" ]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

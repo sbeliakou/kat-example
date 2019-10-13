@@ -1,8 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[ -f /opt/.user ]
-  &&
+[ -f /opt/.user ]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

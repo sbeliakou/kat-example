@@ -1,8 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-kubectl get node node01 --show-labels | grep 'node-role.kubernetes.io/worker=' >/dev/null
-  &&
+kubectl get node node01 --show-labels | grep 'node-role.kubernetes.io/worker=' >/dev/null  &&
 echo done || exit 0
 
 TASK_SCORE="1"

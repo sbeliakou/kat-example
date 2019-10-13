@@ -3,8 +3,7 @@
 [ -f /.ok ] && echo done ||
 [[ $(kubectl get pods green-pod -o jsonpath='{.status.phase}') == 'Running' ]] &&
 [[ $(kubectl get pods green-pod -o jsonpath='{.metadata.labels.app}') == "green-pod" ]] &&
-[[ $(kubectl get pods green-pod -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[?(@.name=="nginx-port")].containerPort}') == '80' ]]
-  &&
+[[ $(kubectl get pods green-pod -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[?(@.name=="nginx-port")].containerPort}') == '80' ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

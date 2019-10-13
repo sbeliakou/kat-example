@@ -1,5 +1,8 @@
 #!/bin/bash
 
+        
+
+
 kubectl create namespace trouble
 kubectl run trouble-dep --namespace=trouble --image=nginx --restart=Always --replicas=3 --labels="app=trouble"
 cat << EOF | kubectl apply -f-
