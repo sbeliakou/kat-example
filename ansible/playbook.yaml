@@ -5,20 +5,19 @@
   vars_files:
   - "{{ path }}/courses/kubernetes.yaml"
   tasks:
-  - name: pathway json creating
+  - name: create kubernetes pathway.json
     template:
       src: module_index.json.j2
       dest: "{{ path }}/{{ module.name }}-pathway.json"
-  - name: create module directory
+  - name: create kubernetes module directory
     file:
       path: "{{ path }}/{{ module.name }}"
       state: directory
-  - name: the courses creating
+  - name: create kubernetes courses
     include_tasks: tasks/course_tasks.yaml
     loop: "{{ module.courses }}"
     loop_control:
       loop_var: course
-    
 
 - name: Docker
   hosts: localhost
@@ -27,43 +26,18 @@
   vars_files:
   - "{{ path }}/courses/docker.yaml"
   tasks:
-  - name: pathway json creating
+  - name: create docker pathway.json
     template:
       src: module_index.json.j2
       dest: "{{ path }}/{{ module.name }}-pathway.json"
-  - name: create module directory
+  - name: create docker module directory
     file:
       path: "{{ path }}/{{ module.name }}"
       state: directory
-  - name: the courses creating
+  - name: create docker courses
     include_tasks: tasks/course_tasks.yaml
     loop: "{{ module.courses }}"
     loop_control:
       loop_var: course
 
 
-
-
-
-
-
-
-
-
-
-#  - debug: msg={{ kubernetes }}
-
-
-
-    
-
-
-
-#  - include_role: 
-#      name: module_creator
-#    vars:
-#    - module_content: "{{ module }}"
-#    - module_path: "{{ path }}"
-#    loop: "{{ modules }}"
-#    loop_control:
-#      loop_var: module
