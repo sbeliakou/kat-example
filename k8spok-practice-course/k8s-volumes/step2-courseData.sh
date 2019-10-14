@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+
+
 for item in {1..5}; do
 mkdir /opt/data${item}
 cat << EOF | kubectl apply -f-
