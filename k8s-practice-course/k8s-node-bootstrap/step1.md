@@ -178,11 +178,24 @@ scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernet
 
 <details><summary>Solution:</summary><p>
 
+/lib/systemd/system/kubelet.service
 ```
-sed -i 's@ExecStart=.*@ExecStart=/usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=systemd@' /lib/systemd/system/kubelet.service
-systemctl daemon-reload
-systemctl start kubelet
-```{{execute NODE01}}
+[Unit]
+Description=kubelet: The Kubernetes Node Agent
+Documentation=https://kubernetes.io/docs/home/
+
+[Service]
+ExecStart=/usr/bin/kubelet \
+  --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf \
+  --kubeconfig=/etc/kubernetes/kubelet.conf \
+  --cgroup-driver=systemd
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
 </p></details>
 </p></details>
 
@@ -289,10 +302,9 @@ roleRef:
 <details><summary>Solution:</summary><p>
 
 ```
-systemctl stop kubelet
-systemctl start kubelet
-```{{execute HOST2}}
-
+ssh -o StrictHostKeyChecking=no node01 'systemctl restart kubelet'
+```{{execute}}
+</br>
 ```
 kubectl get csr
 ```{{execute}}
