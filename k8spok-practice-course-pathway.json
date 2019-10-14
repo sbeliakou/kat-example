@@ -45,6 +45,12 @@
    }
    ,
    {
+      "course_id": "k8s-configmaps",
+      "title": "ConfigMaps in Kubernetes",
+      "description": "Working with ConfigMaps in Kubernetes"
+   }
+   ,
+   {
       "course_id": "k8s-exam-1",
       "title": "Exam 1",
       "description": "Exam 1"

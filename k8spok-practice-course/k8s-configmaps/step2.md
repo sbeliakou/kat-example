@@ -1,22 +1,13 @@
 
-Examine the ConfigMaps in cluster and answer the questions below.
+Deploy nginx ingress-controller using the following sources:
+- [Mandatory](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml)
+- [Service](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml)
 
->>Q1: Enter the number of ConfigMaps in all namespaces<<
-=== 12
+Make sure `nginx-ingress-controller-...` Pod is running in `ingress-nginx` namespace. Also you should see `ingress-nginx` service in `ingress-nginx` namespace.  
 
->>Q2: Enter the number of ConfigMaps in "safe" namespace<<
-=== 5
-
->>Q3: What data is safed in "ingridients" field of "recipe3" ConfigMap?<<
-=== flour_sugar_and_3_apples
-
->>Q4: Find out "dnsDomain" value of cluster in "kubeadm-config" ConfigMap<<
-=== cluster.local
-
->>Q5: ConfigMaps can store yaml definitions as data. (hint: explore ClusterConfiguration in "kubeadm-config" ConfigMap)<<
-(*) True
-( ) False
-
+Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).   
 
 ## Documentation:
-- https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+- https://kubernetes.io/docs/concepts/services-networking/ingress/
+- https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+- https://kubernetes.github.io/ingress-nginx/

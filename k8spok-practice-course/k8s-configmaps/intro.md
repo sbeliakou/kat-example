@@ -1,8 +1,6 @@
 # In this section you will do following:
 
-- discover ConfigMaps in different namespaces
-- create ConfigMaps
-- pass the ConfigMaps data to environment variables
-- mount ConfigMaps as volume
+- discover ingress and ingress-controllers
+- create ingresses to different services
 
 # Good Luck!

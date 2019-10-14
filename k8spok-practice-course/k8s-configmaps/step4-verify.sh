@@ -1,11 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.cluster-admin}') == "admin" ]] &&
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.devops}') == "devops" ]] &&
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.db-admin}') == "db-admin" ]] &&
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user1}') == "Jack" ]] &&
-[[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user2}') == "John" ]]  &&
+[[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/author | grep-c "$(cat /opt/.user | awk 'FNR==2' | cut -d= -f2 | tr -d "\"")") -ge 1 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

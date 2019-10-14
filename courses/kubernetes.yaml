@@ -1403,6 +1403,135 @@ module:
       dashboards:
         - name: User
           port: 8080
+  - course_id: k8s-configmaps
+    title: ConfigMaps in Kubernetes
+    description: Working with ConfigMaps in Kubernetes
+    time: 40 minutes
+    steps:
+      - title: Welcome
+        task: |-
+          ## Let us know who you are.
+
+          Please open "**User**" Tab and fill required information
+
+          `touch /.ok`
+        courseData: |-
+          kubectl taint nodes node01 key=value:NoSchedule
+        verify: |-
+          [ -f /opt/.user ]
+      - title: ConfigMaps in default namespace
+        task: |-
+          Create a simple Pod `nginx` and expose it.
+
+          ## Requirements:
+          - Pod:
+            - namespace: `default`
+            - name: `nginx`
+            - image: `nginx`
+            - port: `80`
+          - service:
+            - namespace: `default`
+            - name: `nginx-svc`
+            - type: `ClusterIP`
+            - targetPort: `80`
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/ingress/
+          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+          - https://kubernetes.github.io/ingress-nginx/
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+        verify: |-
+          [[ $(kubectl get pods nginx -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[].containerPort}') == '80' ]] &&
+          [[ $(kubectl get svc nginx-svc -o jsonpath='{.spec.ports[].targetPort}') == "80" ]]
+      - title: Deploying nginx ingress controller
+        task: |-
+          Deploy nginx ingress-controller using the following sources:
+          - [Mandatory](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml)
+          - [Service](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml)
+
+          Make sure `nginx-ingress-controller-...` Pod is running in `ingress-nginx` namespace. Also you should see `ingress-nginx` service in `ingress-nginx` namespace.  
+
+          Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).   
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/ingress/
+          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+          - https://kubernetes.github.io/ingress-nginx/
+        verify: |-
+          [[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
+          [[ $(kubectl get svc -n ingress-nginx ingress-nginx >/dev/null 2>&1) ]]
+      - title: Ingress creating
+        task: |-
+          Create ingress rule with will redirect to **nginx-svc** service.  
+
+          ## Requirements:
+          - ingress name: `nginx-test`
+          - namespace: `default`
+          - path: `/nginx`
+          - service name: `nginx-svc`
+
+          For self-checking open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).
+          Then add to the address `/nginx`.  
+          You should see **nginx** Pod default page.
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/ingress/
+          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+          - https://kubernetes.github.io/ingress-nginx/
+        verify: |-
+          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/nginx | grep-c "Welcome to nginx!") -ge 2 ]]
+      - title: Ingress to Flask
+        task: |-
+          Change **nginx-test** ingress - add rule which will redirect to your flask application.  
+
+          ## Requirements:
+          - Pod should run simple flask application with your **"Name Lastname"**
+          - Pod should be exposed with service
+          - Ingress rule:
+            - path: `/author`
+            - service name: **_service of your flask application_**
+
+
+          For self-checking open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).
+          Then add to the address `/nginx`.  
+          You should see **nginx** Pod default page.
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/ingress/
+          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+          - https://kubernetes.github.io/ingress-nginx/
+        verify: |-
+          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/author | grep-c "$(cat /opt/.user | awk 'FNR==2' | cut -d= -f2 | tr -d "\"")") -ge 1 ]]
+    intro: |-
+      # In this section you will do following:
+
+      - discover ingress and ingress-controllers
+      - create ingresses to different services
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      kubectl get ingress 
+      kubectl get ingress -n <namespace>
+      kubectl get ingress --all-namespaces
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes-cluster
+      dashboards:
+        - name: User
+          port: 8080
+        - name: Ingress
+          port: 32000
   - course_id: k8s-exam-1
     title: Exam 1
     description: Exam 1
