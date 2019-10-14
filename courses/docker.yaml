@@ -1,0 +1,99 @@
+module:
+  name: docker-pok-practice-course
+  title: Docker Practice
+  description: Practical Docker Tasks
+  db_name: docker
+  courses:
+  - course_id: docker-daemon
+    title: Working with Docker Daemon
+    time: 15 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+
+        `touch /.ok`
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Docker Daemon settings overview
+      task: |-
+        Inspect Docker Configuration and answer the questions below.
+
+        >>Q1: How many containers are there (in all states)?<<
+        === 0
+
+        >>Q2: What default Storage Driver?<<
+        === overlay
+
+        >>Q3: What default Runtime?<<
+        === runc
+
+        >>Q4: What Docker Root Dir?<<
+        === /var/lib/docker
+
+        >>Q5: What default Cgroup Driver?<<
+        === systemd
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+    - title: Docker Daemon settings setup
+      task: |-
+        Change Storage Driver docker daemon settings from `overlay` to `overlay2`
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+      verify: |-
+        [[ $(docker info 2>&1 | grep "Storage Driver" | cut -d' ' -f3) == 'overlay2' ]]
+    intro: |-
+      # In this section you will do following:
+
+      - explore Docker Daemon settings
+      - change Docker Daemon settings
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      docker version
+      docker info
+
+      cat /etc/docker/daemon.json
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+
+  # - course_id: docker-images
+  #   title: Working with Docker Images
+
+  # - course_id: docker-containers
+  #   title: Working with Docker Containers
+
+  # - course_id: docker-volumes
+  #   title: Working with Docker Volumes
+
+  # - course_id: docker-networks
+  #   title: Working with Docker Networks
+
+  # - course_id: docker-cgroups
+  #   title: Working with CGroups
+
+  # - course_id: docker-ns
+  #   title: Working with Docker Namespaces
+
+  # - course_id: docker-compose
+  #   title: Working with Docker Compose
+
+

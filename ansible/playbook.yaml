@@ -20,7 +20,26 @@
       loop_var: course
     
 
-
+- name: Docker
+  hosts: localhost
+  vars:
+    path: ..
+  vars_files:
+  - "{{ path }}/courses/docker.yaml"
+  tasks:
+  - name: pathway json creating
+    template:
+      src: module_index.json.j2
+      dest: "{{ path }}/{{ module.name }}-pathway.json"
+  - name: create module directory
+    file:
+      path: "{{ path }}/{{ module.name }}"
+      state: directory
+  - name: the courses creating
+    include_tasks: tasks/course_tasks.yaml
+    loop: "{{ module.courses }}"
+    loop_control:
+      loop_var: course
 
 
 
