@@ -1450,7 +1450,7 @@ module:
           - [Mandatory](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml)
           - [Service](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml)
 
-          Make sure `nginx-ingress-controller-...` Pod is running in `ingress-nginx` namespace. Also you should see `ingress-nginx` service in `ingress-nginx` namespace.  
+          Make sure **nginx-ingress-controller-...** Pod is running in **ingress-nginx** namespace. Also you should see **ingress-nginx** service in **ingress-nginx** namespace.  
 
           Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).   
 
@@ -1460,49 +1460,33 @@ module:
           - https://kubernetes.github.io/ingress-nginx/
         verify: |-
           [[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
-          [[ $(kubectl get svc -n ingress-nginx ingress-nginx >/dev/null 2>&1) ]]
+          $(kubectl get svc -n ingress-nginx ingress-nginx >/dev/null 2>&1)
       - title: Ingress creating
         task: |-
-          Create ingress rule with will redirect to **nginx-svc** service.  
+          You are given a three Pods: **red**, **green** and **yellow**.  
+          Expose given Pods with services (type - **ClusterIP**).
 
-          ## Requirements:
-          - ingress name: `nginx-test`
-          - namespace: `default`
-          - path: `/nginx`
-          - service name: `nginx-svc`
+          Create **Ingress** which will redirect to these Pods depends on URL path:  
+          - `/red` path - to **red** Pod
+          - `/green` path - to **green** Pod
+          - `/yellow` path - to **yellow** Pod
 
-          For self-checking open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).
-          Then add to the address `/nginx`.  
-          You should see **nginx** Pod default page.
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/ingress/
-          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-          - https://kubernetes.github.io/ingress-nginx/
-        verify: |-
-          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/nginx | grep-c "Welcome to nginx!") -ge 2 ]]
-      - title: Ingress to Flask
-        task: |-
-          Change **nginx-test** ingress - add rule which will redirect to your flask application.  
-
-          ## Requirements:
-          - Pod should run simple flask application with your **"Name Lastname"**
-          - Pod should be exposed with service
-          - Ingress rule:
-            - path: `/author`
-            - service name: **_service of your flask application_**
-
-
-          For self-checking open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).
-          Then add to the address `/nginx`.  
-          You should see **nginx** Pod default page.
+          Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).  
+          Add to address `/red`, `green` and `yellow` and check the result.  
+          You should see **red**, **green** and **yellow** page correspondingly.  
 
           ## Documentation:
           - https://kubernetes.io/docs/concepts/services-networking/ingress/
           - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
           - https://kubernetes.github.io/ingress-nginx/
+        courseData: |-
+          kubectl run red --restart=Never --image=adalimayeu/webapp-color --env="COLOR=red" --port=80 && kubectl run green --restart=Never --image=adalimayeu/webapp-color --env="COLOR=green" --port=80 && kubectl run yellow --restart=Never --image=adalimayeu/webapp-color --env="COLOR=yellow" --port=80
         verify: |-
-          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/author | grep-c "$(cat /opt/.user | awk 'FNR==2' | cut -d= -f2 | tr -d "\"")") -ge 1 ]]
+          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/red | grep -c red) -ge 1 ]] &&
+          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/green | grep -c green) -ge 1 ]] &&
+          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/yellow | grep -c yellow) -ge 1 ]]
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until [[ $(kubectl get pods yellow -o jsonpath='{.status.phase}') == "Running" ]]; do echo -n .; sleep 1; done; echo; history -c
     intro: |-
       # In this section you will do following:
 
