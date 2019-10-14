@@ -17,3 +17,6 @@ Examine deployments, replicasets and Pods in different namespaces and answer the
 
 >>Q6: Enter the name of replicaset in "kube-system" namespace<<
 =~= coredns
+
+## Documentation:
+- https://kubernetes.io/docs/concepts/workloads/controllers/deployment/

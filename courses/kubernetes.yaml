@@ -392,6 +392,10 @@ module:
           >>Q6: Enter the name of replicaset in "kube-system" namespace<<
           =~= coredns
 
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
       - title: Simple Deployment
         task: |-
           Create a new deployment called `nginx-deploy`:
@@ -472,7 +476,7 @@ module:
           [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx" ] && 
           [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.replicas}'` == 2 ] &&
           [ `kubectl get deployment orange -n orange -o jsonpath='{.status.readyReplicas}'` == 2 ] &&
-          [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].image}'` == "busybox:latest" ] &&
+          [[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].image}'` =~ "busybox" ]] &&
           [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].command[1]}'` == 10 ]
       - title: Managing replicas
         task: |-
