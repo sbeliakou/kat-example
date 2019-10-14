@@ -9,15 +9,18 @@
     template:
       src: module_index.json.j2
       dest: "{{ path }}/{{ module.name }}-pathway.json"
+    
   - name: create kubernetes module directory
     file:
       path: "{{ path }}/{{ module.name }}"
       state: directory
+    
   - name: create kubernetes courses
     include_tasks: tasks/course_tasks.yaml
     loop: "{{ module.courses }}"
     loop_control:
       loop_var: course
+
 
 - name: Docker
   hosts: localhost
@@ -30,10 +33,12 @@
     template:
       src: module_index.json.j2
       dest: "{{ path }}/{{ module.name }}-pathway.json"
+      
   - name: create docker module directory
     file:
       path: "{{ path }}/{{ module.name }}"
       state: directory
+      
   - name: create docker courses
     include_tasks: tasks/course_tasks.yaml
     loop: "{{ module.courses }}"
