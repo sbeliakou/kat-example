@@ -11,10 +11,12 @@
 <details><summary>1. Create Bootstrap Token</summary><p>
 
 **Requirements:**
-- Token ID: 07401b
-- Token Secret: f395accd246ae52d
-- auth-extra-groups: system:bootstrappers:node01
-- Namespace: kube-system
+<ul style="list-style-type:circle;">
+  <li>Token ID: 07401b</li>
+  <li>Token Secret: f395accd246ae52d</li>
+  <li>auth-extra-groups: system:bootstrappers:node01</li>
+  <li>Namespace: kube-system</li>
+</ul>
 
 <details><summary>Solution:</summary><p>
 
