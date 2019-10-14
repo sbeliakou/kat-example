@@ -50,7 +50,7 @@ EOF
 </p></details>
 </p></details>
 
-<details><summary>2. Create Signing ConfigMap namespace</summary><p>
+<details><summary>2. Create Signing ConfigMap</summary><p>
 
 **Requirements:**
 <ul style="list-style-type:circle;">
@@ -86,7 +86,7 @@ EOF
 </p></details>
 
 
-<details><summary>3. Create ClusterRoleBinding to create CSR</summary><p>
+<details><summary>3. Authorize kubelet to create CSR</summary><p>
 
 **Requirements:**
 <ul style="list-style-type:circle;">
@@ -97,7 +97,8 @@ EOF
 
 <details><summary>Solution:</summary><p>
 ```
-kubectl create clusterrolebinding create-csrs-for-bootstrapping \
+kubectl create \
+  clusterrolebinding create-csrs-for-bootstrapping \
   --clusterrole=system:node-bootstrapper \
   --group=system:bootstrappers
 ```{{execute master}}
@@ -196,7 +197,85 @@ systemctl start kubelet
 <details><summary>Solution:</summary><p>
 
 ```
-```{{execute node01}}
+kubectl get csr node-csr-DpU42rfC0ZTi_Kz5JQB-QW52DuN2oLD68f5FPOyBRRU
+```{{execute master}}
+</p></details>
+</p></details>
+
+<details><summary>7. Approve CSRs automatically</summary><p>
+
+**Requirements:**
+<ul style="list-style-type:circle;">
+  <li>ClusterRoleBinding Name: auto-approve-csrs-for-group</li>
+  <li>ClusterRole: system:certificates.k8s.io:certificatesigningrequests:nodeclient</li>
+  <li>Group: system:bootstrappers</li>
+</ul>
+
+
+<details><summary>Solution:</summary><p>
+
+```
+kubectl create \
+  clusterrolebinding auto-approve-csrs-for-group \
+  --clusterrole=system:certificates.k8s.io:certificatesigningrequests:nodeclient \
+  --group=system:bootstrappers
+```{{execute master}}
+
+
+It will create following configuration:
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: auto-approve-csrs-for-group
+subjects:
+- kind: Group
+  name: system:bootstrappers
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: system:certificates.k8s.io:certificatesigningrequests:nodeclient
+  apiGroup: rbac.authorization.k8s.io
+```
+</p></details>
+</p></details>
+
+
+<details><summary>8. Approve Renewal CSRs</summary><p>
+
+**Requirements:**
+<ul style="list-style-type:circle;">
+  <li>ClusterRoleBinding Name: auto-approve-renewals-for-nodes</li>
+  <li>ClusterRole: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient</li>
+  <li>Group: system:nodes</li>
+</ul>
+
+
+<details><summary>Solution:</summary><p>
+
+```
+kubectl create \
+  clusterrolebinding auto-approve-renewals-for-nodes \
+  --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeclient \
+  --group=system:nodes
+```{{execute master}}
+
+
+It will create following configuration:
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: auto-approve-renewals-for-nodes
+subjects:
+- kind: Group
+  name: system:nodes
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient
+  apiGroup: rbac.authorization.k8s.io
+```
 </p></details>
 </p></details>
 
