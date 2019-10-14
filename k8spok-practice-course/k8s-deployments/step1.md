@@ -1,11 +1,19 @@
 
-Create a new deployment called `nginx-deploy`:
+Examine deployments, replicasets and Pods in different namespaces and answer the questions below.
 
-## Requirements:
-- name: `nginx-deploy`
-- image: `nginx:1.16-alpine`
-- replicas: 1
-- make sure that deployment and pod are running
+## Quiz
 
-## Documentation:
-- https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+>>Q1: Enter the number of deployments in "default" namespace<<
+=== 0
+
+>>Q2: Enter the number of replicasets in "default" namespace<<
+=== 0
+
+>>Q4: Enter the number of deployments in "kube-system" namespace<<
+=== 1
+
+>>Q5: Enter the name of deployment in "kube-system" namespace<<
+=== coredns
+
+>>Q6: Enter the name of replicaset in "kube-system" namespace<<
+=~= coredns

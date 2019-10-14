@@ -13,7 +13,7 @@
        }
        ,
        {
-        "title": "Simple Deployment",
+        "title": "Deployments in namespaces",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "courseData": "step1-courseData.sh",
@@ -21,7 +21,7 @@
        }
        ,
        {
-        "title": "Rolling update",
+        "title": "Simple Deployment",
         "text": "step2.md",
         "verify": "step2-verify.sh",
         "courseData": "step2-courseData.sh",
@@ -29,7 +29,7 @@
        }
        ,
        {
-        "title": "Broken deployment",
+        "title": "Rolling update",
         "text": "step3.md",
         "verify": "step3-verify.sh",
         "courseData": "step3-courseData.sh",
@@ -37,11 +37,19 @@
        }
        ,
        {
-        "title": "Managing replicas",
+        "title": "Broken deployment",
         "text": "step4.md",
         "verify": "step4-verify.sh",
         "courseData": "step4-courseData.sh",
         "code": "step4-foreground.sh"
+       }
+       ,
+       {
+        "title": "Managing replicas",
+        "text": "step5.md",
+        "verify": "step5-verify.sh",
+        "courseData": "step5-courseData.sh",
+        "code": "step5-foreground.sh"
        }
     ],
     "intro": {

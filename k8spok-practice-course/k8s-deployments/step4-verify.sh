@@ -1,10 +1,12 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[ `kubectl get deployment lemon -n lemon -o jsonpath='{.metadata.name}'` == "lemon" ] && 
-[ `kubectl get deployment lemon -n lemon -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx" ] && 
-[ `kubectl get deployment lemon -n lemon -o jsonpath='{.spec.replicas}'` == 3 ] &&
-[ `kubectl get deployment lemon -n lemon -o jsonpath='{.status.readyReplicas}'` == 3 ]  &&
+[ `kubectl get deployment orange -n orange -o jsonpath='{.metadata.name}'` == "orange" ] && 
+[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx" ] && 
+[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.replicas}'` == 2 ] &&
+[ `kubectl get deployment orange -n orange -o jsonpath='{.status.readyReplicas}'` == 2 ] &&
+[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].image}'` == "busybox:latest" ] &&
+[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].command[1]}'` == 10 ]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

@@ -371,6 +371,27 @@ module:
           `touch /.ok`
         verify: |-
           [ -f /opt/.user ]
+      - title: Deployments in namespaces
+        task: |-
+          Examine deployments, replicasets and Pods in different namespaces and answer the questions below.
+          
+          ## Quiz
+
+          >>Q1: Enter the number of deployments in "default" namespace<<
+          === 0
+
+          >>Q2: Enter the number of replicasets in "default" namespace<<
+          === 0
+
+          >>Q4: Enter the number of deployments in "kube-system" namespace<<
+          === 1
+
+          >>Q5: Enter the name of deployment in "kube-system" namespace<<
+          === coredns
+
+          >>Q6: Enter the name of replicaset in "kube-system" namespace<<
+          =~= coredns
+
       - title: Simple Deployment
         task: |-
           Create a new deployment called `nginx-deploy`:
@@ -378,7 +399,7 @@ module:
           ## Requirements:
           - name: `nginx-deploy`
           - image: `nginx:1.16-alpine`
-          - replicas: 1
+          - replicas: 3
           - make sure that deployment and pod are running
 
           ## Documentation:
@@ -386,8 +407,8 @@ module:
         verify: |-
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.metadata.name}'` == "nginx-deploy" ] && 
           [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
-          [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.replicas}'` == 1 ] &&
-          [ `kubectl get deployment nginx-deploy -o jsonpath='{.status.readyReplicas}'` == 1 ]
+          [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.replicas}'` == 3 ] &&
+          [ `kubectl get deployment nginx-deploy -o jsonpath='{.status.readyReplicas}'` == 3 ]
       - title: Rolling update
         task: |-
           Record current version of `nginx-deploy` deployment. Use rolling upgrade to provide it with the `1.17` version of `nginx:alpine`. Make sure, that both `1.16` and `1.17` versions are in the rollout history. Then, rollback to `1.16` version

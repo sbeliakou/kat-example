@@ -1,10 +1,11 @@
 
-New deployment has been created, but it doesn't work properly. Find out and fix the issue.
+Record current version of `nginx-deploy` deployment. Use rolling upgrade to provide it with the `1.17` version of `nginx:alpine`. Make sure, that both `1.16` and `1.17` versions are in the rollout history. Then, rollback to `1.16` version
 
 ## Requirements:
-- deployment "orange" is running
-- pod, associated with this deployment, is up and running
-- pod waits for 10 seconds before creating a container
+- deployment image is `nginx:1.16-alpine`
+- deployment has been upgraded to version `1.17-alpine` using rolling update
+- upgraded version is recorded in the resource annotation
+- deployment has been rollbacked to version `1.16`
 
 ## Documentation:
 - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/

@@ -1,27 +1,33 @@
 #!/bin/bash
 
 
-kubectl create ns lemon &&
-cat << EOF | kubectl apply -n lemon -f-
+kubectl create ns orange &&
+cat << EOF | kubectl apply -n orange -f-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: lemon
+  namespace: orange
   labels:
-    run: lemon
-  name: lemon
+    run: orange
+  name: orange
 spec:
-  replicas: 0
+  replicas: 2
   selector:
     matchLabels:
-      run: lemon
+      run: orange
   template:
     metadata:
       labels:
-        run: lemon
+        run: orange
     spec:
       containers:
       - image: nginx
-        name: lemon
+        name: orange
+      initContainers:
+      - image: busybox:latest-alpine
+        name: busybox
+        command:
+        - s11eep
+        - "10"
 EOF
 

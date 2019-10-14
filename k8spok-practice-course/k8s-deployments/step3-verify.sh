@@ -1,12 +1,10 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[ `kubectl get deployment orange -n orange -o jsonpath='{.metadata.name}'` == "orange" ] && 
-[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx" ] && 
-[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.replicas}'` == 2 ] &&
-[ `kubectl get deployment orange -n orange -o jsonpath='{.status.readyReplicas}'` == 2 ] &&
-[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].image}'` == "busybox:latest" ] &&
-[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].command[1]}'` == 10 ]  &&
+[ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
+[ `kubectl rollout history deployment nginx-deploy | grep -c "nginx:1.16-alpine"` -ge 1 ] && 
+[ `kubectl rollout history deployment nginx-deploy | grep -c "nginx:1.17-alpine"` -ge 1 ] &&
+[ `kubectl rollout history deployment nginx-deploy | grep -c "set image"` -ge 2 ]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

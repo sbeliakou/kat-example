@@ -1,10 +1,10 @@
 
-New deployment has been created, but there are no `replcaSet`s associated with it. Find out and fix the issue
+New deployment has been created, but it doesn't work properly. Find out and fix the issue.
 
 ## Requirements:
-- deployment `lemon` is up and running
-- deployment has 1 `replicaSet` associated with it
-- there are 3 pods managed by this replicaSet
+- deployment "orange" is running
+- pod, associated with this deployment, is up and running
+- pod waits for 10 seconds before creating a container
 
 ## Documentation:
 - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
