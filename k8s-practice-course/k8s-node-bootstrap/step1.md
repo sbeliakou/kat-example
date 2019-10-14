@@ -20,7 +20,7 @@
 
 <details><summary>Solution:</summary><p>
 
-```
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
@@ -50,9 +50,17 @@ EOF
 </p></details>
 </p></details>
 
-<details><summary>2. Create Signing ConfigMap in `kube-public` namespace</summary><p>
+<details><summary>2. Create Signing ConfigMap namespace</summary><p>
 
-```
+**Requirements:**
+<ul style="list-style-type:circle;">
+  <li>Namespace: kube-public</li>
+  <li>Name: cluster-info</li>
+</ul>
+
+
+<details><summary>Solution:</summary><p>
+```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
@@ -60,7 +68,6 @@ metadata:
   name: cluster-info
   namespace: kube-public
 data:
-  jws-kubeconfig-07401b: eyJhbGciOiJIUzI1NiIsImtpZCI6IjA3NDAxYiJ9..tYEfbo6zDNo40MQE07aZcQX2m3EB2rO3NuXtxVMYm9U
   kubeconfig: |
     apiVersion: v1
     clusters:
@@ -76,12 +83,27 @@ data:
 EOF
 ```{{execute master}}
 </p></details>
+</p></details>
 
 
-<details><summary>3. Enable bootstrapping nodes to create CSR</summary><p>
+<details><summary>3. Create ClusterRoleBinding required for the system:bootstrappers group to create CSR</summary><p>
 
-```
-cat <<EOF | kubectl apply -f -
+**Requirements:**
+<ul style="list-style-type:circle;">
+  <li>ClusterRoleBinding Name: create-csrs-for-bootstrapping</li>
+  <li>ClusterRole: system:node-bootstrapper</li>
+  <li>Group: system:bootstrappers</li>
+</ul>
+
+<details><summary>Solution:</summary><p>
+```bash
+kubectl create clusterrolebinding create-csrs-for-bootstrapping \
+  --clusterrole=system:node-bootstrapper \
+  --group=system:bootstrappers
+```{{execute master}}
+
+It will create following configuration:
+```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -94,9 +116,54 @@ roleRef:
   kind: ClusterRole
   name: system:node-bootstrapper
   apiGroup: rbac.authorization.k8s.io
-EOF
+```
+</p></details>
+</p></details>
+
+
+<details><summary>4. Create Kubelet Bootstrap Configuration</summary><p>
+
+**Requirements:**
+<ul style="list-style-type:circle;">
+  <li>Host: node01</li>
+  <li>Filename: /etc/kubernetes/bootstrap-kubelet.conf</li>
+</ul>
+
+<details><summary>Solution:</summary><p>
+On `master` node:
+```bash
+kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
+  set-cluster bootstrap \
+  --server=$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}') \
+  --certificate-authority=/etc/kubernetes/pki/ca.crt \
+  --embed-certs=true
+
+kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
+  set-credentials kubelet-bootstrap \
+  --token=07401b.f395accd246ae52d
+
+kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
+  set-context bootstrap \
+  --user=kubelet-bootstrap \
+  --cluster=bootstrap
+
+kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
+  use-context bootstrap
+```{{execute master}}
+
+Then, copy it to `node01`:
+```bash
+scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
 ```{{execute master}}
 </p></details>
+</p></details>
+
+
+
+
+
+
+<!-- 
 
 <details><summary>4. Approve all CSRs for the group "system:bootstrappers"</summary><p>
 
@@ -183,5 +250,5 @@ ssh -o StrictHostKeyChecking=no node01 "systemctl start kubelet"
 ```
 kubectl get nodes
 ```{{execute master}}
-</p></details>
+</p></details> -->
 
