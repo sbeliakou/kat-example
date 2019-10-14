@@ -8,7 +8,15 @@
 
 ### Steps:
 
-<details><summary>1. Create Bootstrap Token Secret: `07401b.f395accd246ae52d`</summary><p>
+<details><summary>1. Create Bootstrap Token</summary><p>
+
+**Requirements:**
+- Token ID: 07401b
+- Token Secret: f395accd246ae52d
+- auth-extra-groups: system:bootstrappers:node01
+- Namespace: kube-system
+
+<details><summary>Solution:</summary><p>
 
 ```
 cat <<EOF | kubectl apply -f -
@@ -29,17 +37,15 @@ stringData:
   token-id: 07401b
   token-secret: f395accd246ae52d
 
-  # Expiration. Optional.
-  expiration: 2020-10-10T03:22:11Z
-
   # Allowed usages.
   usage-bootstrap-authentication: "true"
   usage-bootstrap-signing: "true"
 
   # Extra groups to authenticate the token as. Must start with "system:bootstrappers:"
-  auth-extra-groups: system:bootstrappers:worker,system:bootstrappers:ingress
+  auth-extra-groups: system:bootstrappers:node01
 EOF
 ```{{execute master}}
+</p></details>
 </p></details>
 
 <details><summary>2. Create Signing ConfigMap in `kube-public` namespace</summary><p>
@@ -111,6 +117,8 @@ EOF
 </p></details>
 
 <details><summary>5. Approve renewal CSRs for the group "system:nodes"</summary><p>
+
+kubectl create clusterrolebinding auto-approve-renewals-for-nodes --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeclient --group=system:nodes
 
 ```
 cat <<EOF | kubectl apply -f -
