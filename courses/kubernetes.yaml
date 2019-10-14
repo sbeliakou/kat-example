@@ -1433,6 +1433,8 @@ module:
           - https://kubernetes.io/docs/concepts/services-networking/ingress/
           - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
           - https://kubernetes.github.io/ingress-nginx/
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
         verify: |-
           [[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
           $(kubectl get svc -n ingress-nginx ingress-nginx >/dev/null 2>&1)
