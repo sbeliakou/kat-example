@@ -20,7 +20,7 @@
 
 <details><summary>Solution:</summary><p>
 
-```bash
+```
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
@@ -60,7 +60,7 @@ EOF
 
 
 <details><summary>Solution:</summary><p>
-```bash
+```
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
@@ -96,14 +96,15 @@ EOF
 </ul>
 
 <details><summary>Solution:</summary><p>
-```bash
+```
 kubectl create clusterrolebinding create-csrs-for-bootstrapping \
   --clusterrole=system:node-bootstrapper \
   --group=system:bootstrappers
 ```{{execute master}}
 
+
 It will create following configuration:
-```yaml
+```
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -127,11 +128,13 @@ roleRef:
 <ul style="list-style-type:circle;">
   <li>Host: node01</li>
   <li>Filename: /etc/kubernetes/bootstrap-kubelet.conf</li>
+  <li>Bootstrap file: /etc/kubernetes/bootstrap-kubelet.conf</li>
 </ul>
 
 <details><summary>Solution:</summary><p>
+
 On `master` node:
-```bash
+```
 kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
   set-cluster bootstrap \
   --server=$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}') \
@@ -151,6 +154,7 @@ kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
   use-context bootstrap
 ```{{execute master}}
 
+
 Then, copy it to `node01`:
 ```bash
 scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
@@ -159,6 +163,26 @@ scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernet
 </p></details>
 
 
+<details><summary>5. Configure Kubelet to run in bootstrap mode</summary><p>
+
+**Requirements:**
+<ul style="list-style-type:circle;">
+  <li>Host: node01</li>
+  <li>Service file: /lib/systemd/system/kubelet.service</li>
+  <li>Bootstrap file: /etc/kubernetes/bootstrap-kubelet.conf</li>
+  <li>CGroup Driver: systemd</li>
+</ul>
+
+
+<details><summary>Solution:</summary><p>
+
+```
+sed -i 's@ExecStart=.*@ExecStart=/usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=systemd@' /lib/systemd/system/kubelet.service
+systemctl daemon-reload
+systemctl start kubelet
+```{{execute node01}}
+</p></details>
+</p></details>
 
 
 
@@ -234,6 +258,7 @@ And Copy it to node01:
 scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
 ```{{execute master}}
 </p></details>
+
 
 
 
