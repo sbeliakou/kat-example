@@ -1,8 +1,9 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
-$(kubectl get svc -n ingress-nginx ingress-nginx >/dev/null 2>&1)  &&
+[[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/red | grep -c red) -ge 1 ]] &&
+[[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/green | grep -c green) -ge 1 ]] &&
+[[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/yellow | grep -c yellow) -ge 1 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

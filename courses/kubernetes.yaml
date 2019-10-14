@@ -1419,31 +1419,6 @@ module:
           kubectl taint nodes node01 key=value:NoSchedule
         verify: |-
           [ -f /opt/.user ]
-      - title: Pod creating
-        task: |-
-          Create a simple Pod `nginx` and expose it.
-
-          ## Requirements:
-          - Pod:
-            - namespace: `default`
-            - name: `nginx`
-            - image: `nginx`
-            - port: `80`
-          - service:
-            - namespace: `default`
-            - name: `nginx-svc`
-            - type: `ClusterIP`
-            - targetPort: `80`
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/ingress/
-          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-          - https://kubernetes.github.io/ingress-nginx/
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(kubectl get pods nginx -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[].containerPort}') == '80' ]] &&
-          [[ $(kubectl get svc nginx-svc -o jsonpath='{.spec.ports[].targetPort}') == "80" ]]
       - title: Deploying nginx ingress controller
         task: |-
           Deploy nginx ingress-controller using the following sources:

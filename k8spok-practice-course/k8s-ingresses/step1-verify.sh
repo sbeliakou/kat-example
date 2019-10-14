@@ -1,8 +1,8 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(kubectl get pods nginx -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[].containerPort}') == '80' ]] &&
-[[ $(kubectl get svc nginx-svc -o jsonpath='{.spec.ports[].targetPort}') == "80" ]]  &&
+[[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
+$(kubectl get svc -n ingress-nginx ingress-nginx >/dev/null 2>&1)  &&
 echo done || exit 0
 
 TASK_SCORE="1"
