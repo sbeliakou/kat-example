@@ -182,7 +182,7 @@ scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernet
 sed -i 's@ExecStart=.*@ExecStart=/usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=systemd@' /lib/systemd/system/kubelet.service
 systemctl daemon-reload
 systemctl start kubelet
-```{{execute HOST2}}
+```{{execute NODE01}}
 </p></details>
 </p></details>
 
