@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-echo  &&
+[[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/nginx | grep-c "Welcome to nginx!") -ge 2 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
@@ -13,7 +13,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
     "email": "${EMAIL}",
-    "scenario": "k8s-configmaps.2", 
+    "scenario": "k8s-ingresses.3", 
     "score": ${TASK_SCORE}
   }
 }

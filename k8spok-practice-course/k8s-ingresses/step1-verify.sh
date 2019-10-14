@@ -1,7 +1,8 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-echo  &&
+[[ $(kubectl get pods nginx -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[].containerPort}') == '80' ]] &&
+[[ $(kubectl get svc nginx-svc -o jsonpath='{.spec.ports[].targetPort}') == "80" ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
@@ -13,7 +14,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
     "email": "${EMAIL}",
-    "scenario": "k8s-configmaps.2", 
+    "scenario": "k8s-ingresses.1", 
     "score": ${TASK_SCORE}
   }
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-echo  &&
+[ -f /opt/.user ]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
@@ -13,7 +13,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
     "email": "${EMAIL}",
-    "scenario": "k8s-configmaps.2", 
+    "scenario": "k8s-ingresses.0", 
     "score": ${TASK_SCORE}
   }
 }

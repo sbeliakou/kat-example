@@ -1,17 +1,10 @@
 
-Create ingress rule with will redirect to **nginx-svc** service.  
+You are given `/data/data_file` file. With `kubectl` create a secret using that file.
 
-## Requirements:
-- ingress name: `nginx-test`
+## Requiremets
+- ConfigMap name: `os-config`
 - namespace: `default`
-- path: `/nginx`
-- service name: `nginx-svc`
-
-For self-checking open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).
-Then add to the address `/nginx`.  
-You should see **nginx** Pod default page.
+- from files: `/data/data_file`
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/services-networking/ingress/
-- https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-- https://kubernetes.github.io/ingress-nginx/
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/

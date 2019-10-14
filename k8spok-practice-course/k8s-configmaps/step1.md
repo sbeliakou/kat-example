@@ -1,19 +1,8 @@
 
-Create a simple Pod `nginx` and expose it.
+Examine the ConfigMaps in cluster and answer the questions below.
 
-## Requirements:
-- Pod:
-  - namespace: `default`
-  - name: `nginx`
-  - image: `nginx`
-  - port: `80`
-- service:
-  - namespace: `default`
-  - name: `nginx-svc`
-  - type: `ClusterIP`
-  - targetPort: `80`
+>>Q1: Enter the number of ConfigMaps in default namespace<<
+=== 0
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/services-networking/ingress/
-- https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-- https://kubernetes.github.io/ingress-nginx/
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/

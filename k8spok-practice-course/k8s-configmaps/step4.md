@@ -1,19 +1,15 @@
 
-Change **nginx-test** ingress - add rule which will redirect to your flask application.  
+Create a simple ConfigMap with the following requirements:
 
-## Requirements:
-- Pod should run simple flask application with your **"Name Lastname"**
-- Pod should be exposed with service
-- Ingress rule:
-  - path: `/author`
-  - service name: **_service of your flask application_**
-
-
-For self-checking open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).
-Then add to the address `/nginx`.  
-You should see **nginx** Pod default page.
+## Requirements
+- ConfigMap name: `users-cm`
+- namespace: `default`
+- data field:
+  - `cluster-admin` field: `admin`
+  - `devops` field: `devops`
+  - `db-admin` field: `db-admin`
+  - `user1` field: `Jack`
+  - `user2` field: `John`
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/services-networking/ingress/
-- https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-- https://kubernetes.github.io/ingress-nginx/
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
