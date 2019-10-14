@@ -102,8 +102,8 @@ kubectl create \
   --clusterrole=system:node-bootstrapper \
   --group=system:bootstrappers
 ```{{execute master}}
-
-
+</br>
+</br>
 It will create following configuration:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
@@ -155,7 +155,8 @@ kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
   use-context bootstrap
 ```{{execute master}}
 
-
+</br>
+</br>
 Then, copy it to `node01`:
 ```
 scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
@@ -181,7 +182,7 @@ scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernet
 sed -i 's@ExecStart=.*@ExecStart=/usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=systemd@' /lib/systemd/system/kubelet.service
 systemctl daemon-reload
 systemctl start kubelet
-```{{execute node01}}
+```{{execute HOST2}}
 </p></details>
 </p></details>
 
@@ -197,7 +198,7 @@ systemctl start kubelet
 <details><summary>Solution:</summary><p>
 
 ```
-kubectl get csr node-csr-DpU42rfC0ZTi_Kz5JQB-QW52DuN2oLD68f5FPOyBRRU
+kubectl get csr
 ```{{execute master}}
 </p></details>
 </p></details>
@@ -221,7 +222,8 @@ kubectl create \
   --group=system:bootstrappers
 ```{{execute master}}
 
-
+</br>
+</br>
 It will create following configuration:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
@@ -260,7 +262,8 @@ kubectl create \
   --group=system:nodes
 ```{{execute master}}
 
-
+</br>
+</br>
 It will create following configuration:
 ```
 apiVersion: rbac.authorization.k8s.io/v1
@@ -280,94 +283,30 @@ roleRef:
 </p></details>
 
 
+<details><summary>9. Restart Kubelet on Node01 and Check CSR Status</summary><p>
 
-<!-- 
 
-<details><summary>4. Approve all CSRs for the group "system:bootstrappers"</summary><p>
+<details><summary>Solution:</summary><p>
 
 ```
-cat <<EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: auto-approve-csrs-for-group
-subjects:
-- kind: Group
-  name: system:bootstrappers
-  apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: ClusterRole
-  name: system:certificates.k8s.io:certificatesigningrequests:nodeclient
-  apiGroup: rbac.authorization.k8s.io
-EOF
-```{{execute master}}
+systemctl stop kubelet
+systemctl start kubelet
+```{{execute HOST2}}
+
+```
+kubectl get csr
+```{{execute}}
+</p></details>
 </p></details>
 
-<details><summary>5. Approve renewal CSRs for the group "system:nodes"</summary><p>
-
-kubectl create clusterrolebinding auto-approve-renewals-for-nodes --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeclient --group=system:nodes
-
-```
-cat <<EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: auto-approve-renewals-for-nodes
-subjects:
-- kind: Group
-  name: system:nodes
-  apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: ClusterRole
-  name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient
-  apiGroup: rbac.authorization.k8s.io
-EOF
-```{{execute master}}
-</p></details>
-
-<details><summary>6. Generate `bootstrap-kubelet.conf`</summary><p>
-
-```
-kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
-  set-cluster bootstrap \
-  --server=$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}') \
-  --certificate-authority=/etc/kubernetes/pki/ca.crt \
-  --embed-certs=true
-
-kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
-  set-credentials kubelet-bootstrap \
-  --token=07401b.f395accd246ae52d
-
-kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
-  set-context bootstrap \
-  --user=kubelet-bootstrap \
-  --cluster=bootstrap
-
-kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
-  use-context bootstrap
-```{{execute master}}
-
-And Copy it to node01:
-```
-scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
-```{{execute master}}
-</p></details>
+<details><summary>10. Check cluster nodes</summary><p>
 
 
-
-
-<details><summary>7. Go to node01 and start kubelet</summary><p>
-
-```
-ssh -o StrictHostKeyChecking=no node01 "systemctl start kubelet"
-```{{execute master}}
-</p></details>
-
-
-<details><summary>8. Check that `node01` has joined the cluster</summary><p>
+<details><summary>Solution:</summary><p>
 
 ```
 kubectl get nodes
-```{{execute master}}
-</p></details> -->
+```{{execute}}
+</p></details>
+</p></details>
 
