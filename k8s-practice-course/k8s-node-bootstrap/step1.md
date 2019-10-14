@@ -86,7 +86,7 @@ EOF
 </p></details>
 
 
-<details><summary>3. Create ClusterRoleBinding required for the system:bootstrappers group to create CSR</summary><p>
+<details><summary>3. Create ClusterRoleBinding to create CSR</summary><p>
 
 **Requirements:**
 <ul style="list-style-type:circle;">
@@ -156,7 +156,7 @@ kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
 
 
 Then, copy it to `node01`:
-```bash
+```
 scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
 ```{{execute master}}
 </p></details>
@@ -184,6 +184,21 @@ systemctl start kubelet
 </p></details>
 </p></details>
 
+
+<details><summary>6. Check that node01 sent CSR for approval</summary><p>
+
+**Requirements:**
+<ul style="list-style-type:circle;">
+  <li>Host: master</li>
+</ul>
+
+
+<details><summary>Solution:</summary><p>
+
+```
+```{{execute node01}}
+</p></details>
+</p></details>
 
 
 
