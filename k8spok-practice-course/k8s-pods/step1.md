@@ -1,8 +1,10 @@
 
-### Create a Pod
+Create a simple Pod.
 
-- Deploy a pod named `nginx-pod` using the `nginx:alpine` image
-- Label: `app=nginx`
+## Requirements:
+- Pod name: `nginx-pod`
+- Pod image: `nginx:alpine`
+- Pod label: `app=nginx`
 
 ## Documentation:
 - https://kubernetes.io/docs/concepts/workloads/pods/pod/

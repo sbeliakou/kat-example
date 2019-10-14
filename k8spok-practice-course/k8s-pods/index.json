@@ -43,6 +43,14 @@
         "courseData": "step4-courseData.sh",
         "code": "step4-foreground.sh"
        }
+       ,
+       {
+        "title": "Static Pods",
+        "text": "step5.md",
+        "verify": "step5-verify.sh",
+        "courseData": "step5-courseData.sh",
+        "code": "step5-foreground.sh"
+       }
     ],
     "intro": {
       "text": "intro.md",

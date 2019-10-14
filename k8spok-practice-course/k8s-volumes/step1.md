@@ -8,4 +8,5 @@ Examine persistent volumes in `default` namespace and answer the questions below
 === 0
 
 ## Documentation:
-- https://kubernetes.io/docs/concepts/configuration/secret/
+- https://kubernetes.io/docs/concepts/storage/volumes/
+- https://kubernetes.io/docs/concepts/storage/persistent-volumes/
