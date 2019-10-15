@@ -11,6 +11,14 @@
         "courseData": "step0-courseData.sh",
         "code": "step0-foreground.sh"
        }
+       ,
+       {
+        "title": "Working with",
+        "text": "step1.md",
+        "verify": "step1-verify.sh",
+        "courseData": "step1-courseData.sh",
+        "code": "step1-foreground.sh"
+       }
     ],
     "intro": {
       "text": "intro.md",

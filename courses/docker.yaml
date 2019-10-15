@@ -83,6 +83,9 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
     intro: |-
       # In this section you will do following:
 
@@ -118,6 +121,9 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
     intro: |-
       # In this section you will do following:
 
@@ -153,6 +159,9 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
     intro: |-
       # In this section you will do following:
 
@@ -188,6 +197,9 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
     intro: |-
       # In this section you will do following:
 
@@ -223,6 +235,9 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
     intro: |-
       # In this section you will do following:
 
@@ -258,6 +273,9 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
     intro: |-
       # In this section you will do following:
 
@@ -293,6 +311,9 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
     intro: |-
       # In this section you will do following:
 
