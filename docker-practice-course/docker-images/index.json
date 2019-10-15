@@ -13,11 +13,19 @@
        }
        ,
        {
-        "title": "Working with",
+        "title": "Working with images",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "courseData": "step1-courseData.sh",
         "code": "step1-foreground.sh"
+       }
+       ,
+       {
+        "title": "Image building",
+        "text": "step2.md",
+        "verify": "step2-verify.sh",
+        "courseData": "step2-courseData.sh",
+        "code": "step2-foreground.sh"
        }
     ],
     "intro": {
@@ -34,6 +42,8 @@
     "uilayout": "terminal-iframe",
     "dashboards": [
       {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
+      ,
+      {"name": "Checking", "href": "https://[[HOST_SUBDOMAIN]]-32000-[[KATACODA_HOST]].environments.katacoda.com"}
     ]
   },
   "backend": {
