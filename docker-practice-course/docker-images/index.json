@@ -51,6 +51,14 @@
         "courseData": "step5-courseData.sh",
         "code": "step5-foreground.sh"
        }
+       ,
+       {
+        "title": "ENV, ADD/COPY, WORKDIR",
+        "text": "step6.md",
+        "verify": "step6-verify.sh",
+        "courseData": "step6-courseData.sh",
+        "code": "step6-foreground.sh"
+       }
     ],
     "intro": {
       "text": "intro.md",
