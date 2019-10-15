@@ -1,7 +1,7 @@
 {
-  "title": "Working with Docker Daemon",
-  "description": "",
-  "time": "15 minutes",
+  "title": "Ingress in Kubernetes",
+  "description": "Working with Ingress in Kubernetes",
+  "time": "40 minutes",
   "details": {
     "steps": [
        {
@@ -13,7 +13,7 @@
        }
        ,
        {
-        "title": "Docker Daemon settings overview",
+        "title": "Deploying nginx ingress controller",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "courseData": "step1-courseData.sh",
@@ -21,7 +21,7 @@
        }
        ,
        {
-        "title": "Docker Daemon settings setup",
+        "title": "Ingress creating",
         "text": "step2.md",
         "verify": "step2-verify.sh",
         "courseData": "step2-courseData.sh",
@@ -42,10 +42,12 @@
     "uilayout": "terminal-iframe",
     "dashboards": [
       {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
+      ,
+      {"name": "Ingress", "href": "https://[[HOST_SUBDOMAIN]]-32000-[[KATACODA_HOST]].environments.katacoda.com"}
     ]
   },
   "backend": {
-    "imageid": "kubernetes"
+    "imageid": "kubernetes-cluster"
   }
 }
 

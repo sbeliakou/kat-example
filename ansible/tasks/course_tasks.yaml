@@ -1,9 +1,9 @@
-- name: create directories for courses
+- name: create course directory
   file:
     path: "{{ path }}/{{ module.name }}/{{ course.course_id }}"
     state: directory
 
-- name: create course index json
+- name: create course index.json
   template:
     src: course_index.json.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/index.json"
@@ -13,47 +13,37 @@
     src: intro.md.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/intro.md"
 
-
 - name: create finish.md
   template:
     src: finish.md.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/finish.md"
 
-- name: copy runPrep.sh
+- name: create runPrep.sh
   template:
     src: runPrep.sh.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/runPrep.sh"
 
-- name: step task creating
+- name: create step*.md
   template:
     src: step.md.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}.md"
   with_indexed_items: "{{ course.steps }}"
 
-- name: step courseData creating
+- name: create step*-courseData.sh
   template:
     src: step-courseData.sh.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}-courseData.sh"
   with_indexed_items: "{{ course.steps }}"
 
-- name: step foreground creating
+- name: create step*-foreground.sh
   template:
     src: step-foreground.sh.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}-foreground.sh"
   with_indexed_items: "{{ course.steps }}"
 
-- name: step verify creating
+- name: create step*-verify.sh
   template:
     src: step-verify.sh.j2
     dest: "{{ path }}/{{ module.name }}/{{ course.course_id }}/step{{ item.0 }}-verify.sh"
   with_indexed_items: "{{ course.steps }}"
-
-
-
-
-
-
-
-
-
 

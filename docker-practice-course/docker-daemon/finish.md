@@ -10,4 +10,3 @@ docker info
 cat /etc/docker/daemon.json
 
 </pre>
-

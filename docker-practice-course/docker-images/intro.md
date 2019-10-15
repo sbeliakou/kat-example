@@ -1,7 +1,5 @@
 # In this section you will do following:
 
-- explore Docker Daemon settings
-- change Docker Daemon settings
+- FILL!!!!
 
 # Good Luck!
-

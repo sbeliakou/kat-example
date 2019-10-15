@@ -1,3 +1,4 @@
+
 Inspect Docker Configuration and answer the questions below.
 
 >>Q1: How many containers are there (in all states)?<<
@@ -15,3 +16,5 @@ Inspect Docker Configuration and answer the questions below.
 >>Q5: What default Cgroup Driver?<<
 === systemd
 
+## Documentation:
+- https://docs.docker.com/config/daemon/

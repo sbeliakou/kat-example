@@ -1,5 +1,5 @@
 module:
-  name: docker-pok-practice-course
+  name: docker-practice-course
   title: Docker Practice
   description: Practical Docker Tasks
   db_name: docker
@@ -13,8 +13,6 @@ module:
         ## Let us know who you are.
 
         Please open "**User**" Tab and fill required information
-
-        `touch /.ok`
       verify: |-
         [ -f /opt/.user ]
     - title: Docker Daemon settings overview
@@ -38,6 +36,8 @@ module:
 
         ## Documentation:
         - https://docs.docker.com/config/daemon/
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     - title: Docker Daemon settings setup
       task: |-
         Change Storage Driver docker daemon settings from `overlay` to `overlay2`
@@ -74,26 +74,284 @@ module:
       dashboards:
         - name: User
           port: 8080
+  - course_id: docker-images
+    title: Working with Docker Images
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
 
-  # - course_id: docker-images
-  #   title: Working with Docker Images
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
 
-  # - course_id: docker-containers
-  #   title: Working with Docker Containers
+      - FILL!!!!
 
-  # - course_id: docker-volumes
-  #   title: Working with Docker Volumes
+      # Good Luck!
+    finish: |-
+      # It's Done!
 
-  # - course_id: docker-networks
-  #   title: Working with Docker Networks
+      Some useful commands to know:
 
-  # - course_id: docker-cgroups
-  #   title: Working with CGroups
+      <pre class="file">
 
-  # - course_id: docker-ns
-  #   title: Working with Docker Namespaces
+      FILL!!!!
 
-  # - course_id: docker-compose
-  #   title: Working with Docker Compose
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-containers
+    title: Working with Docker Containers
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
 
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-volumes
+    title: Working with Docker Volumes
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-networks
+    title: Working with Docker Networks
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-cgroups
+    title: Working with CGroups
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-ns
+    title: Working with Docker Namespaces
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-compose
+    title: Working with Docker Compose
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
 

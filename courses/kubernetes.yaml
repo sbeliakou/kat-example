@@ -1403,6 +1403,96 @@ module:
       dashboards:
         - name: User
           port: 8080
+  - course_id: k8s-ingresses
+    title: Ingress in Kubernetes
+    description: Working with Ingress in Kubernetes
+    time: 40 minutes
+    steps:
+      - title: Welcome
+        task: |-
+          ## Let us know who you are.
+
+          Please open "**User**" Tab and fill required information
+
+          `touch /.ok`
+        courseData: |-
+          kubectl taint nodes node01 key=value:NoSchedule
+        verify: |-
+          [ -f /opt/.user ]
+      - title: Deploying nginx ingress controller
+        task: |-
+          Deploy nginx ingress-controller using the following sources:
+          - [Mandatory](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml)
+          - [Service](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml)
+
+          Make sure **nginx-ingress-controller-...** Pod is running in **ingress-nginx** namespace. Also you should see **ingress-nginx** service in **ingress-nginx** namespace.  
+
+          Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).   
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/ingress/
+          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+          - https://kubernetes.github.io/ingress-nginx/
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+        verify: |-
+          [[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
+          $(kubectl get svc -n ingress-nginx ingress-nginx >/dev/null 2>&1)
+      - title: Ingress creating
+        task: |-
+          You are given a three Pods: **red**, **green** and **yellow**.  
+          Expose given Pods with services (type - **ClusterIP**).
+
+          Create **Ingress** which will redirect to these Pods depends on URL path:  
+          - `/red` path - to **red** Pod
+          - `/green` path - to **green** Pod
+          - `/yellow` path - to **yellow** Pod
+
+          Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).  
+          Add to URL address `/red`, `/green` and `/yellow` paths and check the results.  
+          You should see **red**, **green** and **yellow** page correspondingly.  
+
+          ## Documentation:
+          - https://kubernetes.io/docs/concepts/services-networking/ingress/
+          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+          - https://kubernetes.github.io/ingress-nginx/
+        courseData: |-
+          kubectl run red --restart=Never --image=adalimayeu/webapp-color --env="COLOR=red" --port=80 && kubectl run green --restart=Never --image=adalimayeu/webapp-color --env="COLOR=green" --port=80 && kubectl run yellow --restart=Never --image=adalimayeu/webapp-color --env="COLOR=yellow" --port=80
+        verify: |-
+          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/red | grep -c red) -ge 1 ]] &&
+          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/green | grep -c green) -ge 1 ]] &&
+          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/yellow | grep -c yellow) -ge 1 ]]
+        foreground: |-
+          clear && echo -n "Prepairing Environment " && until [[ $(kubectl get pods yellow -o jsonpath='{.status.phase}') == "Running" ]]; do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - discover ingress and ingress-controllers
+      - create ingresses to different services
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      kubectl get ingress 
+      kubectl get ingress -n <namespace>
+      kubectl get ingress --all-namespaces
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes-cluster
+      dashboards:
+        - name: User
+          port: 8080
+        - name: Ingress
+          port: 32000
   - course_id: k8s-exam-1
     title: Exam 1
     description: Exam 1

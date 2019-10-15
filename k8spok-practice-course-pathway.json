@@ -45,6 +45,12 @@
    }
    ,
    {
+      "course_id": "k8s-ingresses",
+      "title": "Ingress in Kubernetes",
+      "description": "Working with Ingress in Kubernetes"
+   }
+   ,
+   {
       "course_id": "k8s-exam-1",
       "title": "Exam 1",
       "description": "Exam 1"
