@@ -36,6 +36,8 @@ module:
 
         ## Documentation:
         - https://docs.docker.com/config/daemon/
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     - title: Docker Daemon settings setup
       task: |-
         Change Storage Driver docker daemon settings from `overlay` to `overlay2`
@@ -86,6 +88,8 @@ module:
     - title: Working with
       task: |-
         task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     intro: |-
       # In this section you will do following:
 
@@ -124,6 +128,8 @@ module:
     - title: Working with
       task: |-
         task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     intro: |-
       # In this section you will do following:
 
@@ -162,6 +168,8 @@ module:
     - title: Working with
       task: |-
         task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     intro: |-
       # In this section you will do following:
 
@@ -200,6 +208,8 @@ module:
     - title: Working with
       task: |-
         task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     intro: |-
       # In this section you will do following:
 
@@ -238,6 +248,8 @@ module:
     - title: Working with
       task: |-
         task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     intro: |-
       # In this section you will do following:
 
@@ -276,6 +288,8 @@ module:
     - title: Working with
       task: |-
         task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     intro: |-
       # In this section you will do following:
 
@@ -314,6 +328,8 @@ module:
     - title: Working with
       task: |-
         task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     intro: |-
       # In this section you will do following:
 
