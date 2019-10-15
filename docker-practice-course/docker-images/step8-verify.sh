@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-echo  &&
+[[ $(docker run single_app 2>&1 | grep -c "Hello world") -eq 1 ]] && [[ $(docker run multi_app 2>&1 | grep -c "Hello world") -eq 1 ]] && [[ $(docker image inspect -f "{{.Size}}" single_app) -gt $(docker image inspect -f "{{.Size}}" multi_app) ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
