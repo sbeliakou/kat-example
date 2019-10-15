@@ -4,7 +4,8 @@ You have your own **myweb:0.1** image but you have to change the tag.
 ## Requirements:
 - change docker image tag:
   - from: **myweb:0.1**
-  - to: **(first letter of name + Lastname)/httpd:1.0** (etc. sbeliakou/httpd:1.0)  
+  - to: **(first letter of name + Lastname)/httpd:1.0**  
+    (etc. sbeliakou/httpd:1.0)  
 
 Inspect docker images, you should see image with new tag.  
 

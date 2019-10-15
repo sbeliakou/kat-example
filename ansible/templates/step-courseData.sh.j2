@@ -10,7 +10,6 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 {% endif %}
 
 {% if module.db_name == "docker" and item.0 == 0 %}
-sudo systemctl stop docker
 :> /opt/launch-kubeadm.sh
 ps -ef | grep /opt/launch-kubeadm.sh | grep -v grep | awk '{print $2}' | xargs -r kill -9
 kubeadm reset -f || true
