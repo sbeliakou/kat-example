@@ -68,6 +68,14 @@
         "courseData": "step7-courseData.sh",
         "code": "step7-foreground.sh"
        }
+       ,
+       {
+        "title": "Multi-stage build",
+        "text": "step8.md",
+        "verify": "step8-verify.sh",
+        "courseData": "step8-courseData.sh",
+        "code": "step8-foreground.sh"
+       }
     ],
     "intro": {
       "text": "intro.md",
