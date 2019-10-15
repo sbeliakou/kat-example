@@ -120,7 +120,7 @@ module:
         Create Dockerfile and build image.
 
         ## Requirements:
-        - image name: **myweb**
+        - image tag: **myweb**
         - tag: **0.1**
         - base image: **centos**
         - label: `author=student`
@@ -153,6 +153,22 @@ module:
         - inspect **Checking** tab again, now you should see your **"Name Lastname"**
       verify: |-
         $(docker image ls | grep "/httpd.*1.0" >/dev/null 2>&1)
+    - title: ENTRYPOINT and CMD
+      task: |-
+        Create Dockerfile and build image with the following requirements.
+
+        ## Requirements:
+        - image tag: **pinger**
+        - base image: **alpine**
+        - ENTRYPOINT: **ping**
+        - CMD: **-c3**, **dockerhub.com**
+
+        To see the difference between **ENTRYPOINT** and **CMD** perform the next actions:  
+        - `docker run pinger`
+        - `docker run pinger google.com`
+        - `docker run pinger -c5 google.com`
+      verify: |-
+        $(docker image ls | grep "pinger" >/dev/null 2>&1)
     intro: |-
       # In this section you will do following:
 
@@ -176,7 +192,7 @@ module:
       docker build [-t image_tag] [-f ./path/to/dockerfile] .
       docker build --build-arg BASE_IMAGE=ubuntu:16.04 .
 
-      docker tag <<id|tag>> <<new_tag>>
+      docker tag (old_id|old_tag) (new_tag)
 
       docker pull ubuntu
       docker push myweb/1.0

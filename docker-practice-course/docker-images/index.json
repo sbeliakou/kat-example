@@ -35,6 +35,14 @@
         "courseData": "step3-courseData.sh",
         "code": "step3-foreground.sh"
        }
+       ,
+       {
+        "title": "ENTRYPOINT and CMD",
+        "text": "step4.md",
+        "verify": "step4-verify.sh",
+        "courseData": "step4-courseData.sh",
+        "code": "step4-foreground.sh"
+       }
     ],
     "intro": {
       "text": "intro.md",
