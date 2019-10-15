@@ -27,6 +27,14 @@
         "courseData": "step2-courseData.sh",
         "code": "step2-foreground.sh"
        }
+       ,
+       {
+        "title": "Tag changing",
+        "text": "step3.md",
+        "verify": "step3-verify.sh",
+        "courseData": "step3-courseData.sh",
+        "code": "step3-foreground.sh"
+       }
     ],
     "intro": {
       "text": "intro.md",

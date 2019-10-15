@@ -8,6 +8,9 @@ ps -ef | grep /usr/bin/kubelet | grep -v grep | awk '{print $2}' | xargs -r kill
 systemctl stop kubelet
 systemctl disable kubelet
 docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' | awk '{print $3}' | xargs -r docker image rm
+sudo iptables -t filter -F
+sudo iptables -t filter -X
+sudo systemctl restart docker
 
 
 

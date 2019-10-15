@@ -104,7 +104,7 @@ module:
         >>Q4: What is the busybox image size?<<
         =~= 1.
 
-        Inspect existing **busybox** and **ruby** images.
+        Inspect **_existing_** **busybox** and **ruby** images.
 
         >>Q5: What is the busybox image Architecture?<<
         =~= amd64
@@ -121,20 +121,38 @@ module:
 
         ## Requirements:
         - image name: **myweb**
+        - tag: **0.1**
         - base image: **centos**
         - label: `author=student`
         - **httpd** webserver should be installed
-        - **index.html** default httpd page should contain your **Name Lastname**
+        - **index.html** default httpd page should contain your **"Name Lastname"**
         - port **80** should be exposed
 
         To check your image try to execute:  
-        `docker run -dt -p 32000:80 myweb`  
+        `docker run -dt -p 32000:80 myweb:0.1`
 
-        Then go to **Checking** tab. You should see your **Name Lastname**  
+        Then go to **Checking** tab. You should see your **"Name Lastname"**  
         (or curl **32000** port of **localhost**)
-
       verify: |-
         $(curl -Ls 127.0.0.1:32000 >/dev/null 2>&1)
+    - title: Tag changing
+      task: |-
+        You have your own **myweb:0.1** image but you have to change the tag.  
+
+        ## Requirements:
+        - change docker image tag:
+          - from: **myweb:0.1**
+          - to: **(first letter of name + Lastname)/httpd:1.0** (etc. sbeliakou/httpd:1.0)  
+
+        Inspect docker images, you should see image with new tag.  
+
+        Let's run the new image:  
+        - stop **myweb:0.1** container: `docker stop $(docker ps -lq)`
+        - inspect **Checking** tab, you should see katakoda's connecting page 
+        - run the new image: `docker run -dt -p 32000:80 sbeliakou/httpd:1.0`
+        - inspect **Checking** tab again, now you should see your **"Name Lastname"**
+      verify: |-
+        $(docker image ls | grep "/httpd.*1.0" >/dev/null 2>&1)
     intro: |-
       # In this section you will do following:
 

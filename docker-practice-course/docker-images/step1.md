@@ -16,7 +16,7 @@ Pull the **busybox** image.
 >>Q4: What is the busybox image size?<<
 =~= 1.
 
-Inspect existing **busybox** and **ruby** images.
+Inspect **_existing_** **busybox** and **ruby** images.
 
 >>Q5: What is the busybox image Architecture?<<
 =~= amd64
