@@ -8,7 +8,7 @@ Create **Ingress** which will redirect to these Pods depends on URL path:
 - `/yellow` path - to **yellow** Pod
 
 Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).  
-Add to address `/red`, `green` and `yellow` and check the result.  
+Add to URL address `/red`, `/green` and `/yellow` paths and check the results.  
 You should see **red**, **green** and **yellow** page correspondingly.  
 
 ## Documentation:
