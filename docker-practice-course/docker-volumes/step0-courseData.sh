@@ -10,6 +10,7 @@ systemctl disable kubelet
 docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' | awk '{print $3}' | xargs -r docker image rm
 sudo iptables -t filter -F
 sudo iptables -t filter -X
+sudo rm /etc/docker/daemon.json
 sudo systemctl restart docker
 
 
