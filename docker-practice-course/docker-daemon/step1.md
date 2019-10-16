@@ -1,20 +1,29 @@
 
 Inspect Docker Configuration and answer the questions below.
 
->>Q1: How many containers are there (in all states)?<<
+>>Q1: What Docker Server version is installed?<<
+=~= 18.09
+
+>>Q2: How many containers are there (in all states)?<<
 === 0
 
->>Q2: What default Storage Driver?<<
+>>Q3: What Storage Driver is set by default?<<
 === overlay
 
->>Q3: What default Runtime?<<
+>>Q4: What Runtime is set by default?<<
 === runc
 
->>Q4: What Docker Root Dir?<<
+>>Q5: What Docker Root Dir is set by default?<<
 === /var/lib/docker
 
->>Q5: What default Cgroup Driver?<<
+>>Q6: What Cgroup Driver is set by default?<<
 === systemd
+
+>>Q7: Where is docker.service file placed?<<
+=~= /lib/systemd/system/docker.service
+
+>>Q8: Where is docker.socket placed?<<
+=~= /var/run/docker.sock
 
 ## Documentation:
 - https://docs.docker.com/config/daemon/
