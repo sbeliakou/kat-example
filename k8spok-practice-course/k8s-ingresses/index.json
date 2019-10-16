@@ -1,6 +1,7 @@
 {
   "title": "Ingress in Kubernetes",
   "description": "Working with Ingress in Kubernetes",
+  "difficulty": "beginner",
   "time": "40 minutes",
   "details": {
     "steps": [

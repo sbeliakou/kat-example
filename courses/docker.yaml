@@ -6,6 +6,7 @@ module:
   courses:
   - course_id: docker-daemon
     title: Working with Docker Daemon
+    difficulty: beginner
     time: 15 minutes
     steps:
     - title: Welcome
@@ -94,6 +95,7 @@ module:
           port: 8080
   - course_id: docker-images
     title: Working with Docker Images
+    difficulty: beginner
     time: 45 minutes
     steps:
     - title: Welcome
@@ -275,6 +277,7 @@ module:
         port: 32000
   - course_id: docker-containers
     title: Working with Docker Containers
+    difficulty: beginner
     time: 45 minutes
     steps:
     - title: Welcome
@@ -355,6 +358,7 @@ module:
           port: 8080
   - course_id: docker-networks
     title: Working with Docker Networks
+    difficulty: beginner
     time: 45 minutes
     steps:
     - title: Welcome
@@ -395,6 +399,7 @@ module:
           port: 8080
   - course_id: docker-cgroups
     title: Working with CGroups
+    difficulty: beginner
     time: 45 minutes
     steps:
     - title: Welcome
@@ -475,6 +480,7 @@ module:
           port: 8080
   - course_id: docker-compose
     title: Working with Docker Compose
+    difficulty: beginner
     time: 45 minutes
     steps:
     - title: Welcome

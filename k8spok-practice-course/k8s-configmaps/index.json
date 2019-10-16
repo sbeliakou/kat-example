@@ -1,6 +1,7 @@
 {
   "title": "ConfigMaps in Kubernetes",
   "description": "Working with ConfigMaps in Kubernetes",
+  "difficulty": "beginner",
   "time": "40 minutes",
   "details": {
     "steps": [

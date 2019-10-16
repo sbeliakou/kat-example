@@ -1,6 +1,7 @@
 {
   "title": "Working with Docker Daemon",
   "description": "",
+  "difficulty": "beginner",
   "time": "15 minutes",
   "details": {
     "steps": [

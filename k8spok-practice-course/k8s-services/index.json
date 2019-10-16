@@ -1,6 +1,7 @@
 {
   "title": "Services",
   "description": "Services in Kubernetes",
+  "difficulty": "beginner",
   "time": "45 minutes",
   "details": {
     "steps": [

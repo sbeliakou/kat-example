@@ -1,6 +1,7 @@
 {
   "title": "Secrets in Kubernetes",
   "description": "Working with secrets in Kubernetes",
+  "difficulty": "beginner",
   "time": "40 minutes",
   "details": {
     "steps": [

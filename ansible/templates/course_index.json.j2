@@ -1,6 +1,7 @@
 {
   "title": "{{ course.title }}",
   "description": "{{ course.description | default('') }}",
+  "difficulty": "{{ course.difficulty | default('beginner') }}",
   "time": "{{ course.time | default('30 minutes') }}",
   "details": {
     "steps": [

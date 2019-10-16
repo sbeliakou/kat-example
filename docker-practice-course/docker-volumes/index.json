@@ -1,6 +1,7 @@
 {
   "title": "Working with Docker Volumes",
   "description": "",
+  "difficulty": "beginner",
   "time": "45 minutes",
   "details": {
     "steps": [
