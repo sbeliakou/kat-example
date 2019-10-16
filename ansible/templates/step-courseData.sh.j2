@@ -11,24 +11,6 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 {% endif %}
 
 
-
-{% if module.db_name == "kubernetes" and course.course_id == "k8s-node-bootstrap" and item.0 == 0 %}
-ping -c1 node01 || ( echo "Something went wrong, sorry" && shutdown -r now )
-
-#/opt/launch-kubeadm.sh
-kubectl delete configmap -n kube-public cluster-info
-kubectl delete secret -n kube-system bootstrap-token-96771a
-
-ssh -o StrictHostKeyChecking=no node01 "mkdir -p /etc/kubernetes"
-# ssh -o StrictHostKeyChecking=no node01 'echo KUBELET_KUBECONFIG_ARGS=\"--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=systemd\"> /etc/default/kubelet'
-# ssh -o StrictHostKeyChecking=no node01 'echo KUBELET_CONFIG_ARGS=\"\">> /etc/default/kubelet'
-# ssh -o StrictHostKeyChecking=no node01 'systemctl daemon-reload'
-
-ssh -o StrictHostKeyChecking=no node01 "rm -rf /etc/systemd/system/kubelet.service.d"
-{% endif %}
-
-
-
 ##### preparing for DOCKER ####
 {% if module.db_name == "docker" and item.0 == 0 %}
 :> /opt/launch-kubeadm.sh
