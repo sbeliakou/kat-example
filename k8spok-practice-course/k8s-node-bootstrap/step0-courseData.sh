@@ -12,7 +12,7 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 ##### preparing for DOCKER ####
 
 
-ping -c1 node01 || ( echo "Something went wrong, sorry" && shutdown -r now )
+#ping -c1 node01 || ( echo "Something went wrong, sorry" && shutdown -r now )
 
 #/opt/launch-kubeadm.sh
 kubectl delete configmap -n kube-public cluster-info
