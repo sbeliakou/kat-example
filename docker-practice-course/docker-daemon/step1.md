@@ -19,10 +19,10 @@ Inspect Docker Configuration and answer the questions below.
 >>Q6: What Cgroup Driver is set by default?<<
 === systemd
 
->>Q7: Where is docker.service file placed?<<
+>>Q7: Where is docker.service file placed (enter full path)?<<
 =~= /lib/systemd/system/docker.service
 
->>Q8: Where is docker.socket placed?<<
+>>Q8: Where is docker.socket placed (enter full path)?<<
 =~= /var/run/docker.sock
 
 ## Documentation:

@@ -38,10 +38,10 @@ module:
         >>Q6: What Cgroup Driver is set by default?<<
         === systemd
 
-        >>Q7: Where is docker.service file placed?<<
+        >>Q7: Where is docker.service file placed (enter full path)?<<
         =~= /lib/systemd/system/docker.service
 
-        >>Q8: Where is docker.socket placed?<<
+        >>Q8: Where is docker.socket placed (enter full path)?<<
         =~= /var/run/docker.sock
 
         ## Documentation:
@@ -50,12 +50,12 @@ module:
         clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     - title: Docker Daemon settings setup
       task: |-
-        Change Storage Driver docker daemon settings from `overlay` to `overlay2`
+        Change Logging Driver docker daemon settings from `json-file` to `syslog`
 
         ## Documentation:
         - https://docs.docker.com/config/daemon/
       verify: |-
-        [[ $(docker info 2>&1 | grep "Storage Driver" | cut -d' ' -f3) == 'overlay2' ]]
+        [[ $(docker info 2>&1 | grep "Logging Driver" | cut -d' ' -f3) == 'syslog' ]]
     - title: Access to the docker managing
       task: |-
         Create user **admin** and grand him privelegues to manage docker.

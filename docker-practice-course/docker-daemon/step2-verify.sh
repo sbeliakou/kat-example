@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(docker info 2>&1 | grep "Storage Driver" | cut -d' ' -f3) == 'overlay2' ]]  &&
+[[ $(docker info 2>&1 | grep "Logging Driver" | cut -d' ' -f3) == 'syslog' ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
