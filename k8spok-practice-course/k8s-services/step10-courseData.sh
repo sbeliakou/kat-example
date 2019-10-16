@@ -1,6 +1,13 @@
 #!/bin/bash
 
+##### preparing for KUBERNETES ####
 
+
+
+
+
+
+##### preparing for DOCKER ####
 
 
 kubectl create namespace trouble

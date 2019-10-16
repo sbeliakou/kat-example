@@ -1,6 +1,13 @@
 #!/bin/bash
 
+##### preparing for KUBERNETES ####
 
+
+
+
+
+
+##### preparing for DOCKER ####
 :> /opt/launch-kubeadm.sh
 ps -ef | grep /opt/launch-kubeadm.sh | grep -v grep | awk '{print $2}' | xargs -r kill -9
 kubeadm reset -f || true

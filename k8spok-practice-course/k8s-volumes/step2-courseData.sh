@@ -1,6 +1,13 @@
 #!/bin/bash
 
+##### preparing for KUBERNETES ####
 
+
+
+
+
+
+##### preparing for DOCKER ####
 
 
 for item in {1..5}; do

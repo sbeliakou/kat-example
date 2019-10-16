@@ -55,6 +55,12 @@
       "title": "Exam 1",
       "description": "Exam 1"
    }
+   ,
+   {
+      "course_id": "k8s-node-bootstrap",
+      "title": "Node Bootstrapping",
+      "description": "TLS Bootstraping"
+   }
   ]
 }
 

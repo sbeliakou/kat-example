@@ -14,7 +14,7 @@
        }
        ,
        {
-        "title": "Configmaps in different namespaces",
+        "title": "Initialize Kubernetes Control Plain",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "courseData": "step1-courseData.sh",

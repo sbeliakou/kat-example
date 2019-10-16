@@ -2,7 +2,7 @@
   hosts: localhost
   tags: k8s
   vars:
-    path: ..
+    path: "{{ playbook_dir }}/.."
   vars_files:
   - "{{ path }}/courses/kubernetes.yaml"
   tasks:
@@ -27,7 +27,7 @@
   hosts: localhost
   tags: docker
   vars:
-    path: ..
+    path: "{{ playbook_dir }}/.."
   vars_files:
   - "{{ path }}/courses/docker.yaml"
   tasks:

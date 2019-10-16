@@ -11,24 +11,22 @@ Inspect docker images and answer the questions below.
 === 6
 
 
-Pull the **hello-world** and **busybox** images.
+Pull the **busybox** image.
 
 >>Q4: What is the busybox image size?<<
 =~= 1.
 
 >>Q5: How many layers are in "busybox" image?<<
-=== 6
-
+=== 1
 
 
 Pull **nginx:1.16** image.
 
 >>Q6: What is the "nginx:1.16" image size?<<
-=== 126
+=~= 126
 
 >>Q7: How many layers are in "nginx:1.16" image?<<
 === 3
-
 
 
 Remove **node** image.
