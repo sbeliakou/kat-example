@@ -1,16 +1,17 @@
 
-You have your own **myweb:0.1** image but you have to change the tag.  
+Create Dockerfile and build image.
 
 ## Requirements:
-- change docker image tag:
-  - from: **myweb:0.1**
-  - to: **(first letter of name + Lastname)/httpd:1.0**  
-    (etc. sbeliakou/httpd:1.0)  
+- image tag: **myweb**
+- tag: **0.1**
+- base image: **centos:7**
+- label: `author=student`, where _student_ is your Lastname;
+- **httpd** webserver should be installed
+- **index.html** default httpd page should contain your **"Name Lastname"**
+- port **80** should be exposed
 
-Inspect docker images, you should see image with new tag.  
+To check your image try to execute:  
+`docker run -dt -p 32000:80 myweb:0.1`
 
-Let's run the new image:  
-- stop **myweb:0.1** container: `docker stop $(docker ps -lq)`
-- inspect **Checking** tab, you should see katakoda's connecting page 
-- run the new image: `docker run -dt -p 32000:80 sbeliakou/httpd:1.0`
-- inspect **Checking** tab again, now you should see your **"Name Lastname"**
+Then go to **Checking** tab. You should see your **"Name Lastname"**  
+(or curl **32000** port of **localhost**)

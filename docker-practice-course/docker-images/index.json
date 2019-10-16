@@ -30,7 +30,7 @@
        }
        ,
        {
-        "title": "Tag changing",
+        "title": "Dockerfile writing",
         "text": "step3.md",
         "verify": "step3-verify.sh",
         "courseData": "step3-courseData.sh",
@@ -38,7 +38,7 @@
        }
        ,
        {
-        "title": "ENTRYPOINT and CMD",
+        "title": "Tag changing",
         "text": "step4.md",
         "verify": "step4-verify.sh",
         "courseData": "step4-courseData.sh",
@@ -46,7 +46,7 @@
        }
        ,
        {
-        "title": "Building with arguments",
+        "title": "ENTRYPOINT and CMD",
         "text": "step5.md",
         "verify": "step5-verify.sh",
         "courseData": "step5-courseData.sh",
@@ -54,11 +54,19 @@
        }
        ,
        {
-        "title": "ENV, ADD/COPY, WORKDIR",
+        "title": "Building with arguments",
         "text": "step6.md",
         "verify": "step6-verify.sh",
         "courseData": "step6-courseData.sh",
         "code": "step6-foreground.sh"
+       }
+       ,
+       {
+        "title": "ENV, ADD/COPY, WORKDIR",
+        "text": "step7.md",
+        "verify": "step7-verify.sh",
+        "courseData": "step7-courseData.sh",
+        "code": "step7-foreground.sh"
        }
     ],
     "intro": {

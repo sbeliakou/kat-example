@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-$(docker image ls | grep "pinger" >/dev/null 2>&1)  &&
+$(docker image ls | grep "/httpd.*1.0" >/dev/null 2>&1)  &&
 echo done || exit 0
 
 TASK_SCORE="1"

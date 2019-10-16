@@ -1,7 +1,10 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-$(curl -Ls 127.0.0.1:32000 >/dev/null 2>&1)  &&
+[[ $(docker run mybusybox pwd 2>&1) == '/data' ]] &&
+[[ $(docker run mybusybox ls test_file1 2>&1) == 'test_file1' ]] &&
+[[ $(docker run mybusybox ls test_file2 2>&1) == 'test_file2' ]] &&
+[[ $(docker run mybusybox env 2>&1 | grep -c MAINTAINER) -ge 1 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
@@ -13,7 +16,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
     "email": "${EMAIL}",
-    "scenario": "docker-images.3", 
+    "scenario": "docker-images.7", 
     "score": ${TASK_SCORE}
   }
 }

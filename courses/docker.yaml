@@ -115,35 +115,75 @@ module:
         >>Q2: What is the "python" image size?<<
         =~= 74
 
-        >>Q3: What is the base image of ruby?<<
-        =~= alpine
+        >>Q3: How many layers are in "redis" image?<<
+        === 6
 
 
-        Pull the **busybox** image.
+        Pull the **hello-world** and **busybox** images.
 
         >>Q4: What is the busybox image size?<<
         =~= 1.
 
-        Inspect **_existing_** **busybox** and **ruby** images.
+        >>Q5: How many layers are in "busybox" image?<<
+        === 6
 
-        >>Q5: What is the busybox image Architecture?<<
-        =~= amd64
 
-        >>Q6: What is the value of "GEM_HOME" env variable of ruby image?<<
-        =~= /usr/local/bundle
+
+        Pull **nginx:1.16** image.
+
+        >>Q6: What is the "nginx:1.16" image size?<<
+        === 126
+
+        >>Q7: How many layers are in "nginx:1.16" image?<<
+        === 3
+
+
 
         Remove **node** image.
       foreground: |-
         clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     - title: Image building
       task: |-
+        You are given two Dockerfiles in `/data` directory. Build new images with the requirements below.
+
+        ## Requirements:
+        - 1st image:
+          - use `Dockerfile` for building image;
+          - result image name: `color/green:1.0`;
+        - 2nd image:
+          - use `Dockerfile_blue` for building image;
+          - result image name: `color/blue:2.6`.
+
+        For self-checking run images with the next commands:  
+        - `docker run -dt -p 32108:80 color/green:1.0`  
+        - `docker run -dt -p 32109:80 color/blue:2.6`  
+
+        Open `Checking` tab and enter port **32108** for watching green page;  
+        and enter port **32109** for watching blue page.  
+
+      courseData: |-
+        mkdir -p /data 
+        cat << 'EOF' > /data/Dockerfile
+        FROM nginx
+        EXPOSE 80
+        CMD echo "<head></head><body style=\"background-color:green;\"></body>">/usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+        EOF
+        echo '<head></head><body style="background-color:blue;"></body>' > /data/index_blue.html
+        cat << 'EOF' > /data/Dockerfile_blue
+        FROM nginx
+        EXPOSE 80
+        COPY index_blue.html /usr/share/nginx/html/index.html
+        CMD nginx -g 'daemon off;'
+        EOF
+    - title: Dockerfile writing
+      task: |-
         Create Dockerfile and build image.
 
         ## Requirements:
         - image tag: **myweb**
         - tag: **0.1**
-        - base image: **centos**
-        - label: `author=student`
+        - base image: **centos:7**
+        - label: `author=student`, where _student_ is your Lastname;
         - **httpd** webserver should be installed
         - **index.html** default httpd page should contain your **"Name Lastname"**
         - port **80** should be exposed
@@ -228,7 +268,7 @@ module:
         - work directory: **/data**;
         - **test_file1** file should be copied to work directory;
         - content of **test_arch.tar.gz** archive should be copied to work directory;
-        - image should have environment variable: `MAINTAINER=student`
+        - image should have environment variable: `MAINTAINER=student`, where _student_ is your Lastname
       courseData: |-
         echo 'megatestfile1'>test_file1 && echo 'megatestfile2'>test_file2 && tar -czf test_arch.tar.gz test_file2 && rm test_file2
       verify: |-

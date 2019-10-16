@@ -1,10 +1,8 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(docker run mybusybox pwd 2>&1) == '/data' ]] &&
-[[ $(docker run mybusybox ls test_file1 2>&1) == 'test_file1' ]] &&
-[[ $(docker run mybusybox ls test_file2 2>&1) == 'test_file2' ]] &&
-[[ $(docker run mybusybox env 2>&1 | grep -c MAINTAINER) -ge 1 ]]  &&
+[[ $(docker run c8j11 java -version 2>&1 | grep -c "openjdk.*11") -ge 1 ]] &&
+[[ $(docker run c7j180 java -version 2>&1 | grep -c "openjdk.*1.8.0") -ge 1 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

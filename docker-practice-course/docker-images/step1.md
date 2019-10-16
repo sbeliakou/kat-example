@@ -7,21 +7,28 @@ Inspect docker images and answer the questions below.
 >>Q2: What is the "python" image size?<<
 =~= 74
 
->>Q3: What is the base image of ruby?<<
-=~= alpine
+>>Q3: How many layers are in "redis" image?<<
+=== 6
 
 
-Pull the **busybox** image.
+Pull the **hello-world** and **busybox** images.
 
 >>Q4: What is the busybox image size?<<
 =~= 1.
 
-Inspect **_existing_** **busybox** and **ruby** images.
+>>Q5: How many layers are in "busybox" image?<<
+=== 6
 
->>Q5: What is the busybox image Architecture?<<
-=~= amd64
 
->>Q6: What is the value of "GEM_HOME" env variable of ruby image?<<
-=~= /usr/local/bundle
+
+Pull **nginx:1.16** image.
+
+>>Q6: What is the "nginx:1.16" image size?<<
+=== 126
+
+>>Q7: How many layers are in "nginx:1.16" image?<<
+=== 3
+
+
 
 Remove **node** image.

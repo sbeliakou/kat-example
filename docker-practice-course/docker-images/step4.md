@@ -1,13 +1,16 @@
 
-Create Dockerfile and build image with the following requirements.
+You have your own **myweb:0.1** image but you have to change the tag.  
 
 ## Requirements:
-- image tag: **pinger**
-- base image: **alpine**
-- ENTRYPOINT: **ping**
-- CMD: **-c3**, **dockerhub.com**
+- change docker image tag:
+  - from: **myweb:0.1**
+  - to: **(first letter of name + Lastname)/httpd:1.0**  
+    (etc. sbeliakou/httpd:1.0)  
 
-To see the difference between **ENTRYPOINT** and **CMD** perform the next actions:  
-- `docker run pinger`
-- `docker run pinger google.com`
-- `docker run pinger -c5 google.com`
+Inspect docker images, you should see image with new tag.  
+
+Let's run the new image:  
+- stop **myweb:0.1** container: `docker stop $(docker ps -lq)`
+- inspect **Checking** tab, you should see katakoda's connecting page 
+- run the new image: `docker run -dt -p 32000:80 sbeliakou/httpd:1.0`
+- inspect **Checking** tab again, now you should see your **"Name Lastname"**
