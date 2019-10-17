@@ -493,12 +493,26 @@ module:
       verify: |-
         [ -f /opt/.user ]
       courseData: |-
-        echo '<head></head><body style="background-color:blue;"></body>' > /root/index.html
-    - title: Working with
+        echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
+    - title: Mounting Data from Host
       task: |-
-        task
+        You are given `/root/index.html` file.  
+        Run **nginx** container in detach mode with mounting **index.html** into container.  
+
+        ## Requirements:
+        - container should run in **detach** mode;
+        - container should mount `/root/index.html` file on host to `/usr/share/nginx/html/index.html` on container;
+        - container should expose **80** container port to **32100** host port;
+        - used image: **nginx**.  
+
+        For self-checking open **Checking** tab and enter **32100** port. You should see yellow page.
       foreground: |-
         clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+      verify: |-
+        [[ $(curl -s 0.0.0.0:32100 | grep -c yellow) -eq 1 ]]
+    - title: Creating Volume for the Container
+      task: |-
+        task
     intro: |-
       # In this section you will do following:
 
@@ -523,6 +537,8 @@ module:
       dashboards:
         - name: User
           port: 8080
+        - name: Checking
+          port: 32000
   - course_id: docker-networks
     title: Working with Docker Networks
     difficulty: beginner

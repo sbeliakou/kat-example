@@ -19,5 +19,5 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 
 
-echo '<head></head><body style="background-color:blue;"></body>' > /root/index.html
+echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
 
