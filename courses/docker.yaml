@@ -453,7 +453,6 @@ module:
       docker run -d -p 8081:80 --name h8081 myhttpd:1.0
 
       docker run -d --restart=always --name sleeper centos sleep 5
-      docker inspect -f "{{ .RestartCount }}" sleeper
 
       docker run centos cat /etc/redhat-release
       docker run -it centos bash
@@ -493,8 +492,8 @@ module:
       verify: |-
         [ -f /opt/.user ]
       courseData: |-
-        echo '<head></head><body style="background-color:yellow;"></body>'>index.html
-    - title: Mounting Data from Host
+        echo '<head></head><body style="background-color:blue;"></body>' > /root/index.html
+    - title: Working with
       task: |-
         task
       foreground: |-
