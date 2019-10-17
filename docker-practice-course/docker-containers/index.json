@@ -14,11 +14,35 @@
        }
        ,
        {
-        "title": "Working with",
+        "title": "Running the Container in detach mode",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "courseData": "step1-courseData.sh",
         "code": "step1-foreground.sh"
+       }
+       ,
+       {
+        "title": "Running the Container with publish exposed ports",
+        "text": "step2.md",
+        "verify": "step2-verify.sh",
+        "courseData": "step2-courseData.sh",
+        "code": "step2-foreground.sh"
+       }
+       ,
+       {
+        "title": "Running the Container with publish exposed ports 2",
+        "text": "step3.md",
+        "verify": "step3-verify.sh",
+        "courseData": "step3-courseData.sh",
+        "code": "step3-foreground.sh"
+       }
+       ,
+       {
+        "title": "Restart policy",
+        "text": "step4.md",
+        "verify": "step4-verify.sh",
+        "courseData": "step4-courseData.sh",
+        "code": "step4-foreground.sh"
        }
     ],
     "intro": {
@@ -35,6 +59,8 @@
     "uilayout": "terminal-iframe",
     "dashboards": [
       {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
+      ,
+      {"name": "Checking", "href": "https://[[HOST_SUBDOMAIN]]-32000-[[KATACODA_HOST]].environments.katacoda.com"}
     ]
   },
   "backend": {

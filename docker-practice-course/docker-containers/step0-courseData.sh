@@ -3,10 +3,6 @@
 ##### preparing for KUBERNETES ####
 
 
-
-
-
-
 ##### preparing for DOCKER ####
 :> /opt/launch-kubeadm.sh
 ps -ef | grep /opt/launch-kubeadm.sh | grep -v grep | awk '{print $2}' | xargs -r kill -9
@@ -23,4 +19,10 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 
 
+mkdir -p /data 
+cat << 'EOF' > /data/Dockerfile
+FROM nginx
+EXPOSE 80
+CMD echo "<head></head><body style=\"background-color:green;\"></body>">/usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+EOF
 

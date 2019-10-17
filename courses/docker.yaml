@@ -325,11 +325,68 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
-    - title: Working with
+      courseData: |-
+        mkdir -p /data 
+        cat << 'EOF' > /data/Dockerfile
+        FROM nginx
+        EXPOSE 80
+        CMD echo "<head></head><body style=\"background-color:green;\"></body>">/usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+        EOF
+    - title: Running the Container in detach mode
       task: |-
-        task
+        You are given the Dockerfile in `/data` directory.  
+        Build image and run container in **detach** mode.  
+
+        ## Requirements:
+        - image name (tag): `color/green:1.0`
+        - container should be runned in **detach** mode
+
+        Check the container is running - use `docker ps`.
+      verify: |-
+        [[ $(docker ps | grep -c "color/green:1.0") -ge 1 ]]
       foreground: |-
         clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    - title: Running the Container with publish exposed ports
+      task: |-
+        You have **color/green:1.0** image. The image runs **_nginx_** webserver, but you can't reach this one. because of exposed port(s) isn't published.
+
+        ## Requirements:
+        - run container with **color/green:1.0** image in **detach** mode;
+        - publish exposed port to random port.  
+
+        For self-checking inspect the container is running; find out published port(s); then go to the **Checking** tab and enter published port.  
+        You should see **_green_** page.
+      verify: |-
+        [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:.....->80/tcp") -ge 1 ]]
+    - title: Running the Container with publish exposed ports 2
+      task: |-
+        Great, you ran the container with publish exposed port(s) to the random port(s), but what if you need to publish exposed port(s) to definite port of host?
+
+        ## Requirements:
+        - run container with **color/green:1.0** image in **detach** mode;
+        - publish exposed port to port **32100** of the host.
+      verify: |-
+        [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:32100->80/tcp") -eq 1 ]]
+    - title: Restart policy
+      task: |-
+        Create two containers which will restart:
+        - 1st - regardless of the exit status;
+        - 2nd - restarts only if the container exits with a non-zero exit status and has 7 restart retries.  
+
+        ## Requirements:
+        - 1st container:
+          - should runned in **detach** mode;
+          - should restart regardless of the exit status;
+          - container name: `restarter_1`;
+          - image name: `busybox`;
+          - command: `sleep 3`.
+        - 2nd container:
+          - should runned in **detach** mode;
+          - should restart only if the container exits with a non-zero exit status;
+          - should have 7 restart retries;
+          - container name: `restarter_2`;
+          - image name: `busybox`;
+          - command: `sleep -3`.
     intro: |-
       # In this section you will do following:
 
@@ -354,6 +411,8 @@ module:
       dashboards:
         - name: User
           port: 8080
+        - name: Checking
+          port: 32000
   - course_id: docker-volumes
     title: Working with Docker Volumes
     time: 45 minutes

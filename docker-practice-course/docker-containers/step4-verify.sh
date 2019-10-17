@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(docker ps | grep -c "color/green:1.0") -ge 1 ]]  &&
+echo  &&
 echo done || exit 0
 
 TASK_SCORE="1"
@@ -13,7 +13,7 @@ cat << EOF | curl -s -X POST --data @- https://s9cfrymdt8.execute-api.eu-west-1.
   "payload": {
     "name": "${FIRSTNAME} ${LASTNAME}",
     "email": "${EMAIL}",
-    "scenario": "docker-containers.1", 
+    "scenario": "docker-containers.4", 
     "score": ${TASK_SCORE}
   }
 }
