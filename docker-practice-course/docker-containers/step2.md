@@ -1,5 +1,5 @@
 
-You have **color/green:1.0** image. The image runs **_nginx_** webserver, but you can't reach this one. because of exposed port(s) isn't published.
+You have **color/green:1.0** image. The image runs **_nginx_** webserver, but you can't reach this one, because of exposed port(s) isn't published.
 
 ## Requirements:
 - run container with **color/green:1.0** image in **detach** mode;

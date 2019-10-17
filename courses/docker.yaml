@@ -348,7 +348,7 @@ module:
         clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
     - title: Running the Container with publish exposed ports
       task: |-
-        You have **color/green:1.0** image. The image runs **_nginx_** webserver, but you can't reach this one. because of exposed port(s) isn't published.
+        You have **color/green:1.0** image. The image runs **_nginx_** webserver, but you can't reach this one, because of exposed port(s) isn't published.
 
         ## Requirements:
         - run container with **color/green:1.0** image in **detach** mode;
@@ -388,7 +388,6 @@ module:
           - image name: `busybox`;
           - command: `sleep -3`.
       verify: !unsafe '[[ $(docker inspect -f "{{ .HostConfig.RestartPolicy }}" restarter_1) == "{always 0}" ]] && [[ $(docker inspect -f "{{ .HostConfig.RestartPolicy }}" restarter_2) == "{on-failure 7}" ]]'
-
     - title: Executing Commands
       task: |-
         Run container and do the requirements below.
@@ -399,6 +398,40 @@ module:
         - should execute command for getting `os-release` info and record this one in `/root/alpine-release` file.
       verify: |-
         [[ $(grep -c 'Alpine Linux' /root/alpine-release) -eq 2 ]]
+    - title: Executing Commands Inside Running Container
+      task: |-
+        We have deployed the `batman` container (check with `docker ps`).  
+        Enter to the container, create `/data` directory, create `/data/student` file and write your Lastname in this file.  
+
+        ## Requirements:
+        - `batman` container should contain `/data/student` file with your Lastname.  
+      courseData: |-
+        docker run -d --name=batman busybox sleep infinity
+      verify: |-
+        [[ $(docker exec batman cat /data/student) ]]
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker ps | egrep 'batman' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    - title: Stopping/Removing Containers
+      task: |-
+        Do the following tasks:
+        - stop `batman` container, check it with `docker ps -a`;
+        - remove `restarter_1` container without stopping itself (force);
+      verify: |-
+        [[ $(docker ps | egrep -c "(batman|restarter_1)") == '0' ]]
+    - title: Other Options
+      task: |-
+        Run the container with the requirements below.
+
+        ## Requirements:
+        - image: `busybox`;
+        - container name: `busy`;
+        - container should run in **detach** mode;
+        - default user id: `1000`;
+        - default user should belongs to group with `gid=0` (primary) and `gid=1200`(supplementary);
+        - workdir: `/data`;
+        - container should have env variable: `STUDENT=<Lastname>`, where <Lastname> is your Lastname;
+        - commans: `sleep infinity`.
+      verify: !unsafe '[[ $(docker inspect -f "{{ .Config.User }}" busy) == "1000:0" ]] && [[ $(docker inspect -f "{{ .Config.Env }}" busy) =~ "STUDENT" ]] && [[ $(docker inspect -f "{{ .Config.WorkingDir }}" busy) == "/data" ]] && [[ $(docker inspect -f "{{ .HostConfig.GroupAdd }}" busy) =~ "1200" ]]'
     intro: |-
       # In this section you will do following:
 
