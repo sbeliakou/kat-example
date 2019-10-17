@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-echo  &&
+[[ $(docker inspect -f "{{ .HostConfig.RestartPolicy }}" restarter_1) == "{always 0}" ]] && [[ $(docker inspect -f "{{ .HostConfig.RestartPolicy }}" restarter_2) == "{on-failure 7}" ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

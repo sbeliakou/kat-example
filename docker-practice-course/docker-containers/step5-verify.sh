@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-echo  &&
+[[ $(grep -c 'Alpine Linux' /root/alpine-release) -eq 2 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"
