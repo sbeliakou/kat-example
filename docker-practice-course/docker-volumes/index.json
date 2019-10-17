@@ -2,7 +2,7 @@
   "title": "Working with Docker Volumes",
   "description": "",
   "difficulty": "beginner",
-  "time": "45 minutes",
+  "time": "1 hour",
   "details": {
     "steps": [
        {
@@ -14,7 +14,7 @@
        }
        ,
        {
-        "title": "Mounting Data from Host",
+        "title": "Creating Volume for the Container",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "courseData": "step1-courseData.sh",
@@ -22,11 +22,27 @@
        }
        ,
        {
-        "title": "Creating Volume for the Container",
+        "title": "Mounting Data from Host",
         "text": "step2.md",
         "verify": "step2-verify.sh",
         "courseData": "step2-courseData.sh",
         "code": "step2-foreground.sh"
+       }
+       ,
+       {
+        "title": "Named Volume for the Container",
+        "text": "step3.md",
+        "verify": "step3-verify.sh",
+        "courseData": "step3-courseData.sh",
+        "code": "step3-foreground.sh"
+       }
+       ,
+       {
+        "title": "Sharing data between Containers",
+        "text": "step4.md",
+        "verify": "step4-verify.sh",
+        "courseData": "step4-courseData.sh",
+        "code": "step4-foreground.sh"
        }
     ],
     "intro": {

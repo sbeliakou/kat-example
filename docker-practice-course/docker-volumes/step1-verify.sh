@@ -1,7 +1,7 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-[[ $(curl -s 0.0.0.0:32100 | grep -c yellow) -eq 1 ]]  &&
+[[ $(grep -c n32150 $(docker inspect n32150 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

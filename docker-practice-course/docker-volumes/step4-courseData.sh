@@ -6,5 +6,5 @@
 ##### preparing for DOCKER ####
 
 
-echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
+echo 'This is the busybox container content' > /root/index.html 
 

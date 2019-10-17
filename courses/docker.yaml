@@ -483,7 +483,7 @@ module:
           port: 32000
   - course_id: docker-volumes
     title: Working with Docker Volumes
-    time: 45 minutes
+    time: 1 hour
     steps:
     - title: Welcome
       task: |-
@@ -492,27 +492,92 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
-      courseData: |-
-        echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
+    - title: Creating Volume for the Container
+      task: |-
+        Run container with creating volume. Do the requirements below.
+
+        ## Requirements:
+        - container should run in **detach** mode;
+        - container should expose **80** container port to **32150** host port;
+        - container should create volume with the next container destination: `/usr/share/nginx/html`;
+        - container name: **n32150**;
+        - image name: **nginx**.  
+
+
+        Inspect the container and find the created volume path on the host: `docker inspect n32150 | jq -r '.[].Mounts[].Source'`  
+        Go to the path and discover `index.html` file.  
+        Change this `index.html` file: `echo 'This is n32150 container' > index.html`.  
+
+
+        Go to the **Checking** tab and enter **32150** port. You should see our note.
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+      verify: |-
+        [[ $(grep -c n32150 $(docker inspect n32150 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]]
     - title: Mounting Data from Host
       task: |-
-        You are given `/root/index.html` file.  
+        You
+         are given `/root/index.html` file.  
         Run **nginx** container in detach mode with mounting **index.html** into container.  
 
         ## Requirements:
         - container should run in **detach** mode;
         - container should mount `/root/index.html` file on host to `/usr/share/nginx/html/index.html` on container;
         - container should expose **80** container port to **32100** host port;
+        - container name: **n32100**;
         - used image: **nginx**.  
 
         For self-checking open **Checking** tab and enter **32100** port. You should see yellow page.
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
       verify: |-
         [[ $(curl -s 0.0.0.0:32100 | grep -c yellow) -eq 1 ]]
-    - title: Creating Volume for the Container
+      courseData: |-
+        echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
+    - title: Named Volume for the Container
       task: |-
-        task
+        Run  container with the requirements below.  
+
+        ## Requirements:
+        - container should run in **detach** mode;
+        - container should expose **80** container port to **32200** host port;
+        - container should create volume with name **n32200_data** and the next container destination: `/usr/share/nginx/html`;
+        - container name: **n32200**;
+        - used image: **nginx**.  
+
+
+        Go to the `/vat/lib/docker/volumes/**n32200_data**/_data` directory and find `index.html` file.  
+        Change this file: `echo 'This is the n32200 container' > index.html`.
+
+        For self-checking open **Checking** tab and enter **32200** port. You should see our note.
+      verify: |-
+        [[ $(grep -c n32200 $(docker inspect n32200 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]]
+    - title: Sharing data between Containers
+      task: |-
+        Run  containers with the requirements below.  
+
+        ## Requirements:
+        - **html_data** container:
+          - should run in **detach** mode;
+          - should have name: **html_data**;
+          - should mount `/root/index.html` file on host to `/usr/share/nginx/html/index.html` on container;
+          - used image: **busybox**;  
+        - 1st web container:
+          - container should run in **detach** mode;
+          - container should expose **80** container port to **32250** host port;
+          - container should use volume from **html_data** container;
+          - container name: **n32250**;
+          - used image: **nginx**.  
+        - 2st web container:
+          - container should run in **detach** mode;
+          - container should expose **80** container port to **32300** host port;
+          - container should use volume from **html_data** container;
+          - container name: **n32300**;
+          - used image: **nginx**.
+
+        For self-checking open **Checking** tab and enter **32250** and **32300** ports. You should see note: "_This is the busybox container content_".
+      verify: |-
+        [[ $(grep -c busybox $(docker inspect n32250 | jq -r '.[].Mounts[].Source')) -eq 1 ]] && [[ $(grep -c busybox $(docker inspect n32300 | jq -r '.[].Mounts[].Source')) -eq 1 ]]
+      courseData: |-
+        echo 'This is the busybox container content' > /root/index.html 
     intro: |-
       # In this section you will do following:
 
