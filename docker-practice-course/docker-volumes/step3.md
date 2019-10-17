@@ -9,7 +9,7 @@ Run  container with the requirements below.
 - used image: **nginx**.  
 
 
-Go to the `/vat/lib/docker/volumes/**n32200_data**/_data` directory and find `index.html` file.  
+Go to the `/var/lib/docker/volumes/n32200_data/_data` directory and find `index.html` file.  
 Change this file: `echo 'This is the n32200 container' > index.html`.
 
 For self-checking open **Checking** tab and enter **32200** port. You should see our note.

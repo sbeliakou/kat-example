@@ -529,7 +529,7 @@ module:
 
         For self-checking open **Checking** tab and enter **32100** port. You should see yellow page.
       verify: |-
-        [[ $(curl -s 0.0.0.0:32100 | grep -c yellow) -eq 1 ]]
+        [[ $(grep -c yellow $(docker inspect n32100 | jq -r '.[].Mounts[].Source')) -ge 1 ]]
       courseData: |-
         echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
     - title: Named Volume for the Container
@@ -544,7 +544,7 @@ module:
         - used image: **nginx**.  
 
 
-        Go to the `/vat/lib/docker/volumes/**n32200_data**/_data` directory and find `index.html` file.  
+        Go to the `/var/lib/docker/volumes/n32200_data/_data` directory and find `index.html` file.  
         Change this file: `echo 'This is the n32200 container' > index.html`.
 
         For self-checking open **Checking** tab and enter **32200** port. You should see our note.
