@@ -2,8 +2,7 @@
 Create Dockerfile and build image.
 
 ## Requirements:
-- image tag: **myweb**
-- tag: **0.1**
+- new image name(:tag): **myweb:0.1**
 - base image: **centos:7**
 - label: `author=student`, where _student_ is your Lastname;
 - **httpd** webserver should be installed

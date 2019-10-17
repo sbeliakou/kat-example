@@ -2,7 +2,7 @@
 Create Dockerfile and build image with the following requirements.
 
 ## Requirements:
-- image tag: **pinger**
+- new image name: **pinger**
 - base image: **alpine**
 - ENTRYPOINT: **ping**
 - CMD: **-c3**, **dockerhub.com**

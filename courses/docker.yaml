@@ -158,7 +158,9 @@ module:
 
         Open `Checking` tab and enter port **32108** for watching green page;  
         and enter port **32109** for watching blue page.  
-
+      verify: |-
+        [[ $(docker ps | egrep -c "color/blue:2.6.*0.0.0.0:32109->80/tcp") -eq 1 ]] &&
+        [[ $(docker ps | egrep -c "color/green:1.0.*0.0.0.0:32108->80/tcp") -eq 1 ]]
       courseData: |-
         mkdir -p /data 
         cat << 'EOF' > /data/Dockerfile
@@ -178,8 +180,7 @@ module:
         Create Dockerfile and build image.
 
         ## Requirements:
-        - image tag: **myweb**
-        - tag: **0.1**
+        - new image name(:tag): **myweb:0.1**
         - base image: **centos:7**
         - label: `author=student`, where _student_ is your Lastname;
         - **httpd** webserver should be installed
@@ -217,7 +218,7 @@ module:
         Create Dockerfile and build image with the following requirements.
 
         ## Requirements:
-        - image tag: **pinger**
+        - new image name: **pinger**
         - base image: **alpine**
         - ENTRYPOINT: **ping**
         - CMD: **-c3**, **dockerhub.com**
@@ -261,7 +262,7 @@ module:
         Create Dockerfile and build image with the following requirements.  
 
         ## Requirements:
-        - image tag: **mybusybox**;
+        - new image name: **mybusybox**;
         - base image: **busybox**;
         - work directory: **/data**;
         - **test_file1** file should be copied to work directory;

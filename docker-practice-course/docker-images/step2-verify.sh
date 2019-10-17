@@ -1,7 +1,8 @@
 #!/bin/bash
 
 [ -f /.ok ] && echo done ||
-echo  &&
+[[ $(docker ps | egrep -c "color/blue:2.6.*0.0.0.0:32109->80/tcp") -eq 1 ]] &&
+[[ $(docker ps | egrep -c "color/green:1.0.*0.0.0.0:32108->80/tcp") -eq 1 ]]  &&
 echo done || exit 0
 
 TASK_SCORE="1"

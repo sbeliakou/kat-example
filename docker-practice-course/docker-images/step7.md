@@ -3,7 +3,7 @@ You're given **test_file1** file and **test_arch.tar.gz** archive in `/root/` di
 Create Dockerfile and build image with the following requirements.  
 
 ## Requirements:
-- image tag: **mybusybox**;
+- new image name: **mybusybox**;
 - base image: **busybox**;
 - work directory: **/data**;
 - **test_file1** file should be copied to work directory;
