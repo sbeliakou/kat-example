@@ -601,7 +601,10 @@ module:
     intro: |-
       # In this section you will do following:
 
-      - FILL!!!!
+      - create volumes for the container;
+      - create named volume for the container;
+      - share data between continers;
+      - create and manage docker volumes.
 
       # Good Luck!
     finish: |-
@@ -611,7 +614,15 @@ module:
 
       <pre class="file">
 
-      FILL!!!!
+      docker run -d -p 80:80 -v /usr/share/nginx/html nginx
+      docker run -d -p 80:80 -v nginx_data:/usr/share/nginx/html nginx
+
+      docker run -d --name html_data -v /usr/share/nginx/html busybox sleep infinity
+      docker run -d --volumes-from html_data -p 81:80 nginx
+
+      docker volume create --name http-custom-data
+      docker volume ls
+      docker volume inspect http-custom-data
 
       </pre>
     environment:
