@@ -19,4 +19,6 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 
 
+docker network create -d bridge --subnet=192.168.0.0/16 --gateway=192.168.0.1 --ip-range=192.168.1.0/24 --opt "com.docker.network.driver.mtu"="1400" my_custom_network_1
+docker network create -d bridge --subnet=172.17.0.0/16 --gateway=172.17.0.1 --ip-range=172.17.17.0/24 --opt "com.docker.network.driver.mtu"="900" my_custom_network_2
 

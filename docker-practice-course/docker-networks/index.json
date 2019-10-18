@@ -14,11 +14,19 @@
        }
        ,
        {
-        "title": "Working with",
+        "title": "Docker Network Inspection",
         "text": "step1.md",
         "verify": "step1-verify.sh",
         "courseData": "step1-courseData.sh",
         "code": "step1-foreground.sh"
+       }
+       ,
+       {
+        "title": "Network creating",
+        "text": "step2.md",
+        "verify": "step2-verify.sh",
+        "courseData": "step2-courseData.sh",
+        "code": "step2-foreground.sh"
        }
     ],
     "intro": {

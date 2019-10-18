@@ -647,11 +647,45 @@ module:
         Please open "**User**" Tab and fill required information
       verify: |-
         [ -f /opt/.user ]
-    - title: Working with
+      courseData: |-
+        docker network create -d bridge --subnet=192.168.0.0/16 --gateway=192.168.0.1 --ip-range=192.168.1.0/24 --opt "com.docker.network.driver.mtu"="1400" my_custom_network_1
+        docker network create -d bridge --subnet=172.17.0.0/16 --gateway=172.17.0.1 --ip-range=172.17.17.0/24 --opt "com.docker.network.driver.mtu"="900" my_custom_network_2
+    - title: Docker Network Inspection 
       task: |-
-        task
+        We've deployed a few docker networks. Inspect them and answer the questions below.
+
+        >>Q1: What of these are a network driver?<<
+        [ ] overlay
+        [x] bridge
+        [x] host
+        [ ] ntfs
+
+        >>Q2: Enter the subnet of "bridge" network<<
+        =~= 172.18.0.1/24
+
+        >>Q3: Is IP masquarade enabled in "bridge" network?<<
+        ( ) false
+        (x) true
+
+        >>Q4: Enter the driver type of "my_custom_network_1" network<<
+        === bridge
+
+        >>Q5: Enter the subnet of "my_custom_network_1" network<<
+        =~= 192.168.0.0/16
+
+        >>Q6: Enter the MTU value of "my_custom_network_1" network<<
+        === 1400
+
+        >>Q7: Enter the gateway of "my_custom_network_2" network<<
+        =~= 172.17.0.1
       foreground: |-
         clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    - title: Network creating
+      task: |-
+        Create docker network with the requirements below.
+
+        ## Requirements:
+        - driver type: **bridge**
     intro: |-
       # In this section you will do following:
 
