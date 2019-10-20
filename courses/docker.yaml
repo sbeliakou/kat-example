@@ -278,6 +278,7 @@ module:
     - title: Multi-stage build
       task: |-
         You are given `/data/maven` folder with content.  
+
         Build Dockerfile with tag **single_app** and run it:  
         `docker run single_app`  
 
@@ -288,9 +289,12 @@ module:
         - add 2nd build stage:
           - base image: **openjdk:8-jre-alpine**;
           - should copy artifact from 1st build stage (using alias **builder**);
-          - should run copied from 1st stage artifact.
+          - should run copied from 1st stage artifact.  
+
+
         Build edited Dockerfile with tag **multi_app** and run it:  
         `docker run multi_app`  
+
         You should see "Hello world" message again.  
 
 
@@ -309,6 +313,9 @@ module:
         docker run --rm -v ${HOME}:/root -v $(pwd):/git alpine/git clone https://github.com/jabedhasan21/java-hello-world-with-maven.git
         cp -r java-hello-world-with-maven/* .
         rm -rf java-hello-world-with-maven
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until [ -f /data/maven/pom.xml ]; do echo -n .; sleep 1; done; echo; history -c
+      verify: !unsafe '[[ $(docker run single_app 2>&1 | grep -c "Hello world") -eq 1 ]] && [[ $(docker run multi_app 2>&1 | grep -c "Hello world") -eq 1 ]] && [[ $(docker image inspect -f "{{.Size}}" single_app) -gt $(docker image inspect -f "{{.Size}}" multi_app) ]]'
     intro: |-
       # In this section you will do following:
 
