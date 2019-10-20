@@ -277,7 +277,13 @@ module:
         [[ $(docker run mybusybox env 2>&1 | grep -c MAINTAINER) -ge 1 ]]
     - title: Multi-stage build
       task: |-
-        You are given 
+        You are given `/data/maven` folder with content.  
+        Edit Dockerfile:
+        - give 1st stage (maven image) name **builder**;
+        - add 2nd build stage:
+          - base image: **openjdk:8-jre-alpine**;
+          - should copy artifact from 1st build stage (using alias **builder**);
+          - should run copied from 1st stage artifact.
       courseData: |-
         mkdir -p /data/maven && cd /data/maven
         cat << 'EOF' > /data/maven/Dockerfile
@@ -287,9 +293,11 @@ module:
         RUN mvn -e -B dependency:resolve
         COPY src ./src
         RUN mvn -e -B package
+        CMD ["java", "-jar", "target/jb-hello-world-maven-0.1.0.jar"]
         EOF
-        docker run -ti --rm -v ${HOME}:/root -v $(pwd):/git alpine/git clone https://github.com/jabedhasan21/java-hello-world-with-maven.git
+        docker run --rm -v ${HOME}:/root -v $(pwd):/git alpine/git clone https://github.com/jabedhasan21/java-hello-world-with-maven.git
         cp -r java-hello-world-with-maven/* .
+        rm -rf java-hello-world-with-maven
     intro: |-
       # In this section you will do following:
 
