@@ -1,0 +1,31 @@
+- q: How many hosts in our cluster?
+  type: text
+  answer_item: 1
+- q: "The component which is looking for a Node once a Pod created is:"
+  type: radio
+  options:
+    - Controller Manager
+    - Scheduler
+    - etcd
+  answer_item: 2
+- q: If you request for scaling the number of pods to some level, this componenet will take it over
+  type: radio
+  options:
+    - Controller Manager
+    - Scheduler
+    - etcd
+  answer_item: 1
+- q: It knows everything about all your secrets, services, configurations and so on
+  type: radio
+  options:
+    - Controller Manager
+    - Scheduler
+    - etcd
+  answer_item: 3
+- q: Where all these componetes are located? Please type namespace name.
+  type: text
+  answer_item: kube-system
+- q: How many Pos are <b>Running</b> in this namespace?
+  type: text
+  answer_cmd: |
+    kubectl --kubeconfig=/etc/kubernetes/admin.conf get pods -n kube-system | grep Running | wc -l

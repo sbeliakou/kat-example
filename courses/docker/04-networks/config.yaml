@@ -1,0 +1,13 @@
+env:
+  type: docker
+  hosts:
+  - docker-host
+layout:
+  - type: tabs
+    tabs:
+      - name: root@docker-host
+        url: //localhost:8022
+        icon: terminal
+  - type: split
+  - type: task
+    url: //localhost:8081/content

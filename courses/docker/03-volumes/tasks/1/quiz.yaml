@@ -1,0 +1,31 @@
+- q: How many docker volumes do we have currently?
+  type: text
+  answer_cmd: echo $(( $(docker volume ls | wc -l) - 1 ))
+
+- q: What is the mountpoint path of "volume-1"?
+  type: text
+  answer_cmd: docker volume inspect volume-1 | jq -r '.[].Mountpoint'
+
+- q: What is the filesystem type of "volume-2"?
+  type: radio
+  options:
+    - ntfs
+    - tmpfs
+    - ext4
+    - fat32
+    - btrfs
+  answer_item: 2
+
+- q: What is the filesystem type of "volume-3"?
+  type: radio
+  options:
+    - ntfs
+    - tmpfs
+    - ext4
+    - fat32
+    - btrfs
+  answer_item: 5
+
+- q: On what device is "volume-3" mounted?
+  type: text
+  answer_cmd: docker volume inspect volume-3 | jq -r '.[].Options.device'

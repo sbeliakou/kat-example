@@ -1,0 +1,21 @@
+- q: How many PODs exist in "default" namespace?
+  type: text
+  answer_cmd: kubectl get pods 2>/dev/null | grep -v NAME | wc -l
+
+- q: How many PODs exist in "all" namespaces?
+  type: text
+  answer_cmd: kubectl get pods -A | grep -v NAME | wc -l
+
+- q: How many PODs exist in "customer" namespace?
+  type: radio
+  options:
+    - 1
+    - 2
+    - 7
+    - 9
+    - 8
+    - 3
+    - 6
+    - 5
+    - 4
+  answer_item: 7

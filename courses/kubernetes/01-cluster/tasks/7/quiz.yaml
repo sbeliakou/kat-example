@@ -1,0 +1,25 @@
+- q: What is the namespace where POD Network objects are running?
+  type: text
+  answer_item: kube-system
+
+- q: What is the name of CNI pod you currently have?
+  type: text
+  answer_cmd: kubectl get pods -n kube-system | grep kindnet | awk '{print $1}'
+
+- q: What is the docker image used for CNI POD?
+  type: text
+  answer_cmd: kubectl get daemonsets -n kube-system kindnet -o jsonpath='{.spec.template.spec.containers[0].image}'
+
+- q: How many containers of cluster DNS services is/are currently running?
+  type: text
+  answer_cmd: kubectl get pods -n kube-system | grep coredns | wc -l
+  
+- q: What is the name of Kubernetes Proxy POD?
+  type: text
+  answer_cmd: kubectl get pods -n kube-system | grep kube-proxy | awk '{print $1}'
+- q: How many daemonsets do you currently have in the cluster?
+  type: text
+  answer_cmd: kubectl get daemonsets --all-namespaces | grep -v NAMESPACE | wc -l
+- q: How many nodes in your cluster?
+  type: text
+  answer_cmd: kubectl get nodes | grep -v NAME | wc -l

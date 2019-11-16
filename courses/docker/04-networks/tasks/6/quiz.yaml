@@ -1,0 +1,11 @@
+- q: How many containers belong to this network?
+  type: text
+  answer_cmd: docker network inspect ${StudentShort}-bridge | jq -r '.[].Containers|length'
+
+- q: What is "IPv4Address" of nginx container?
+  type: text
+  answer_cmd: docker network inspect ${StudentShort}-bridge | jq -r ".[].Containers[\"$(docker inspect nginx-${StudentShort}-bridge|jq -r '.[].Id')\"].IPv4Address"
+
+- q: What is "IPv4Address" of tomcat container?
+  type: text
+  answer_cmd: docker network inspect ${StudentShort}-bridge | jq -r ".[].Containers[\"$(docker inspect tomcat-${StudentShort}-bridge|jq -r '.[].Id')\"].IPv4Address"

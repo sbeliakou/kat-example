@@ -1,0 +1,25 @@
+- q: What is the name of this Pod?
+  type: radio
+  options:
+    - web
+    - web-pod
+    - webserver
+    - webservice
+    - microservice
+    - undefines
+  answer_item: 3
+
+- q: What is the name of the container in this Pod?
+  type: radio
+  options:
+    - web
+    - web-pod
+    - webserver
+    - webservice
+    - microservice
+    - undefines
+  answer_item: 4
+
+- q: What namespace has this pod been deployed into?
+  type: text
+  answer_item: microservices

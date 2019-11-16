@@ -1,0 +1,9 @@
+env:
+  type: docker
+  hosts:
+  - docker-host
+layout:
+  - type: tabs
+    tabs:
+      - name: Terminal
+        url: //localhost:8022

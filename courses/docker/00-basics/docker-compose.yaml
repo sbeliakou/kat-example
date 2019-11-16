@@ -1,0 +1,42 @@
+version: "2.3"
+
+services:
+  master:
+    build:
+      context: ../../
+      dockerfile: ./${MODULE}/resources/Dockerfile
+    image: sbeliakou/lab-${MODULE}:${TRAINING}
+    container_name: docker-host
+    hostname: docker-host
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - ./tasks:/var/_data/tasks
+      - var_lib_docker:/var/lib/docker
+      - ~/${MODULE}/${TRAINING}:/workspace
+    tmpfs:
+      - /run
+      - /tmp
+    ports:
+      - 8022:8022
+      - 9090:9090
+      - 8081:8081
+      - 10080-10100:10080-10100
+      - 32768:32768
+    env_file:
+      - ~/.student
+    environment:
+      TRAINING: "${MODULE}"
+      LAB: "${LAB}"
+      ANALYTICS: ecsc00a05b03.epam.com
+      container: docker
+    labels:
+      lab.devops: yes
+      lab.name: ${MODULE}:${TRAINING}
+      lab.env: ${PWD}
+    privileged: true
+    tty: true
+    cpus: 0.75
+    network_mode: bridge
+
+volumes:
+  var_lib_docker:

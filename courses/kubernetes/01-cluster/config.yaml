@@ -1,0 +1,20 @@
+env:
+  type: kubernetes
+  hosts:
+  - master
+layout:
+  - type: tabs
+    tabs:
+      - name: Terminal
+        url: //localhost:8022
+      - name: Dashboard
+        url: //localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+        refresh: true
+        blanket: true
+      - name: Ingress
+        url: //localhost/allgood
+        refresh: true
+        blanket: true
+  - type: split
+  - type: task
+    url: //localhost:8081/content

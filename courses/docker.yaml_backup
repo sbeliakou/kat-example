@@ -1,0 +1,876 @@
+module:
+  name: docker-practice-course
+  title: Docker Practice
+  description: Practical Docker Tasks
+  db_name: docker
+  courses:
+  - course_id: docker-daemon
+    title: Working with Docker Daemon
+    difficulty: beginner
+    time: 15 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Docker Daemon settings overview
+      task: |-
+        Inspect Docker Configuration and answer the questions below.
+
+        >>Q1: What Docker Server version is installed?<<
+        =~= 18.09
+
+        >>Q2: How many containers are there (in all states)?<<
+        === 0
+
+        >>Q3: What Storage Driver is set by default?<<
+        === overlay
+
+        >>Q4: What Runtime is set by default?<<
+        === runc
+
+        >>Q5: What Docker Root Dir is set by default?<<
+        === /var/lib/docker
+
+        >>Q6: What Cgroup Driver is set by default?<<
+        === systemd
+
+        >>Q7: Where is docker.service file placed (enter full path)?<<
+        =~= /lib/systemd/system/docker.service
+
+        >>Q8: Where is docker.socket placed (enter full path)?<<
+        =~= /var/run/docker.sock
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    - title: Docker Daemon settings setup
+      task: |-
+        Change Logging Driver docker daemon settings from `json-file` to `syslog`
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+      verify: |-
+        [[ $(docker info 2>&1 | grep "Logging Driver" | cut -d' ' -f3) == 'syslog' ]]
+    - title: Access to the docker managing
+      task: |-
+        Create user **admin** and grand him privelegues to manage docker.
+
+        ## Requirements:
+        - user name: **admin**
+        - **admin** should have access to manage docker
+      verify: |-
+        [[ $(cat /etc/group | grep -c "docker:.:[0-9]*:admin") -ge 1 ]] 
+    intro: |-
+      # In this section you will do following:
+
+      - explore Docker Daemon settings
+      - change Docker Daemon settings
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      docker version
+      docker info
+
+      cat /etc/docker/daemon.json
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-images
+    title: Working with Docker Images
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with images
+      task: |-
+        Inspect docker images and answer the questions below.  
+
+        >>Q1: How many images are on the host?<<
+        === 9
+
+        >>Q2: What is the "python" image size?<<
+        =~= 74
+
+        >>Q3: How many layers are in "redis" image?<<
+        === 6
+
+
+        Pull the **busybox** image.
+
+        >>Q4: What is the busybox image size?<<
+        =~= 1.
+
+        >>Q5: How many layers are in "busybox" image?<<
+        === 1
+
+
+        Pull **nginx:1.16** image.
+
+        >>Q6: What is the "nginx:1.16" image size?<<
+        =~= 126
+
+        >>Q7: How many layers are in "nginx:1.16" image?<<
+        === 3
+
+
+        Remove **node** image.
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    - title: Image building
+      task: |-
+        You are given two Dockerfiles in `/data` directory. Build new images with the requirements below.
+
+        ## Requirements:
+        - 1st image:
+          - use `Dockerfile` for building image;
+          - result image name: `color/green:1.0`;
+        - 2nd image:
+          - use `Dockerfile_blue` for building image;
+          - result image name: `color/blue:2.6`.
+
+        For self-checking run images with the next commands:  
+        - `docker run -dt -p 32108:80 color/green:1.0`  
+        - `docker run -dt -p 32109:80 color/blue:2.6`  
+
+        Open `Checking` tab and enter port **32108** for watching green page;  
+        and enter port **32109** for watching blue page.  
+      verify: |-
+        [[ $(docker ps | egrep -c "color/blue:2.6.*0.0.0.0:32109->80/tcp") -eq 1 ]] &&
+        [[ $(docker ps | egrep -c "color/green:1.0.*0.0.0.0:32108->80/tcp") -eq 1 ]]
+      courseData: |-
+        mkdir -p /data 
+        cat << 'EOF' > /data/Dockerfile
+        FROM nginx
+        EXPOSE 80
+        CMD echo "<head></head><body style=\"background-color:green;\"></body>">/usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+        EOF
+        echo '<head></head><body style="background-color:blue;"></body>' > /data/index_blue.html
+        cat << 'EOF' > /data/Dockerfile_blue
+        FROM nginx
+        EXPOSE 80
+        COPY index_blue.html /usr/share/nginx/html/index.html
+        CMD nginx -g 'daemon off;'
+        EOF
+    - title: Dockerfile writing
+      task: |-
+        Create Dockerfile and build image.
+
+        ## Requirements:
+        - new image name(:tag): **myweb:0.1**
+        - base image: **centos:7**
+        - label: `author=student`, where _student_ is your Lastname;
+        - **httpd** webserver should be installed
+        - **index.html** default httpd page should contain your **"Name Lastname"**
+        - port **80** should be exposed
+
+        To check your image try to execute:  
+        `docker run -dt -p 32000:80 myweb:0.1`
+
+        Then go to **Checking** tab. You should see your **"Name Lastname"**  
+        (or curl **32000** port of **localhost**)
+      verify: |-
+        $(curl -Ls 127.0.0.1:32000 >/dev/null 2>&1)
+    - title: Tag changing
+      task: |-
+        You have your own **myweb:0.1** image but you have to change the tag.  
+
+        ## Requirements:
+        - change docker image tag:
+          - from: **myweb:0.1**
+          - to: **(first letter of name + Lastname)/httpd:1.0**  
+            (etc. sbeliakou/httpd:1.0)  
+
+        Inspect docker images, you should see image with new tag.  
+
+        Let's run the new image:  
+        - stop **myweb:0.1** container: `docker stop $(docker ps -lq)`
+        - inspect **Checking** tab, you should see katakoda's connecting page 
+        - run the new image: `docker run -dt -p 32000:80 sbeliakou/httpd:1.0`
+        - inspect **Checking** tab again, now you should see your **"Name Lastname"**
+      verify: |-
+        $(docker image ls | grep "/httpd.*1.0" >/dev/null 2>&1)
+    - title: ENTRYPOINT and CMD
+      task: |-
+        Create Dockerfile and build image with the following requirements.
+
+        ## Requirements:
+        - new image name: **pinger**
+        - base image: **alpine**
+        - ENTRYPOINT: **ping**
+        - CMD: **-c3**, **dockerhub.com**
+
+        To see the difference between **ENTRYPOINT** and **CMD** perform the next actions:  
+        - `docker run pinger`
+        - `docker run pinger google.com`
+        - `docker run pinger -c5 google.com`
+      verify: |-
+        $(docker image ls | grep "pinger" >/dev/null 2>&1)
+    - title: Building with arguments
+      task: |-
+        Create Dockerfile with the requirements below.
+
+        ## Requirements:
+        - Dockerfile has to have two arguments:
+          - **CENTOS_VERSION** - without default value,  
+          - **JAVA_VERSION** - with default value equals **11**;
+        - base image: **centos**, centos version is get from **CENTOS_VERSION** argument;
+        - **openjdk** should be installed, openjdk version is get from **JAVA_VERSION** argument.  
+
+        Using created Dockerfile build two images with the next requirements:
+        - first image:
+          - image name: **c8j11**
+          - CENTOS_VERSION: **8**
+          - JAVA_VERSION: **11**
+        - second image:
+          - image name: **c7j180**
+          - CENTOS_VERSION: **7**
+          - JAVA_VERSION: **1.8.0**
+
+        For self-checking run the following commands:
+        - `docker run c8j11 java -version`
+        - `docker run c7j180 java -version`
+      verify: |-
+        [[ $(docker run c8j11 java -version 2>&1 | grep -c "openjdk.*11") -ge 1 ]] &&
+        [[ $(docker run c7j180 java -version 2>&1 | grep -c "openjdk.*1.8.0") -ge 1 ]]
+    - title: ENV, ADD/COPY, WORKDIR
+      task: |-
+        You're given **test_file1** file and **test_arch.tar.gz** archive in `/root/` directory.  
+        Create Dockerfile and build image with the following requirements.  
+
+        ## Requirements:
+        - new image name: **mybusybox**;
+        - base image: **busybox**;
+        - work directory: **/data**;
+        - **test_file1** file should be copied to work directory;
+        - content of **test_arch.tar.gz** archive should be copied to work directory;
+        - image should have environment variable: `MAINTAINER=student`, where _student_ is your Lastname
+      courseData: |-
+        echo 'megatestfile1'>test_file1 && echo 'megatestfile2'>test_file2 && tar -czf test_arch.tar.gz test_file2 && rm test_file2
+      verify: |-
+        [[ $(docker run mybusybox pwd 2>&1) == '/data' ]] &&
+        [[ $(docker run mybusybox ls test_file1 2>&1) == 'test_file1' ]] &&
+        [[ $(docker run mybusybox ls test_file2 2>&1) == 'test_file2' ]] &&
+        [[ $(docker run mybusybox env 2>&1 | grep -c MAINTAINER) -ge 1 ]]
+    - title: Multi-stage build
+      task: |-
+        You are given `/data/maven` folder with content.  
+
+        Build Dockerfile with tag **single_app** and run it:  
+        `docker run single_app`  
+
+        You should see "Hello world" message.  
+
+        Edit Dockerfile:
+        - give 1st stage (maven image) name **builder**;
+        - add 2nd build stage:
+          - base image: **openjdk:8-jre-alpine**;
+          - should copy artifact from 1st build stage (using alias **builder**);
+          - should run copied from 1st stage artifact.  
+
+
+        Build edited Dockerfile with tag **multi_app** and run it:  
+        `docker run multi_app`  
+
+        You should see "Hello world" message again.  
+
+
+        You can appreciate multi-stage build benefits - just inspect size of **single_app** and **multi_app** images!  
+      courseData: |-
+        mkdir -p /data/maven && cd /data/maven
+        cat << 'EOF' > /data/maven/Dockerfile
+        FROM maven:3.6-jdk-8-alpine
+        WORKDIR /app
+        COPY pom.xml .
+        RUN mvn -e -B dependency:resolve
+        COPY src ./src
+        RUN mvn -e -B package
+        CMD ["java", "-jar", "target/jb-hello-world-maven-0.1.0.jar"]
+        EOF
+        docker run --rm -v ${HOME}:/root -v $(pwd):/git alpine/git clone https://github.com/jabedhasan21/java-hello-world-with-maven.git
+        cp -r java-hello-world-with-maven/* .
+        rm -rf java-hello-world-with-maven
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until [ -f /data/maven/pom.xml ]; do echo -n .; sleep 1; done; echo; history -c
+      verify: !unsafe '[[ $(docker run single_app 2>&1 | grep -c "Hello world") -eq 1 ]] && [[ $(docker run multi_app 2>&1 | grep -c "Hello world") -eq 1 ]] && [[ $(docker image inspect -f "{{.Size}}" single_app) -gt $(docker image inspect -f "{{.Size}}" multi_app) ]]'
+    intro: |-
+      # In this section you will do following:
+
+      - get, inspect, remove existing docker images
+      - pull new images
+      - build your own docker images
+      - tag docker images
+      - push your images in docker repository
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      docker image ls
+      docker image rm
+
+      docker build [-t image_tag] [-f ./path/to/dockerfile] .
+      docker build --build-arg BASE_IMAGE=ubuntu:16.04 .
+
+      docker tag (old_id|old_tag) (new_tag)
+
+      docker pull ubuntu
+      docker push myweb/1.0
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+      - name: User
+        port: 8080
+      - name: Checking
+        port: 32000
+  - course_id: docker-containers
+    title: Working with Docker Containers
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+      courseData: |-
+        mkdir -p /data 
+        cat << 'EOF' > /data/Dockerfile
+        FROM nginx
+        EXPOSE 80
+        CMD echo "<head></head><body style=\"background-color:green;\"></body>">/usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+        EOF
+    - title: Running the Container in detach mode
+      task: |-
+        You are given the Dockerfile in `/data` directory.  
+        Build image and run container in **detach** mode.  
+
+        ## Requirements:
+        - image name (tag): `color/green:1.0`
+        - container should be runned in **detach** mode
+
+        Check the container is running - use `docker ps`.
+      verify: |-
+        [[ $(docker ps | grep -c "color/green:1.0") -ge 1 ]]
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    - title: Running the Container with publish exposed ports
+      task: |-
+        You have **color/green:1.0** image. The image runs **_nginx_** webserver, but you can't reach this one, because of exposed port(s) isn't published.
+
+        ## Requirements:
+        - run container with **color/green:1.0** image in **detach** mode;
+        - publish exposed port to random port.  
+
+        For self-checking inspect the container is running; find out published port(s); then go to the **Checking** tab and enter published port.  
+        You should see **_green_** page.
+      verify: |-
+        [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:.....->80/tcp") -ge 1 ]]
+    - title: Running the Container with publish exposed ports 2
+      task: |-
+        Great, you ran the container with publish exposed port(s) to the random port(s), but what if you need to publish exposed port(s) to definite port of host?
+
+        ## Requirements:
+        - run container with **color/green:1.0** image in **detach** mode;
+        - publish exposed port to port **32100** of the host.
+      verify: |-
+        [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:32100->80/tcp") -eq 1 ]]
+    - title: Restart policy
+      task: |-
+        Create two containers which will restart:
+        - 1st - regardless of the exit status;
+        - 2nd - only if the container exits with a non-zero exit status and has 7 restart retries.  
+
+        ## Requirements:
+        - 1st container:
+          - should runned in **detach** mode;
+          - should restart regardless of the exit status;
+          - container name: `restarter_1`;
+          - image name: `busybox`;
+          - command: `sleep 3`.
+        - 2nd container:
+          - should runned in **detach** mode;
+          - should restart only if the container exits with a non-zero exit status;
+          - should have 7 restart retries;
+          - container name: `restarter_2`;
+          - image name: `busybox`;
+          - command: `sleep -3`.
+      verify: !unsafe '[[ $(docker inspect -f "{{ .HostConfig.RestartPolicy }}" restarter_1) == "{always 0}" ]] && [[ $(docker inspect -f "{{ .HostConfig.RestartPolicy }}" restarter_2) == "{on-failure 7}" ]]'
+    - title: Executing Commands
+      task: |-
+        Run container and do the requirements below.
+
+        ## Requirements:
+        - container should run without **detach** and **interactive** modes;
+        - use image `alpine`;
+        - should execute command for getting `os-release` info and record this one in `/root/alpine-release` file.
+      verify: |-
+        [[ $(grep -c 'Alpine Linux' /root/alpine-release) -eq 2 ]]
+    - title: Executing Commands Inside Running Container
+      task: |-
+        We have deployed the `batman` container (check with `docker ps`).  
+        Enter to the container, create `/data` directory, create `/data/student` file and write your Lastname in this file.  
+
+        ## Requirements:
+        - `batman` container should contain `/data/student` file with your Lastname.  
+      courseData: |-
+        docker run -d --name=batman busybox sleep infinity
+      verify: |-
+        [[ $(docker exec batman cat /data/student) ]]
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && until $(docker ps | egrep 'batman' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    - title: Stopping/Removing Containers
+      task: |-
+        Do the following tasks:
+        - stop `batman` container, check it with `docker ps -a`;
+        - remove `restarter_1` container without stopping itself (force);
+      verify: |-
+        [[ $(docker ps | egrep -c "(batman|restarter_1)") == '0' ]]
+    - title: Other Options
+      task: |-
+        Run the container with the requirements below.
+
+        ## Requirements:
+        - image: `busybox`;
+        - container name: `busy`;
+        - container should run in **detach** mode;
+        - default user id: `1000`;
+        - default user should belongs to group with `gid=0` (primary) and `gid=1200`(supplementary);
+        - workdir: `/data`;
+        - container should have env variable: `STUDENT=<Lastname>`, where <Lastname> is your Lastname;
+        - commans: `sleep infinity`.
+      verify: !unsafe '[[ $(docker inspect -f "{{ .Config.User }}" busy) == "1000:0" ]] && [[ $(docker inspect -f "{{ .Config.Env }}" busy) =~ "STUDENT" ]] && [[ $(docker inspect -f "{{ .Config.WorkingDir }}" busy) == "/data" ]] && [[ $(docker inspect -f "{{ .HostConfig.GroupAdd }}" busy) =~ "1200" ]]'
+    intro: |-
+      # In this section you will do following:
+
+      - run container in **detach** and **interactive** modes;
+      - publish exposed ports to the random and definite ports;
+      - execute command in running containers;
+      - stop and remove containers;
+      - set other options: user/group settings, workdir, environment variables.
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      docker run -d myhttpd:1.0
+
+      docker run -P -d myhttpd:1.0
+      docker run -d -p 8081:80 --name h8081 myhttpd:1.0
+
+      docker run -d --restart=always --name sleeper centos sleep 5
+
+      docker run centos cat /etc/redhat-release
+      docker run -it centos bash
+
+      docker stop h8082
+      docker rm 014e5efa5ca9
+      docker rm $(docker stop $(docker ps -a -q))
+
+      docker run --user 1000:0 jenkins id
+      docker run --group-add 123 jenkins id
+
+      docker run --workdir /var/jenkins_home jenkins pwd
+      docker run -it -e MYVAR="My Variable" centos env | grep MYVAR
+
+      docker run -d --label app=web1 nginx
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+        - name: Checking
+          port: 32000
+  - course_id: docker-volumes
+    title: Working with Docker Volumes
+    time: 1 hour
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Creating Volume for the Container
+      task: |-
+        Run container with creating volume. Do the requirements below.
+
+        ## Requirements:
+        - container should run in **detach** mode;
+        - container should expose **80** container port to **32150** host port;
+        - container should create volume with the next container destination: `/usr/share/nginx/html`;
+        - container name: **n32150**;
+        - image name: **nginx**.  
+
+
+        Inspect the container and find the created volume path on the host: `docker inspect n32150 | jq -r '.[].Mounts[].Source'`  
+        Go to the path and discover `index.html` file.  
+        Change this `index.html` file: `echo 'This is n32150 container' > index.html`.  
+
+
+        Go to the **Checking** tab and enter **32150** port. You should see our note.
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+      verify: |-
+        [[ $(grep -c n32150 $(docker inspect n32150 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]]
+    - title: Mounting Data from Host
+      task: |-
+        You
+         are given `/root/index.html` file.  
+        Run **nginx** container in detach mode with mounting **index.html** into container.  
+
+        ## Requirements:
+        - container should run in **detach** mode;
+        - container should mount `/root/index.html` file on host to `/usr/share/nginx/html/index.html` on container;
+        - container should expose **80** container port to **32100** host port;
+        - container name: **n32100**;
+        - used image: **nginx**.  
+
+        For self-checking open **Checking** tab and enter **32100** port. You should see yellow page.
+      verify: |-
+        [[ $(grep -c yellow $(docker inspect n32100 | jq -r '.[].Mounts[].Source')) -ge 1 ]]
+      courseData: |-
+        echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
+    - title: Named Volume for the Container
+      task: |-
+        Run  container with the requirements below.  
+
+        ## Requirements:
+        - container should run in **detach** mode;
+        - container should expose **80** container port to **32200** host port;
+        - container should create volume with name **n32200_data** and the next container destination: `/usr/share/nginx/html`;
+        - container name: **n32200**;
+        - used image: **nginx**.  
+
+
+        Go to the `/var/lib/docker/volumes/n32200_data/_data` directory and find `index.html` file.  
+        Change this file: `echo 'This is the n32200 container' > index.html`.
+
+        For self-checking open **Checking** tab and enter **32200** port. You should see our note.
+      verify: |-
+        [[ $(grep -c n32200 $(docker inspect n32200 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]]
+    - title: Sharing data between Containers
+      task: |-
+        Run  containers with the requirements below.  
+
+        ## Requirements:
+        - **html_data** container:
+          - should run in **detach** mode;
+          - should have name: **html_data**;
+          - should mount `/root/index.html` file on host to `/usr/share/nginx/html/index.html` on container;
+          - used image: **busybox**;  
+        - 1st web container:
+          - container should run in **detach** mode;
+          - container should expose **80** container port to **32250** host port;
+          - container should use volume from **html_data** container;
+          - container name: **n32250**;
+          - used image: **nginx**.  
+        - 2st web container:
+          - container should run in **detach** mode;
+          - container should expose **80** container port to **32300** host port;
+          - container should use volume from **html_data** container;
+          - container name: **n32300**;
+          - used image: **nginx**.
+
+        For self-checking open **Checking** tab and enter **32250** and **32300** ports. You should see note: "_This is the busybox container content_".
+      verify: |-
+        [[ $(grep -c busybox $(docker inspect n32250 | jq -r '.[].Mounts[].Source')) -eq 1 ]] && [[ $(grep -c busybox $(docker inspect n32300 | jq -r '.[].Mounts[].Source')) -eq 1 ]]
+      courseData: |-
+        echo 'This is the busybox container content' > /root/index.html
+    - title: Docker Volumes
+      task: |-
+        Create docker volume with `docker volume create ...`.  
+        Inspect created volume, find out **Mountpoint**.  
+        Go to the **Mountpoint** path and create **index.html** file with the following content:  
+        `My custom docker volume with name n32400_custom_volume`  
+
+        Run container which will use the created custom volume.
+
+        ## Requirements:
+        - custom volume name: **n32400_custom_volume**;
+        - container should run in **detach** mode;
+        - container should expose **80** container port to **32400** host port;
+        - container should use **n32400_custom_volume** volume with the next container destination: `/usr/share/nginx/html`;
+        - container name: **n32400**;
+        - used image: **nginx**.  
+
+        For self-checking open **Checking** tab and enter **32400** port. You should see our note.
+      verify: |-
+        [[ $(grep -c n32400 $(docker volume inspect n32400_custom_volume | jq -r '.[].Mountpoint')/*) -ge 1 ]]
+    intro: |-
+      # In this section you will do following:
+
+      - create volumes for the container;
+      - create named volume for the container;
+      - share data between continers;
+      - create and manage docker volumes.
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      docker run -d -p 80:80 -v /usr/share/nginx/html nginx
+      docker run -d -p 80:80 -v nginx_data:/usr/share/nginx/html nginx
+
+      docker run -d --name html_data -v /usr/share/nginx/html busybox sleep infinity
+      docker run -d --volumes-from html_data -p 81:80 nginx
+
+      docker volume create --name http-custom-data
+      docker volume ls
+      docker volume inspect http-custom-data
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+        - name: Checking
+          port: 32000
+  - course_id: docker-networks
+    title: Working with Docker Networks
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+      courseData: |-
+        docker network create -d bridge --subnet=192.168.0.0/16 --gateway=192.168.0.1 --ip-range=192.168.1.0/24 --opt "com.docker.network.driver.mtu"="1400" my_custom_network_1
+        docker network create -d bridge --subnet=172.17.0.0/16 --gateway=172.17.0.1 --ip-range=172.17.17.0/24 --opt "com.docker.network.driver.mtu"="900" my_custom_network_2
+    - title: Docker Network Inspection 
+      task: |-
+        We've deployed a few docker networks. Inspect them and answer the questions below.
+
+        >>Q1: What of these are a network driver?<<
+        [ ] overlay
+        [x] bridge
+        [x] host
+        [ ] ntfs
+
+        >>Q2: Enter the subnet of "bridge" network<<
+        =~= 172.18.0.1/24
+
+        >>Q3: Is IP masquarade enabled in "bridge" network?<<
+        ( ) false
+        (x) true
+
+        >>Q4: Enter the driver type of "my_custom_network_1" network<<
+        === bridge
+
+        >>Q5: Enter the subnet of "my_custom_network_1" network<<
+        =~= 192.168.0.0/16
+
+        >>Q6: Enter the MTU value of "my_custom_network_1" network<<
+        === 1400
+
+        >>Q7: Enter the gateway of "my_custom_network_2" network<<
+        =~= 172.17.0.1
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    - title: Network creating
+      task: |-
+        Create docker network with the requirements below.
+
+        ## Requirements:
+        - driver type: **bridge**
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-cgroups
+    title: Working with CGroups
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-ns
+    title: Working with Docker Namespaces
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+  - course_id: docker-compose
+    title: Working with Docker Compose
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Welcome
+      task: |-
+        ## Let us know who you are.
+
+        Please open "**User**" Tab and fill required information
+      verify: |-
+        [ -f /opt/.user ]
+    - title: Working with
+      task: |-
+        task
+      foreground: |-
+        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+    intro: |-
+      # In this section you will do following:
+
+      - FILL!!!!
+
+      # Good Luck!
+    finish: |-
+      # It's Done!
+
+      Some useful commands to know:
+
+      <pre class="file">
+
+      FILL!!!!
+
+      </pre>
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+

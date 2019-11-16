@@ -1,0 +1,7 @@
+- q: How many docker images are in your system currently?
+  type: text
+  answer_cmd: docker images | grep -v REPOSITORY | wc -l
+
+- q: What is the size (in MB, only number) of "my-first-app:latest" image?
+  type: text
+  answer_cmd: docker images | grep tomcat.*jdk11-openjdk-slim | awk '{print $NF}' | egrep -o "[0-9]*"

@@ -1,0 +1,8 @@
+- q: What does the READY column in the output of the 'kubectl get pods' command indicate?
+  type: radio
+  options:
+    - Running Pods / Total Pods
+    - Total Pods / Running Pods
+    - Running containers in Pod / Total containers in Pod
+    - Total containers in Pod / Running containers in Pod
+  answer_item: 3

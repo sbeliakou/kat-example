@@ -1,0 +1,35 @@
+- q: How many container are running on the host now?
+  type: text
+  answer_cmd: echo $(( $(docker ps | wc -l) - 1 ))
+
+- q: One of container runs a process "sleep 5000". What is its name?
+  type: text
+  answer_cmd: docker ps | grep "sleep 5000" | awk '{print$NF}'
+
+- q: What is the name of stopped container?
+  type: text
+  answer_cmd: docker ps -a | grep "Exited" | awk '{print$NF}'
+
+- q: What is exit code of stopped container?
+  type: text
+  answer_cmd: docker ps -a | grep Exited | grep -o "(.*)" | tr -d '()'
+
+- q: One of the containers is exposing ports. What is its name?
+  type: text
+  answer_cmd: docker ps | grep "/tcp" | awk '{print$NF}'
+
+- q: What container port is exposed to the host port (enter number only)?
+  type: radio
+  options:
+    - 8080
+    - 80
+    - 10080
+  answer_item: 2
+
+- q: Which port on the Host is used for accessing the service inside container from outside?
+  type: radio
+  options:
+    - 8080
+    - 80
+    - 10080
+  answer_item: 3

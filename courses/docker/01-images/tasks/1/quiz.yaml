@@ -1,0 +1,31 @@
+- q: How many images are on the host?
+  type: text
+  answer_cmd: echo $(( $(docker images | wc -l) - 1 ))
+
+- q: What is the "ubuntu" image tag?
+  type: text
+  answer_cmd: docker images | grep ubuntu | awk '{print$2}'
+
+- q: What is the "nginx" image tag?
+  type: text
+  answer_cmd: docker images | grep nginx | awk '{print$2}'
+
+- q: What image has the biggest size?
+  type: radio
+  options:
+    - nginx:latest
+    - alpine:3.9.4
+    - ubuntu:19.10
+  answer_item: 1
+
+- q: How many layers are in "nginx" image (use 'docker inspect' command, RootFS element)?
+  type: text
+  answer_cmd: docker image inspect nginx | jq -r '.[].RootFS.Layers | length'
+
+- q: What is the name of GraphDriver of "ubuntu:19.10" image?
+  type: text
+  answer_cmd: docker image inspect ubuntu:19.10 | jq -r '.[].GraphDriver.Name'
+
+- q: What is size of "busybox" image in bytes (use "docker inspect" instead "docker images")?
+  type: text
+  answer_cmd: docker image inspect busybox | jq -r '.[].Size'

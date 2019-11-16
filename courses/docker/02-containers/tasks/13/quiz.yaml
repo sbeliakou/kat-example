@@ -1,0 +1,97 @@
+- q: Run this command to see all stopped and running containers. 
+  type: radio
+  options:
+    - docker ps -a
+    - docker ps -q
+    - docker ps -l
+  answer_item: 1
+
+
+- q: A Docker container continues to run until _____.
+  type: radio
+  options:
+    - any process exits
+    - the process that started it exits
+    - all the processes in it exit
+    - it manually stopped
+  answer_item: 2
+
+- q: Before you can reuse a stopped container's name you must run command.
+  type: radio
+  options:
+    - docker stop old-cintainer-name
+    - docker kill old-container-name
+    - docker rm old-container-name
+    - docker rmi old-container-name
+  answer_item: 3
+
+
+
+- q: To make port 80 inside a container accessible from the internet on port 8080 run ________.
+  type: radio
+  options:
+    - docker run -e 80:8080
+    - docker run -p 80:8080
+    - docker run -e 8080:80
+    - docker run -p 8080:80
+    - docker run -P
+  answer_item: 4
+
+
+
+
+# - q: Please close the proper Process Diagram for the Container 
+#   type: radio
+#   options:
+#     - parent process
+#       --child process 1
+#       ----child process 1.1
+#       ----child process 1.2
+#       --child process 2
+#       ----child process 2.1
+#       ----child process 2.2
+
+#     - parent process 1
+#       ----child process 1.1
+#       ----child process 1.2
+#       parent process 2
+#       ----child process 2.1
+#       ----child process 2.2
+#   answer_item: 1
+
+
+- q: Which of the following is not restart policy
+  type: radio
+  options:
+    - always
+    - never
+    - unless-started
+    - unless-stopped
+  answer_item: 3
+
+
+- q: Following command will start container in "background" mode
+  type: radio
+  options:
+    - docker run -d centos
+    - docker run -b centos
+    - docker run -f centos
+    - docker run -v centos
+  answer_item: 1
+
+
+# - q: 
+#   type: text
+#   answer_cmd: 
+
+# - q: 
+#   type: text
+#   answer_item: 
+
+# - q: 
+#   type: radio
+#   options:
+#     - a
+#     - b
+#     - c
+#   answer_item: 1

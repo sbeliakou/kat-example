@@ -1,0 +1,45 @@
+- q: What Docker Server version is installed?
+  type: text
+  answer_cmd: docker info 2>&1 | grep "Server Version" | cut -d' ' -f4
+
+- q: How many containers are there (in all states)?
+  type: text
+  answer_cmd: docker info 2>&1 | grep Containers | cut -d' ' -f3
+
+- q: What Storage Driver is set by default?
+  type: text
+  answer_cmd: docker info 2>&1 | grep "Storage Driver" | cut -d' ' -f4
+
+- q: What Runtime is set by default?
+  type: text
+  answer_cmd: docker info 2>&1 | grep "Default Runtime" | cut -d' ' -f4
+
+- q: What Docker Root Dir is set by default?
+  type: text
+  answer_cmd: docker info 2>&1 | grep "Docker Root Dir" | cut -d' ' -f5
+
+- q: What Cgroup Driver is set by default?
+  type: text
+  answer_cmd: docker info 2>&1 | grep "Cgroup Driver" | cut -d' ' -f4
+
+- q: Where is docker.service file placed (enter full path)?
+  type: text
+  answer_cmd: systemctl status docker 2>&1 | grep Loaded | cut -d';' -f1| cut -d'(' -f2
+
+- q: In Docker, programs run in _____ which are comprised of _____.
+  type: radio
+  options:
+    - containers; images
+    - images; hosts
+    - contianers; hosts
+    - images; containers
+  answer_item: 1
+
+- q: Which Linux kernel feature is essential for container process isolation?
+  type: radio
+  options:
+    - brigdes. hosts
+    - hosts, namespaces
+    - namespaces, cgroups
+    - cgroups, bridges
+  answer_item: 3

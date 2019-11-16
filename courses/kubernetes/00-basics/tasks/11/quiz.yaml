@@ -1,0 +1,34 @@
+- q: How many Pods exist in the 'simians' namespace?
+  type: text
+  answer_cmd: kubectl get pods -n simians 2>/dev/null | grep -v NAME | wc -l
+
+- q: How many ReplicaSets exist in the 'simians' namespace?
+  type: text
+  answer_cmd: kubectl get rs -n simians 2>/dev/null | grep -v NAME | wc -l
+
+- q: How many Deployments exist in the 'simians' namespace?
+  type: text
+  answer_cmd: kubectl get deploy -n simians 2>/dev/null | grep -v NAME | wc -l
+
+- q: What is the image used to create pods in new deployment?
+  type: text
+  answer_item: busybox888
+
+- q: Why do you think the deployment is not ready?
+  type: radio
+  options:
+    - Kubernetes is faulty
+    - Application has errors
+    - The image doesn't exist
+    - Deployment was not created correctly
+  answer_item: 3
+
+
+
+# Create a new Deployment with the below attributes using your own deployment definition file
+# Name: httpd-frontend; Replicas: 3; Image: httpd:2.4-alpine
+
+# Name: httpd-frontend
+# Replicas: 3
+# Image: httpd:2.4-alpine
+

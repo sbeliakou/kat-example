@@ -1,0 +1,69 @@
+version: "2.3"
+
+services:
+  master:
+    build:
+      context: ../../
+      dockerfile: ./${MODULE}/${TRAINING}/Dockerfile
+    image: sbeliakou/lab-${MODULE}:${TRAINING}
+    container_name: master
+    hostname: master
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - ./tasks:/var/_data/tasks
+      - master_var_lib_containerd:/var/lib/containerd
+    tmpfs:
+      - /run
+      - /tmp
+    ports:
+      - 8022:8022
+      - 8081:8081
+    env_file:
+      - ~/.student
+    environment:
+      TRAINING: "${MODULE}"
+      LAB: "${LAB}"
+      ANALYTICS: ecsc00a05b03.epam.com
+      container: docker
+    labels:
+      lab.devops: yes
+      lab.name: ${MODULE}:${TRAINING}
+      lab.env: ${PWD}
+    privileged: true
+    cpus: 0.75
+    restart: unless-stopped
+    networks:
+      k8slocal:
+        ipv4_address: 172.31.0.2
+
+  node01:
+    image: sbeliakou/lab-k8s-node:latest
+    hostname: node01
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - node_var_lib_containerd:/var/lib/containerd
+    tmpfs:
+      - /run
+      - /tmp
+    privileged: true
+    cpus: 0.5
+    restart: unless-stopped
+    depends_on:
+      - master
+    networks:
+      k8slocal:
+        ipv4_address: 172.31.0.3
+
+volumes:
+  master_var_lib_containerd:
+  node_var_lib_containerd:
+
+networks:
+  k8slocal:
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.31.0.0/16
+        gateway: 172.31.0.1

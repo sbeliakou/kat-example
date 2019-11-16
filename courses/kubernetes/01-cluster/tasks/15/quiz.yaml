@@ -1,0 +1,27 @@
+- q: Which namespace Ingress Controller is running in?
+  type: text
+  answer_item: ingress-nginx
+
+- q: What is the Deployment name of the Ingress Controller?
+  type: text
+  answer_cmd: kubectl get deployment -n ingress-nginx | grep -v NAME | awk '{print $1}'
+
+- q: What is the ReplicaSet name of the Ingress Controller?
+  type: text
+  answer_cmd: kubectl get rs -n ingress-nginx | grep -v NAME | awk '{print $1}'
+
+- q: What is the Pod name of Ingress Controller?
+  type: text
+  answer_cmd: kubectl get pods -n ingress-nginx | grep nginx-ingress | awk '{print $1}'
+
+- q: What is the image name of the Ingress Controller container?
+  type: text
+  answer_cmd: kubectl get deployments -n ingress-nginx -o jsonpath='{.items[0].spec.template.spec.containers[0].image}'
+
+- q: What is the Deployment Strategy for Ingress Controller?
+  type: text
+  answer_cmd: kubectl get deployments -n ingress-nginx -o jsonpath='{.items[0].spec.strategy.type}'
+
+- q: Where does this Ingress Controller Pod run? Please type Host IP.
+  type: text
+  answer_cmd: kubectl get pods -n ingress-nginx -o jsonpath='{.items[0].status.hostIP}'   

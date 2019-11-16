@@ -1,0 +1,11 @@
+- q: How many namespaces are currently created in the cluster?
+  type: text
+  answer_cmd: kubectl get ns 2>&1 | grep -v NAME | wc -l
+
+- q: How many resources are created in kube-system namespace (`kubectl get all -n <namespace>`)?
+  type: text
+  answer_cmd: kubectl get all -n kube-system 2>&1 | egrep '^[a-z]' | wc -l
+
+- q: Check labels and the answer. What doesn't Santa like?
+  type: text
+  answer_cmd: kubectl get ns -l secret=santa-doesnt-like-this-fruit | grep -v NAME | awk '{printf $1}'

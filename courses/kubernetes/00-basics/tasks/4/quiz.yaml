@@ -1,0 +1,13 @@
+- q: What is the IMAGE used to create new pods? To figure it out you should study the new pod in detail.
+  type: radio
+  options:
+    - busybox
+    - jenkins
+    - nsinx
+    - newpod
+  answer_item: 1
+
+- q: Which NODE are these pods placed on? You should look at all the pods in detail to figure this out
+  type: text
+  answer_item: master
+

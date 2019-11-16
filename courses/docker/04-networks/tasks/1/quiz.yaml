@@ -1,0 +1,31 @@
+- q: How many docker networks are on the host?
+  type: text
+  answer_cmd: echo $(( $(docker network ls|wc -l) - 1 ))
+
+- q: Enter the subnet of "bridge" network
+  type: text
+  answer_cmd: docker network inspect bridge | jq -r '.[0].IPAM.Config[0].Subnet'
+
+- q: Is IP masquarade enabled in "bridge" network?
+  type: radio
+  options:
+    - false
+    - true
+  answer_item: 2
+
+- q: Enter the driver type of "my_custom_network_1" network
+  type: text
+  answer_cmd: docker network inspect my_custom_network_1 | jq -r '.[0].Driver'
+
+- q: Enter the subnet of "my_custom_network_1" network
+  type: text
+  answer_cmd: docker network inspect my_custom_network_1 | jq -r '.[0].IPAM.Config[0].Subnet'
+
+- q: Enter the MTU value of "my_custom_network_1" network
+  type: text
+  answer_cmd: docker network inspect my_custom_network_1 | jq -r '.[0].Options."com.docker.network.driver.mtu"'
+
+- q: Enter the gateway of "my_custom_network_2" network
+  type: text
+  answer_cmd: docker network inspect my_custom_network_2 | jq -r '.[0].IPAM.Config[0].Gateway'
+

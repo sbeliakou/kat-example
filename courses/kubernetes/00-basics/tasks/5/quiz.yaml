@@ -1,0 +1,58 @@
+- q: How many containers are part of the pod 'stranger'?
+  type: radio
+  options:
+    - 0
+    - 1
+    - 2
+    - 3
+  answer_item: 3
+
+- q: What images are used in the new 'stranger' pod?
+  type: radio
+  options:
+    - busybox
+    - nginx
+    - agentx
+    - nginx & busybox
+    - busybox & agentx
+  answer_item: 5
+
+- q: What names do these containers have?
+  type: radio
+  options:
+    - busybox & agentx
+    - billy & bobby
+    - busy & box 
+    - main & sidecar
+    - container1 & container2
+  answer_item:  2
+
+- q: What is the status of the 'stranger' Pod?
+  type: radio
+  options:
+    - Running
+    - ImagePullBackOff
+    - Ready
+    - Success
+    - Waiting
+  answer_item: 2
+
+- q: What is the state of the 1st container in the 'stranger' pod?
+  type: radio
+  options:
+    - Running
+    - ErrImagePull
+    - Ready
+    - Success
+    - Waiting
+  answer_item: 1
+
+- q: What is the state of the 2nd container in the 'stranger' pod?
+  type: radio
+  options:
+    - Running
+    - ErrImagePull
+    - Ready
+    - Success
+    - Waiting
+  answer_item: 5

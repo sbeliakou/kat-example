@@ -1,0 +1,45 @@
+- q: What connections are allowed by this Docker command-> docker run --link A --name B ubuntu bash
+  type: radio
+  options:
+    - both A and B can connect directly to each other
+    - from A to B only
+    - neither can start a new connection
+    - from B to A
+  answer_item: 4
+
+
+- q: To use a private network, where must you add the command? add --net=network-name to
+  type: radio
+  options:
+    - to the server
+    - to both the client and server
+    - just creating the network is sufficient
+    - to the client
+  answer_item: 2
+
+
+- q: Docker uses ________ and _________ to create virtual Ethernet networks.
+  type: radio
+  options:
+    - bridges; NAT
+    - NAT; routers
+    - stacks; firewalls
+    - routes; ethernet
+  answer_item: 1
+
+
+# - q: 
+#   type: text
+#   answer_cmd: 
+
+# - q: 
+#   type: text
+#   answer_item: 
+
+# - q: 
+#   type: radio
+#   options:
+#     - a
+#     - b
+#     - c
+#   answer_item: 1

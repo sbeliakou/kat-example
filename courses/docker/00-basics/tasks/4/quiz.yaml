@@ -1,0 +1,13 @@
+- q: Both containers running on ports 10080 and 32768 have the same image?
+  type: radio
+  options:
+    - yes
+    - no
+  answer_item: 1
+
+- q: Both containers running on ports 10080 and 32768 are the same container?
+  type: radio
+  options:
+    - yes
+    - no
+  answer_item: 2

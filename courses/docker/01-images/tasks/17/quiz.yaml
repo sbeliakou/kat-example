@@ -1,0 +1,217 @@
+- q: Docker images are _________.
+  type: radio
+  options:
+    - read only
+    - write only
+    - writtable only by one container at a time
+    - writtable by any container at any time
+  answer_item: 1
+
+- q: This command is used to set which registry an image will be uploaded to.
+  type: radio
+  options:
+    - docker pull
+    - docker tag
+    - docker assign
+    - docker push
+  answer_item: 2
+
+- q: The command _____ is used to download images while the command _____ is used to upload them.
+  type: radio
+  options:
+    - docker pull; docker push
+    - docker fetch; docker push
+    - docker push; docker pull
+    - docker get; docker put
+  answer_item: 1
+
+- q: Each line of a docker file _____.
+  type: radio
+  options:
+    - extends the previous line by changing the image
+    - makes a new independent image based on the previous line's image
+    - creates a new image from the base image
+    - modifies the current image by changing files in it
+  answer_item: 2
+
+- q: What does the CMD command in a Docker file do?
+  type: radio
+  options:
+    - it starts a new container
+    - it runs a command to build the next image
+    - it adds a command program to an image
+    - it sets the program to run when the container starts
+  answer_item: 4
+
+- q: The Docker file RUN command starts a program that runs _____.
+  type: radio
+  options:
+    - only for one line of the Docker file
+    - only for the rest of the Docker file
+    - only in the finished image
+    - each line of a docker file
+  answer_item: 1
+
+
+- q: Where does the Docker file ENV command set environment variables?
+  type: radio
+  options:
+    - only in one line of the docker file
+    - only in the finished image
+    - only in the rest of the docker file
+    - both in the rest of the docker file, and in the finished image
+  answer_item: 4
+
+- q: The Docker file WORKDIR command changes directories _____.
+  type: radio
+  options:
+    - both for the rest of the docker file, and in the finished image
+    - only in the finished image
+    - only for one line of the docker file
+    - only for the rest of the docker file
+  answer_item: 1
+
+# - q: Applications inside the containers accept configuration parameters in the form of environment variables. These variables can tell the app to listen on a specific port. Please choose the valid Dockerfile configuration
+#   type: radio
+#   options:
+#     - PORT 5000
+#       CMD flask run --host=0.0.0.0 --port=$PORT
+#     - ARG PORT 5000
+#       CMD flask run --host=0.0.0.0 --port=$PORT
+#     - ARG PORT 5000
+#       ENV PORT $PORT
+#       CMD flask run --host=0.0.0.0 --port=$PORT
+#   answer_item: 3
+
+# - q: Please choose the best Dockerfile of below samples
+#   type: radio
+#   options:
+#     - FROM debian:9
+#       RUN apt-get update && \
+#           apt-get install -y \
+#           _buildpackage_
+#       RUN _buildmyapp_
+#       RUN apt-get autoremove --purge \
+#           -y _buildpackage_ && \
+#           apt-get -y clean && \
+#           rm -rf /var/lib/apt/lists/*
+#     - FROM debian:9
+#       RUN apt-get update && \
+#           apt-get install -y \
+#           _buildpackage_ && \
+#           _build my app_ && \
+#           apt-get autoremove --purge \
+#           -y _buildpackage_ && \
+#           apt-get -y clean && \
+#           rm -rf /var/lib/apt/lists/*
+#   answer_item: 2
+
+# - q: |
+#     There're 2 Dockerfiles for building application images. Please select common layer(s) for both images
+#     FROM node:9.11.1
+#     ADD src_app1 /src/
+#     RUN cd /src && npm install
+
+#     FROM node:9.11.1
+#     ADD src_app2 /src/
+#     RUN cd /src && npm install
+#   type: radio
+#   options:
+#     - FROM node:9.11.1
+#     - ADD src_app1 /src/
+#     - ADD src_app2 /src/
+#     - RUN cd /src && npm install
+#   answer_item: 1
+
+# - q: |
+#     Which instruction(s) isn't(aren't) executed during the build form following Dockerfile
+#     FROM python:2.7
+#     RUN pip install Flask
+#     COPY . /
+#     CMD FLASK_APP=hello.py flask run --host=0.0.0.0
+#   type: radio
+#   options:
+#     - FROM
+#     - RUN
+#     - COPY
+#     - CMD
+#   answer_item: 1
+
+# - q: |
+#     Choose proper Dockerfile instruction for following functional requirements
+#     1. `docker run image_name` -> responds with "help" command
+#     2. `docker run image_name option1 option2` -> executes the "tool" inside the container with "option1 option2"
+#   type: radio
+#   options:
+#     - ENTRYPOINT tool
+#       CMD help
+
+#     - ENTRYPOINT ["tool"]
+#       CMD ["help"]
+
+#     - ENTRYPOINT ["tool"]
+#       CMD help
+
+#     - ENTRYPOINT tool
+#       CMD ["help"]
+#   answer_item: 2
+
+# - q: |
+#     What's from the blow snippet won't work as expected?
+#     ARGS BASE_IMAGE=python:3.5
+#     FROM $BASE_IMAGE
+#     RUN echo 'Using $VARIABLE'
+#     CMD ["flask", "run", "--port=${PORT}"]  
+#   type: radio
+#   options:
+#     - ARGS
+#     - FROM
+#     - RUN
+#     - CMD
+#   answer_item: 4
+
+
+
+
+# What's wrong with following command:
+# docker tag 50a986f614d5 myhttpd:1.0 myhttpd:latest sbeliakou/myhttpd:latest
+
+# * 50a986f614d5 - you should provide exact image name
+# * myhttpd:1.0 - 
+# * myhttpd:latest - 
+# * sbeliakou/myhttpd:latest - 
+# * tag accepts only one parameter - the name of the new image
+# * somethig else, nothing from here
+
+
+# ENTRYPOINT and CMD work similar to each other - to define the process executed by default
+
+# * True
+# * False
+
+
+
+
+
+
+
+
+
+
+
+
+# - q: 
+#   type: text
+#   answer_cmd: 
+
+# - q: 
+#   type: text
+#   answer_item: 
+
+# - q: 
+#   type: radio
+#   options:
+#     - a
+#     - b
+#     - c
+#   answer_item: 1

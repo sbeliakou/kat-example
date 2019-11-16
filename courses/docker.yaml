@@ -4,87 +4,274 @@ module:
   description: Practical Docker Tasks
   db_name: docker
   courses:
-  - course_id: docker-daemon
-    title: Working with Docker Daemon
+  - course_id: 00-basics
+    title: Docker basics
     difficulty: beginner
-    time: 15 minutes
+    time: 45 minutes
     steps:
-    - title: Welcome
+    - title: Docker 101
       task: |-
-        ## Let us know who you are.
+        ## What is Docker?
 
-        Please open "**User**" Tab and fill required information
-      verify: |-
-        [ -f /opt/.user ]
-    - title: Docker Daemon settings overview
-      task: |-
-        Inspect Docker Configuration and answer the questions below.
+        ![Docker](https://iotbytes.files.wordpress.com/2017/06/iot_containers.png?w=541&h=356)
 
-        >>Q1: What Docker Server version is installed?<<
-        =~= 18.09
+        Docker is a containerization platform that packages your app and all its dependencies together in the form called a docker container to ensure that your application works seamlessly in any environment.<br>
+        This environment might be a production or staging server. Docker pulls the dependencies needed for your application to run from the cloud and configures them automatically. You don’t need to do any extra work. Cool Right?
 
-        >>Q2: How many containers are there (in all states)?<<
-        === 0
 
-        >>Q3: What Storage Driver is set by default?<<
-        === overlay
 
-        >>Q4: What Runtime is set by default?<<
-        === runc
+        ## What is Docker Container
 
-        >>Q5: What Docker Root Dir is set by default?<<
-        === /var/lib/docker
+        ![container](https://apachebooster.com/blog/wp-content/uploads/2017/09/docker-container.png)
 
-        >>Q6: What Cgroup Driver is set by default?<<
-        === systemd
+        A container is something quite similar to a virtual machine, which can be used to **contain and execute all the software required to run a particular program or set of programs.**<br>
+        The container includes an operating system (typically some flavor of Linux) as base, plus any software installed on top of the OS that might be needed.<br>
+        This container can therefore be run as a self-contained virtual environment, which makes it a lot easier to reproduce the same analysis on any infrastructure that supports running the container, from your laptop to a cloud platform, without having to go through the pain of identifying and installing all the software
+        dependencies involved.<br>
+        You can even have multiple containers running on the same machine, so you can easily switch between different environments if you need to run programs that have incompatible system requirements.<br>
 
-        >>Q7: Where is docker.service file placed (enter full path)?<<
-        =~= /lib/systemd/system/docker.service
-
-        >>Q8: Where is docker.socket placed (enter full path)?<<
-        =~= /var/run/docker.sock
+        Let's create out first application!
 
         ## Documentation:
-        - https://docs.docker.com/config/daemon/
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-    - title: Docker Daemon settings setup
+        - https://docs.docker.com/
+
+        ---
+    - title: Docker 101. Dockerfile
+      courseData: _courseData
       task: |-
-        Change Logging Driver docker daemon settings from `json-file` to `syslog`
+        ![](https://deploybot.com/assets/guides/_740x345_crop_center-center/docker-head-big@2x.png)
+
+        Docker can build images automatically by reading the instructions from a `Dockerfile`. A `Dockerfile` is a text document that contains all the commands a user could call on the command line to assemble an image.
+
+        Create a new directory `/tomcat` and go into it.  
+        In `/tomcat` directory create `Dockerfile` with the following content: 
+        ```
+        FROM tomcat:jdk11-openjdk-slim
+        EXPOSE 8080
+        CMD ["catalina.sh", "run"]
+        ```
+        The meaning of these commands will be explained later, but if to be consice:
+        - the `FROM` instruction specifies the Parent Image from which you are building;
+        -  with `EXPOSE` instruction we inform Docker that the container listens on the specified network ports at runtime;
+        - finally, the `CMD` instruction sets the command to be executed when running the image, in our case we run tomcat app server.
+
+
 
         ## Documentation:
-        - https://docs.docker.com/config/daemon/
-      verify: |-
-        [[ $(docker info 2>&1 | grep "Logging Driver" | cut -d' ' -f3) == 'syslog' ]]
-    - title: Access to the docker managing
-      task: |-
-        Create user **admin** and grand him privelegues to manage docker.
+        - https://docs.docker.com/
 
-        ## Requirements:
-        - user name: **admin**
-        - **admin** should have access to manage docker
+        ---
       verify: |-
-        [[ $(cat /etc/group | grep -c "docker:.:[0-9]*:admin") -ge 1 ]] 
+        [[ $(ls /tomcat/Dockerfile) ]]
+    - title: Docker 101. Creating Docker Images
+      courseData: _courseData
+      task: |-
+        ![](https://deploybot.com/assets/guides/_740x345_crop_center-center/docker-head-big@2x.png)
+
+        We have `Dockerfile` with building instructions.<br>
+
+        Let's build new image. Execute in `/tomcat` directory the following command:<br>
+        `docker build -t my-first-app .` Please pay attention to `.` at the and of the command.
+
+        You should get the next output:
+        ```
+        root@docker-host /tomcat $ docker build -t my-first-app .
+        Sending build context to Docker daemon  2.048kB
+        Step 1/3 : FROM tomcat:jdk11-openjdk-slim
+        jdk11-openjdk-slim: Pulling from library/tomcat
+        ...
+        ...
+        Successfully built 7226dfe29946
+        Successfully tagged my-first-app:latest
+        ```
+
+
+        We've got our own image. To check it execute `docker images` and inspect our created image:
+        ```
+        root@docker-host /tomcat $ docker images
+        REPOSITORY    TAG     IMAGE ID      CREATED         SIZE
+        my-first-app  latest  7226dfe29946  31 seconds ago  420MB
+        ```
+
+
+        ## Documentation:
+        - https://docs.docker.com/
+
+        ---
+      foreground: _foreground
+      verify: |-
+        [[ $(docker images | grep -c my-first-app) -eq 1 ]]
+    - title: Docker 101. Running Containers from Images
+      courseData: _courseData
+      task: |-
+        ![](https://deploybot.com/assets/guides/_740x345_crop_center-center/docker-head-big@2x.png)
+
+        Let's run a container from the image we have just created.<br>
+        Execute the command as follows:
+        ```
+        docker run -d -p 10080:8080 my-first-app
+        ```
+
+        where:
+        - `-d` (also `--detach`) means "run container in background and print container ID"
+        - `-p 10080:8080` (also `--publish`) means "publish a container’s `8080` port to the `10080` host port
+        - `my-first-app` our custom image we have just created
+
+
+        You should get the next output:
+        ```
+        root@docker-host / $ docker run -d -p 10080:8080 my-first-app
+        40bc8617a2c7f1491953469123d326c3934be5fe100127fcf3fbfe1e94d3450f
+        root@docker-host / $
+        ```
+
+        Now brose service on `docker-host:10080` tab. There should be Tomcat's default page. 
+
+
+        If you don't want to specify exact host port (10080), you can make docker choose the first available port from the range of 32768 to 65535. Please run it with `-P`:
+        ```
+        docker run -d -P my-first-app
+        ```
+
+        And check the tab "docker-host:32768"
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/commandline/run/
+      foreground: _foreground
+      verify: |-
+        [[ $(curl -s localhost:10080 | grep -c "title.Apache.Tomcat") -eq 1 ]] &&
+        [[ $(curl -s localhost:32768 | grep -c "title.Apache.Tomcat") -eq 1 ]]
+    - title: Docker Introduction. Image Running
+      courseData: _courseData
+      task: |-
+
+        ![](https://deploybot.com/assets/guides/_740x345_crop_center-center/docker-head-big@2x.png)
+
+        How can we know how many containers are running currently?
+        ```
+        root@docker-host / CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                     NAMES
+        4973b45f98b5        my-first-app        "catalina.sh run"   4 minutes ago       Up 4 minutes        0.0.0.0:10080->8080/tcp   epic_pike
+        a807077b2d0c        my-first-app        "catalina.sh run"   5 minutes ago       Up 5 minutes        0.0.0.0:32768->8080/tcp   bold_varahamihira
+        ```
+
+        How can we stop any of them?
+        ```
+        root@docker-host / $ docker stop 4973b45f98b5
+        4973b45f98b5
+        ```
+
+        Has this container been destroyed permanently?<br>Well, no.
+        ```
+        root@docker-host / $ docker ps -a
+        CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                        PORTS                     NAMES
+        4973b45f98b5        my-first-app        "catalina.sh run"   7 minutes ago       Exited (143) 11 seconds ago                             epic_pike
+        a807077b2d0c        my-first-app        "catalina.sh run"   7 minutes ago       Up 7 minutes                  0.0.0.0:32768->8080/tcp   bold_varahamihira
+        ```
+
+        Can I run exactly this container again (to bring back from the "exited" state)?<br>Yes, of course!
+        ```
+        root@docker-host / $ docker start 4973b45f98b5
+        4973b45f98b5
+        root@docker-host / $ docker ps
+        CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                     NAMES
+        4973b45f98b5        my-first-app        "catalina.sh run"   8 minutes ago       Up 8 seconds        0.0.0.0:10080->8080/tcp   epic_pike
+        a807077b2d0c        my-first-app        "catalina.sh run"   8 minutes ago       Up 8 minutes        0.0.0.0:32768->8080/tcp   bold_varahamihira
+        ```
+
+        But how can we remove this container?
+        ```
+        root@docker-host / $ docker stop 4973b45f98b5
+        4973b45f98b5
+        root@docker-host / $ docker rm 4973b45f98b5
+        4973b45f98b5
+        root@docker-host / $  docker ps -a
+        CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                     NAMES
+        a807077b2d0c        my-first-app        "catalina.sh run"   12 minutes ago      Up 12 minutes       0.0.0.0:32768->8080/tcp   bold_varahamihira
+        ```
+
+        But what if my container didn't respond? How can I kill it?
+        ```
+        root@docker-host / $ docker kill a807077b2d0c
+        a807077b2d0c
+        root@docker-host / $ docker ps -a
+        CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                        PORTS               NAMES
+        a807077b2d0c        my-first-app        "catalina.sh run"   15 minutes ago      Exited (137) 15 seconds ago                       bold_varahamihira
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/commandline/ps/
+        - https://docs.docker.com/engine/reference/commandline/stop/
+        - https://docs.docker.com/engine/reference/commandline/start/
+        - https://docs.docker.com/engine/reference/commandline/rm/
+
+        ## Task:
+
+        Please stop all containers and remove them permanently
+      foreground: _foreground
+      verify: |-
+        cp $0 /tmp/
+        [ $(docker info --format '{{.Containers}}') -eq 0 ]
+    - title: Investigating Docker Environment
+      courseData: _courseData
+      task: |-
+        ## Docker Architecture 
+        ![Docker Architecture](https://www.aquasec.com/wiki/download/attachments/2854889/Docker_Architecture.png)
+
+        ## Docker Infrastructure
+        ![Docker Infrastructure](https://miro.medium.com/max/1578/1*uEtAhWOHVMFo5kRUnhKNBg.png)
+
+        #### dockerd:
+        - The Docker daemon itself. The highest level component in your list and also
+        the only 'Docker' product listed. Provides all the nice UX features of Docker.
+
+        #### docker-containerd:
+        - It’s a daemon, listening on a Unix socket, exposes gRPC endpoints. Handles
+        all the low-level container management tasks, storage, image distribution,
+        network attachment, etc...
+
+        #### docker-containerd-ctr:
+        - A lightweight CLI to directly communicate with containerd. Think of it as
+        how 'docker' is to 'dockerd'.
+
+        #### docker-containerd-shim:
+        - After runC actually runs the container, it exits (allowing us to not have any long-running processes responsible for our containers). The shim is the
+        component which sits between containerd and runc to facilitate this.
+
+        #### docker-runc:
+        - A lightweight binary for actually running containers. Deals with the lowlevel interfacing with Linux capabilities like cgroups, namespaces, etc...
+
+        #### docker-proxy:
+        - A tool responsible for proxying container's ports to Host's interface
+
+        ## Useful commands:
+        ```
+        docker version
+        docker info
+        ```
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+        - https://docs.docker.com/engine/reference/commandline/dockerd/
+          
+        Inspect Docker Configuration and answer the questions below. 
+
+        --- 
+      foreground: _foreground
+      verify: _verify
     intro: |-
-      # In this section you will do following:
+      # Docker Basics
 
-      - explore Docker Daemon settings
-      - change Docker Daemon settings
+      ![img](https://upload.wikimedia.org/wikipedia/commons/7/79/Docker_%28container_engine%29_logo.png)
 
-      # Good Luck!
+      ## This time we will do the next
+      - find out what is Docker and Docker Container
+      - create and run our first Docker application
+
+      ## Let's start!
     finish: |-
-      # It's Done!
+      # Summary
 
-      Some useful commands to know:
-
-      <pre class="file">
-
-      docker version
-      docker info
-
-      cat /etc/docker/daemon.json
-
-      </pre>
+      We have introduced with Docker, built our image, ran container from image, stopped and finally removed it.  
+      Sure you was enjoyed.
     environment:
       hideintro: false
       showdashboards: true
@@ -93,74 +280,105 @@ module:
       dashboards:
         - name: User
           port: 8080
-  - course_id: docker-images
-    title: Working with Docker Images
+        - name: localhost
+          port: 32768
+
+  - course_id: 01-images
+    title: Docker images
     difficulty: beginner
     time: 45 minutes
     steps:
-    - title: Welcome
+    - title: Docker Images Introduction
       task: |-
-        ## Let us know who you are.
+        ![Docker image](https://miro.medium.com/max/2124/1*IzXW9q4OEBeli1rxKR4vkQ.png)
 
-        Please open "**User**" Tab and fill required information
-      verify: |-
-        [ -f /opt/.user ]
-    - title: Working with images
+        ## Working with Images
+        - Lifecycle:
+          - `docker images` - shows all images;
+          - `docker import` - creates an image from a tarball;
+          - `docker build` - creates image from Dockerfile;
+          - `docker commit` - creates image from a container, pausing it temporarily if it is running;
+          - `docker rmi` - removes an image;
+          - `docker load` - loads an image from a tar archive as STDIN, including images and tags;
+          - `docker save` - saves an image to a tar archive stream to STDOUT with all parent layers, tags & versions;
+        - Info:
+          - `docker history` - shows history of image;
+          - `docker tag` - tags an image to a name (local or registry).  
+
+        ## Docker Base Images:
+        - **scratch** – this is the ultimate base image and it has 0 files and 0 size;
+        - **busybox** – a minimal Unix weighing in at 2.5 MB and around 10000 files;
+        - **debian** – the latest Debian is 122 MB and around 18000 files;
+        - **alpine** – Alpine Linux, only 8 MB in size and has access to a package repository.  
+         
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+        # Task
+
+        Before answer the questions pull the next images:
+        - **ubuntu:19.10**
+        - **nginx**
+        - **busybox**
+        - **alpine:3.9.4** 
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
+    - title: Image Building
       task: |-
-        Inspect docker images and answer the questions below.  
+        ## Dockerfile Instructions
+          - [.dockerignore]()
+          - [FROM](https://docs.docker.com/engine/reference/) - Sets the Base Image for subsequent instructions.
+          - [RUN](https://docs.docker.com/engine/reference/builder/) - execute any commands in a new layer on top of the current image and commit the results.
+          - [CMD](https://docs.docker.com/engine/reference/) - provide defaults for an executing container.
+          - [EXPOSE](https://docs.docker.com/engine/reference/) - informs Docker that the container listens on the specified network ports at runtime. NOTE: does not actually make ports accessible.
+          - [ENV](https://docs.docker.com/engine/reference/) - sets environment variable.
+          - [ADD](https://docs.docker.com/engine/reference/) - copies new files, directories or remote file to the container. Invalidates caches.
+          - [COPY](https://docs.docker.com/engine/reference/) - copies new files or directories to the container.
+          - [ENTRYPOINT](https://docs.docker.com/engine/reference/) - configures a container that will run as an executable.
+          - [VOLUME](https://docs.docker.com/engine/reference/) - creates a mount point for externally mounted volumes or other containers.
+          - [USER](https://docs.docker.com/engine/reference/) - sets the user name for following RUN / CMD / ENTRYPOINT commands.
+          - [WORKDIR](https://docs.docker.com/engine/reference/) - sets the working directory.
+          - [ARG](https://docs.docker.com/engine/reference/) - defines a build-time variable.
+          - [ONBUILD](https://docs.docker.com/engine/reference/) - adds a trigger instruction when the image is used as the base for another build.
+          - [STOPSIGNAL](https://docs.docker.com/engine/reference/) - sets the system call signal that will be sent to the container to exit.
+          - [LABEL](https://docs.docker.com/engine/reference/) - apply key/value metadata to your images, containers, or daemons.
+          
+          
+        # Task
 
-        >>Q1: How many images are on the host?<<
-        === 9
-
-        >>Q2: What is the "python" image size?<<
-        =~= 74
-
-        >>Q3: How many layers are in "redis" image?<<
-        === 6
-
-
-        Pull the **busybox** image.
-
-        >>Q4: What is the busybox image size?<<
-        =~= 1.
-
-        >>Q5: How many layers are in "busybox" image?<<
-        === 1
-
-
-        Pull **nginx:1.16** image.
-
-        >>Q6: What is the "nginx:1.16" image size?<<
-        =~= 126
-
-        >>Q7: How many layers are in "nginx:1.16" image?<<
-        === 3
-
-
-        Remove **node** image.
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-    - title: Image building
-      task: |-
-        You are given two Dockerfiles in `/data` directory. Build new images with the requirements below.
+        You are given two Dockerfiles in `/data` directory.<br>Build new images with the requirements below. Don't change any files.
 
         ## Requirements:
         - 1st image:
-          - use `Dockerfile` for building image;
-          - result image name: `color/green:1.0`;
+          - Dockerfile: `Dockerfile`
+          - Image Name: `color/green`
+          - Image Version: `1.0`
+
         - 2nd image:
-          - use `Dockerfile_blue` for building image;
-          - result image name: `color/blue:2.6`.
+          - Dockerfile: `Dockerfile_blue`
+          - Image Name: `color/blue`
+          - Image Version: `2.6`
 
-        For self-checking run images with the next commands:  
-        - `docker run -dt -p 32108:80 color/green:1.0`  
-        - `docker run -dt -p 32109:80 color/blue:2.6`  
+        Run images with the next commands:  
+        - `docker run -d -p 10081:80 color/green:1.0`  
+        - `docker run -d -p 10082:80 color/blue:2.6`  
 
-        Open `Checking` tab and enter port **32108** for watching green page;  
-        and enter port **32109** for watching blue page.  
-      verify: |-
-        [[ $(docker ps | egrep -c "color/blue:2.6.*0.0.0.0:32109->80/tcp") -eq 1 ]] &&
-        [[ $(docker ps | egrep -c "color/green:1.0.*0.0.0.0:32108->80/tcp") -eq 1 ]]
+        Check services on `(:10081)` and `(:10082)` tabs.  
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
       courseData: |-
         mkdir -p /data 
         cat << 'EOF' > /data/Dockerfile
@@ -175,46 +393,86 @@ module:
         COPY index_blue.html /usr/share/nginx/html/index.html
         CMD nginx -g 'daemon off;'
         EOF
+      foreground: _foreground
+      verify: |-
+        [[ $(docker ps | egrep -c "color/blue:2.6.*0.0.0.0:10082->80/tcp") -eq 1 ]] &&
+        [[ $(docker ps | egrep -c "color/green:1.0.*0.0.0.0:10081->80/tcp") -eq 1 ]]
+
     - title: Dockerfile writing
       task: |-
         Create Dockerfile and build image.
 
         ## Requirements:
-        - new image name(:tag): **myweb:0.1**
-        - base image: **centos:7**
-        - label: `author=student`, where _student_ is your Lastname;
+        - new image name(:tag): `myweb:0.1`
+        - base image: `centos:7`
+        - label: `AUTHOR={{ .StudentShort }}`
         - **httpd** webserver should be installed
-        - **index.html** default httpd page should contain your **"Name Lastname"**
+        - **index.html** default httpd page should contain `'Student: {{ .StudentName }} {{ .StudentSurname }}'`
         - port **80** should be exposed
 
-        To check your image try to execute:  
-        `docker run -dt -p 32000:80 myweb:0.1`
+        Run your image by executing:  
+        `docker run -d -p 10083:80 myweb:0.1`
 
-        Then go to **Checking** tab. You should see your **"Name Lastname"**  
-        (or curl **32000** port of **localhost**)
+        Please open `(:10083)` tab and check if all is good.
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        $(curl -Ls 127.0.0.1:32000 >/dev/null 2>&1)
+        shortname=$(echo ${STUDENT} | sed 's/^\(.\).* \(.*\)/\1\2/' | tr 'A-Z' 'a-z')
+
+        [[ $(docker ps | egrep -c "myweb:0.1.*0.0.0.0:10083->80/tcp") -eq 1 ]] &&
+        curl -s localhost:10083 | grep -i "Student: ${STUDENT}" && 
+        [[ $(docker image inspect myweb:0.1 | jq -r '.[].Config.Labels."AUTHOR"') == "${shortname}" ]] &&
+        echo done
+
     - title: Tag changing
       task: |-
-        You have your own **myweb:0.1** image but you have to change the tag.  
+        On previous step you created **myweb:0.1** image the name isn't "Productio Ready" yet.
+
 
         ## Requirements:
         - change docker image tag:
-          - from: **myweb:0.1**
-          - to: **(first letter of name + Lastname)/httpd:1.0**  
-            (etc. sbeliakou/httpd:1.0)  
+          - **from**: `myweb:0.1`
+          - **to**: `{{ .StudentShort }}/httpd:1.0`
 
-        Inspect docker images, you should see image with new tag.  
+        Inspect docker images, you should see new image with tag.<br>
 
-        Let's run the new image:  
-        - stop **myweb:0.1** container: `docker stop $(docker ps -lq)`
-        - inspect **Checking** tab, you should see katakoda's connecting page 
-        - run the new image: `docker run -dt -p 32000:80 sbeliakou/httpd:1.0`
-        - inspect **Checking** tab again, now you should see your **"Name Lastname"**
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        $(docker image ls | grep "/httpd.*1.0" >/dev/null 2>&1)
+        shortname=$(echo ${STUDENT} | sed 's/^\(.\).* \(.*\)/\1\2/' | tr 'A-Z' 'a-z')
+        docker image ls | grep "${shortname}/httpd *1.0" &&
+        echo done
+
     - title: ENTRYPOINT and CMD
       task: |-
+        - an **ENTRYPOINT** allows you to configure a container that will run as an executable;
+        - the main purpose of a **CMD** is to provide defaults for an executing container;
+        - if you would like your container to run the same executable every time, then you should consider using **ENTRYPOINT** in combination with **CMD**;
+        - **ENTRYPOINT**/**CMD** has 2 forms - **exec** and **shell**
+            - exec form: `["echo", "hello", "world"]` - preferred form
+            - shell form: `echo hello world` - supports ENV Vars resolving
+          
+
+        # Task
+
         Create Dockerfile and build image with the following requirements.
 
         ## Requirements:
@@ -227,8 +485,22 @@ module:
         - `docker run pinger`
         - `docker run pinger google.com`
         - `docker run pinger -c5 google.com`
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        $(docker image ls | grep "pinger" >/dev/null 2>&1)
+        [[ $(docker image inspect pinger | jq -r '.[].ContainerConfig.Entrypoint[]') == "ping" ]] &&
+        [[ $(docker image inspect pinger | jq -r '.[].ContainerConfig.Cmd' | grep -c "dockerhub.com") -eq 1 ]] &&
+        echo done
+
     - title: Building with arguments
       task: |-
         Create Dockerfile with the requirements below.
@@ -253,28 +525,66 @@ module:
         For self-checking run the following commands:
         - `docker run c8j11 java -version`
         - `docker run c7j180 java -version`
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
         [[ $(docker run c8j11 java -version 2>&1 | grep -c "openjdk.*11") -ge 1 ]] &&
-        [[ $(docker run c7j180 java -version 2>&1 | grep -c "openjdk.*1.8.0") -ge 1 ]]
+        [[ $(docker run c7j180 java -version 2>&1 | grep -c "openjdk.*1.8.0") -ge 1 ]] &&
+        echo done
+
     - title: ENV, ADD/COPY, WORKDIR
       task: |-
-        You're given **test_file1** file and **test_arch.tar.gz** archive in `/root/` directory.  
+        You're given **test_file1** file and **test_arch.tar** archive in `/root/` directory.  
         Create Dockerfile and build image with the following requirements.  
 
         ## Requirements:
-        - new image name: **mybusybox**;
         - base image: **busybox**;
         - work directory: **/data**;
         - **test_file1** file should be copied to work directory;
-        - content of **test_arch.tar.gz** archive should be copied to work directory;
-        - image should have environment variable: `MAINTAINER=student`, where _student_ is your Lastname
+        - content of **test_arch.tar** archive should be copied to work directory;
+        - image should have environment variable: `MAINTAINER={{ .StudentName }}_{{ .StudentSurname }}`
+        - new image name: **mybusybox**;  
+
+        For self-checking try to execute:<br>
+        ```
+        docker run mybusybox pwd
+        docker run mybusybox ls test_file1
+        docker run mybusybox ls test_file2
+        docker run mybusybox env | grep MAINTAINER
+        ```
+
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
       courseData: |-
-        echo 'megatestfile1'>test_file1 && echo 'megatestfile2'>test_file2 && tar -czf test_arch.tar.gz test_file2 && rm test_file2
+        cd /root
+        echo 'megatestfile1' > test_file1 &&
+        echo 'megatestfile2' > test_file2 &&
+        tar -cf test_arch.tar test_file2 &&
+        rm test_file2
+      foreground: _foreground
       verify: |-
-        [[ $(docker run mybusybox pwd 2>&1) == '/data' ]] &&
-        [[ $(docker run mybusybox ls test_file1 2>&1) == 'test_file1' ]] &&
-        [[ $(docker run mybusybox ls test_file2 2>&1) == 'test_file2' ]] &&
-        [[ $(docker run mybusybox env 2>&1 | grep -c MAINTAINER) -ge 1 ]]
+        [[ $(docker image inspect mybusybox | jq -r '.[].ContainerConfig.WorkingDir') == '/data' ]] &&
+        [[ $(docker run mybusybox ls | grep -c test_file) -eq 2 ]] &&
+        [[ $(docker image inspect mybusybox | jq -r '.[].ContainerConfig.Env[]' | grep -c MAINTAINER) -ge 1 ]] &&
+        echo done
+
     - title: Multi-stage build
       task: |-
         You are given `/data/maven` folder with content.  
@@ -282,7 +592,13 @@ module:
         Build Dockerfile with tag **single_app** and run it:  
         `docker run single_app`  
 
-        You should see "Hello world" message.  
+        You should see the following output:
+        ```
+        root@docker-host /data/maven $ docker run single_app
+        The current local time is: 19:00:00.443
+        Hello world! Jabed Bangali
+        ```
+        <br>
 
         Edit Dockerfile:
         - give 1st stage (maven image) name **builder**;
@@ -295,10 +611,26 @@ module:
         Build edited Dockerfile with tag **multi_app** and run it:  
         `docker run multi_app`  
 
-        You should see "Hello world" message again.  
+        You should see the same output:
+        ```
+        root@docker-host /data/maven $ docker run multi_app
+        The current local time is: 19:05:06.140
+        Hello world! Jabed Bangali
+        ```
+        <br>
+
+        You can appreciate multi-stage build benefits - just inspect size of **single_app** and **multi_app** images! 
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://medium.com/@tonistiigi/advanced-multi-stage-build-patterns-6f741b852fae
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
 
 
-        You can appreciate multi-stage build benefits - just inspect size of **single_app** and **multi_app** images!  
+        ---
       courseData: |-
         mkdir -p /data/maven && cd /data/maven
         cat << 'EOF' > /data/maven/Dockerfile
@@ -310,29 +642,394 @@ module:
         RUN mvn -e -B package
         CMD ["java", "-jar", "target/jb-hello-world-maven-0.1.0.jar"]
         EOF
-        docker run --rm -v ${HOME}:/root -v $(pwd):/git alpine/git clone https://github.com/jabedhasan21/java-hello-world-with-maven.git
+        git clone https://github.com/jabedhasan21/java-hello-world-with-maven.git 
         cp -r java-hello-world-with-maven/* .
         rm -rf java-hello-world-with-maven
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && until [ -f /data/maven/pom.xml ]; do echo -n .; sleep 1; done; echo; history -c
-      verify: !unsafe '[[ $(docker run single_app 2>&1 | grep -c "Hello world") -eq 1 ]] && [[ $(docker run multi_app 2>&1 | grep -c "Hello world") -eq 1 ]] && [[ $(docker image inspect -f "{{.Size}}" single_app) -gt $(docker image inspect -f "{{.Size}}" multi_app) ]]'
-    intro: |-
-      # In this section you will do following:
 
+      foreground: _foreground
+      verify: |-
+        [[ $(docker image inspect single_app | jq -r '.[].Config.Cmd[]'| grep -c java) -eq 1 ]] &&
+        [[ $(docker image inspect multi_app | jq -r '.[].Config.Cmd[]'| grep -c java) -eq 1 ]] &&
+        [[ $(docker image inspect single_app | jq -r '.[].Size') -gt $(docker image inspect multi_app | jq -r '.[].Size') ]] &&
+        echo done
+
+    - title: Multi-stage build. Extreme
+      task: |-
+        You are given `Dockerfile` and `web.go` (simple webserver written on golang) files in `/data/go` directory.  
+
+        Build Dockerfile with tag `go_simple` and run it:  
+        `docker run -d -p 10089:8080 --name=go_simple go_simple`  
+
+        Make a few request and examine logs of container. You should see the following output:
+        ```
+        root@docker-host /data/go $ curl localhost:10089
+        hostname: aa4760c7fada
+        ip address: 172.18.0.2
+        root@docker-host /data/go $ curl localhost:10089
+        hostname: aa4760c7fada
+        ip address: 172.18.0.2
+        root@docker-host /data/go $ curl localhost:10089
+        hostname: aa4760c7fada
+        ip address: 172.18.0.2
+        root@docker-host /data/go $ docker logs go_simple
+        2019/11/08 20:15:45 Getting request from 172.18.0.1:43898
+        2019/11/08 20:15:51 Getting request from 172.18.0.1:43902
+        2019/11/08 20:15:52 Getting request from 172.18.0.1:43906
+        ```
+        <br>
+
+        In previous step we made multi-stage build and used **openjdk:8-jre-alpine** as base image of 2nd stage.  
+        One of advantages of **go** applications is compilation opportunity. We can make binary for various platforms and run it without any assitant environment such as e.g. **java**.  
+        Moreover we can even use **scratch** as base image of 2nd stage. We will get the container with only web server application (there won't `bash` even!). Let's do this!
+
+        Edit Dockerfile:
+        - give 1st stage (golang image) name **builder**;
+        - build binary of webserver with: `GOOS=linux GOARCH=386 go build -a ./web.go`
+        - add 2nd build stage:
+          - base image: **scratch**;
+          - should copy artifact from 1st build stage (using alias **builder**);
+          - should expose 8080 port;
+          - should run copied from 1st stage artifact.  
+
+
+        Build edited Dockerfile with tag **go_multi** and run it:  
+        `docker run -d -p 10090:8080 --name=go_multi go_multi`  
+
+        Make a few request and examine logs of container. You should see the following output:
+        ```
+        root@docker-host /data/go $ curl localhost:10090
+        hostname: 780fe7f604fb
+        ip address: 172.18.0.3
+        root@docker-host /data/go $ curl localhost:10090
+        hostname: 780fe7f604fb
+        ip address: 172.18.0.3
+        root@docker-host /data/go $ curl localhost:10090
+        hostname: 780fe7f604fb
+        ip address: 172.18.0.3
+        root@docker-host /data/go $ docker logs go_multi
+        2019/11/08 20:24:52 Getting request from 172.18.0.1:49256
+        2019/11/08 20:24:53 Getting request from 172.18.0.1:49260
+        2019/11/08 20:24:54 Getting request from 172.18.0.1:49264
+        ```
+        <br>
+
+        You can appreciate multi-stage build benefits again - just compare sizes of **go_simple** and **go_multi** images! Incredible! 
+        ```
+        root@docker-host /data/go $ docker images | grep ^go_
+        go_multi            latest              2c12b0056b89        2 minutes ago       6.57MB
+        go_simple           latest              49a2d61d6557        11 minutes ago      803MB
+        ```
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://medium.com/@tonistiigi/advanced-multi-stage-build-patterns-6f741b852fae
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: |-
+        mkdir -p /data/go && cd /data/go
+
+        cat << 'EOF' > /data/go/web.go
+        package main
+
+        import (
+            "fmt"
+            "log"
+            "net/http"
+            "os"
+            "net"
+        )
+
+        func handler(w http.ResponseWriter, r *http.Request) {
+            ip, port, _ := net.SplitHostPort(r.RemoteAddr)
+            log.Printf("Getting request from %s:%s", ip, port)
+            
+            hostname, _  := os.Hostname()
+            ipaddress, _ := net.LookupHost(hostname)
+
+            fmt.Fprintf(w, "hostname: %s\nip address: %s\n", hostname, ipaddress[0])
+        }
+
+        func main() {
+            http.HandleFunc("/", handler)
+            log.Fatal(http.ListenAndServe(":8080", nil))
+        }
+        EOF
+
+        cat << 'EOF' > /data/go/Dockerfile
+        FROM golang
+        COPY web.go .
+        CMD ["go", "run", "web.go"]
+        EOF
+
+
+      foreground: _foreground
+      verify: |-
+        [[ $(docker image inspect go_simple | jq -r '.[].Config.Cmd[]'|grep -c web.go) -eq 1 ]] &&
+        [[ $(docker image inspect go_multi | jq -r '.[].Config.Cmd|length') -eq 1 ]] &&
+        [[ $(docker image inspect go_simple | jq -r '.[].Size') -gt $(docker image inspect go_multi | jq -r '.[].Size') ]] &&
+        echo done
+
+    - title: Docker Hub
+      task: |-
+        All images we used earlier is being downloaded from Docker Hub by default or localy stored images.
+        Let's create your account for keeping own images.  
+          
+
+        ## Requirements:
+        - create new Docker Hub account: [register](https://hub.docker.com/signup?next=%2F%3Fref%3Dlogin);
+        - **IMPORTANT!**: Docker ID should be `{{ .StudentName }}{{ .StudentSurname}}`
+        - after registration execute `docker login` for logging into your account in console.  
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(cat /root/.docker/config.json | jq -r '.auths."https://index.docker.io/v1/".auth') != "null" ]] ||
+        [[ $(cat /home/$(cat /etc/group|grep docker|cut -d: -f4)/.docker/config.json | jq -r '.auths."https://index.docker.io/v1/".auth') != "null" ]] && 
+        echo done
+
+    - title: Custom image (nginx on centos)
+      task: |-
+        Build Custom Docker Images. Push it into your registry on Docker Hub.
+
+
+        ## Requirements:
+        - image name:tag : `{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-centos`
+        - base image: **centos:7**;
+        - **nginx** web server should be installed;
+        - container should expose **80** port;
+        - **nginx** web server should return image name e.g.`{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-centos` as the only content of home page.  
+
+          
+        After building run the following command:<br>
+        `docker run -d -p 10090:80 --name nginx-centos-{{ .Current }} {{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-centos`<br>
+
+        Check the service on `localhost:10090`, you should see correct message. 
+          
+        If container works fine, pull your image in docker hub.  
+        After pullling check images has appeared in your Docker Hub repository.   
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(docker exec nginx-centos-11 cat /etc/redhat-release | grep -c CentOS) -eq 1 ]] &&
+        [[ $(docker exec nginx-centos-11 ps -ef | grep -c [n]ginx) -ge 2 ]] && 
+        echo done
+
+    - title: Custom image (nginx on ubuntu)
+      task: |-
+        Build Custom Docker Images. Push it into your registry on Docker Hub.  
+
+
+        ## Requirements:
+        - image name:tag : `{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-ubuntu`
+        - base image: **ubuntu**;
+        - **nginx** web server should be installed;
+        - container should expose **80** port;
+        - **nginx** web server should return image name e.g.`{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-ubuntu` as the only content on home page.  
+          
+          
+        For checking run the following command:  
+        `docker run -d -p 10091:80 --name nginx-ubuntu-{{ .Current }} {{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-ubuntu`  
+
+        Check the service on `localhost:10091`, you should see correct message. 
+          
+        If container works fine, pull your image in docker hub.  
+        After pullling check images has appeared in your Docker Hub repository.   
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(docker exec nginx-ubuntu-12 cat /etc/os-release | grep -c ID=ubuntu) -eq 1 ]] &&
+        [[ $(docker exec nginx-ubuntu-12 ps -ef | grep -c [n]ginx) -ge 2 ]] && 
+        echo done
+
+    - title: Custom image (nginx on alpine)
+      task: |-
+        Build Custom Docker Images. Push it into your registry on Docker Hub.
+
+
+        ## Requirements:
+        - new image name: `{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-alpine`
+        - base image: **alpine**;
+        - **nginx** web server should be installed;
+        - container should expose **80** port;
+        - **nginx** web server should return image name e.g.`{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-alpine` as default page.  
+          
+          
+        For checking run the following command:  
+        `docker run -d -p 10092:80 --name nginx-alpine-{{ .Current }} {{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-alpine`  
+
+        Check the service on `localhost:10092`, you should see correct message. 
+          
+        If container works fine, pull your image in docker hub.  
+        After pullling check images has appeared in your Docker Hub repository.  
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(docker exec nginx-alpine-13 cat /etc/os-release | grep -c ID=alpine) -eq 1 ]] &&
+        [[ $(docker exec nginx-alpine-13 ps -ef | grep -c [n]ginx) -ge 2 ]] && 
+        echo done
+
+    - title: Custom image (tomcat on centos)
+      task: |-
+        Build Custom Docker Images. Push it into your registry on Docker Hub.
+
+
+        ## Requirements:
+        - new image name: `{{ .StudentName }}{{ .StudentSurname}}/tomcat:{{ .Current }}-centos`
+        - base image: **centos:7**;
+        - container should expose **8080** port;  
+        - **tomcat** app server should be installed and started.  
+          
+
+        For checking run the following command:  
+        `docker run -d -p 10093:8080 --name tomcat-centos-{{ .Current }} {{ .StudentName }}{{ .StudentSurname}}/tomcat:{{ .Current }}-centos`  
+        Open in your browser `localhost:10093`, you should see tomcat default page.  
+          
+        If container works fine, pull your image in docker hub.  
+        After pullling check images has appeared in your Docker Hub repository.  
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        source /etc/venture
+        [[ $(docker exec tomcat-centos-14 cat /etc/redhat-release | grep -c CentOS) -eq 1 ]] &&
+        [[ $(docker exec tomcat-centos-14 ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
+        echo done
+
+    - title: Custom image (tomcat on ubuntu)
+      task: |-
+        Build Custom Docker Images. Push it into your registry on Docker Hub.
+
+
+        ## Requirements:
+        - new image name: `{{ .StudentName }}{{ .StudentSurname }}/tomcat:{{ .Current }}-ubuntu`
+        - base image: **ubuntu**;
+        - container should expose **8080** port;  
+        - **tomcat** app server should be installed and started.  
+          
+
+        For checking run the following command:  
+        `docker run -d -p 10094:8080 --name tomcat-ubuntu-{{ .Current }} {{ .StudentName }}{{ .StudentSurname }}/tomcat:{{ .Current }}-ubuntu`  
+        Open in your browser `localhost:10094`, you should see tomcat default page.  
+          
+        If container works fine, pull your image in docker hub.  
+        After pullling check images has appeared in your Docker Hub repository.  
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(docker exec tomcat-ubuntu-15 cat /etc/os-release | grep -c ID=ubuntu) -eq 1 ]] &&
+        [[ $(docker exec tomcat-ubuntu-15 ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
+        echo done
+
+    - title: Custom image (tomcat on alpine)
+      task: |-
+        Build Custom Docker Images.  
+
+
+        ## Requirements:
+        - new image name: `{{ .StudentName }}{{ .StudentSurname }}/tomcat:{{ .Current }}-alpine`
+        - base image: **alpine**;
+        - container should expose **8080** port;  
+        - **tomcat** app server should be installed and started.  
+          
+
+        For checking run the following command:  
+        `docker run -d -p 10095:8080 --name tomcat-alpine-{{ .Current }} {{ .StudentName }}{{ .StudentSurname }}/tomcat:{{ .Current }}-alpine`  
+        Check the service on `localhost:10095`, you should see tomcat default page.  
+          
+        If container works fine, pull your image in docker hub.  
+        After pullling check images has appeared in your Docker Hub repository.  
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(docker exec tomcat-alpine-16 cat /etc/os-release | grep -c ID=alpine) -eq 1 ]] &&
+        [[ $(docker exec tomcat-alpine-16 ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
+        echo done
+
+    intro: |-
+      ![img](https://deploybot.com/assets/blog/Using-Docker-Containersposting.png)
+
+      ## This time we will do the next
       - get, inspect, remove existing docker images
       - pull new images
       - build your own docker images
       - tag docker images
       - push your images in docker repository
 
-      # Good Luck!
+      ## Let's start!
+
     finish: |-
-      # It's Done!
+      # Summary
 
-      Some useful commands to know:
+      We have introduced with Docker Images.
+      Some useful commands you should capture:
 
-      <pre class="file">
-
+      ```
       docker image ls
       docker image rm
 
@@ -343,37 +1040,70 @@ module:
 
       docker pull ubuntu
       docker push myweb/1.0
-
-      </pre>
+      ```
     environment:
       hideintro: false
       showdashboards: true
       uilayout: terminal-iframe
       imageid: kubernetes
       dashboards:
-      - name: User
-        port: 8080
-      - name: Checking
-        port: 32000
-  - course_id: docker-containers
-    title: Working with Docker Containers
+        - name: User
+          port: 8080
+        - name: localhost
+          port: 32768
+
+  - course_id: 02-containers
+    title: Docker containers
     difficulty: beginner
     time: 45 minutes
     steps:
-    - title: Welcome
+    - title: Docker Containers introduction
       task: |-
-        ## Let us know who you are.
+        ![Docker container](https://miro.medium.com/max/2020/1*bvnHtNKBLONsSdvF4pTMtw.png)
 
-        Please open "**User**" Tab and fill required information
-      verify: |-
-        [ -f /opt/.user ]
-      courseData: |-
-        mkdir -p /data 
-        cat << 'EOF' > /data/Dockerfile
-        FROM nginx
-        EXPOSE 80
-        CMD echo "<head></head><body style=\"background-color:green;\"></body>">/usr/share/nginx/html/index.html && nginx -g 'daemon off;'
-        EOF
+        ## Working with Containers
+        - **Lifecycle**:
+          - `docker create` - creates a container but does not start it.
+          - `docker rename` - allows the container to be renamed.
+          - `docker run` - creates and starts a container in one operation.
+          - `docker rm` - deletes a container.
+          - `docker update` - updates a container's resource limits.
+        - **Starting and Stopping**:
+          - `docker start` - starts a container so it is running.
+          - `docker stop` - stops a running container.
+          - `docker restart` - stops and starts a container.
+          - `docker pause` - pauses a running container, "freezing" it in place.
+          - `docker unpause` - will unpause a running container.
+          - `docker wait` - blocks until running container stops.
+          - `docker kill` - sends a SIGKILL to a running container.
+          - `docker attach` - will connect to a running container.
+        - **Info**:
+          - `docker ps` - shows running containers.
+          - `docker logs` - gets logs from container.
+          - `docker inspect` - looks at all the info on a container.
+          - `docker events` - gets events from container.
+          - `docker port` - shows public facing port of container.
+          - `docker top` - shows running processes in container.
+          - `docker stats` - shows containers' resource usage statistics.
+          - `docker diff` - shows changed files in the container's FS.
+        - **Import / Export**:
+          - `docker cp` - copies files or folders between a container and the local filesystem.
+          - `docker export` - turns container filesystem into tarball archive stream to STDOUT.
+        - **Executing Commands**:
+          - `docker exec` - to execute a command in container.
+
+
+        ## Task
+
+        Inspect docker containers and answer the questions below.  
+
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
     - title: Running the Container in detach mode
       task: |-
         You are given the Dockerfile in `/data` directory.  
@@ -383,83 +1113,170 @@ module:
         - image name (tag): `color/green:1.0`
         - container should be runned in **detach** mode
 
-        Check the container is running - use `docker ps`.
+        Check the container is running - use `docker ps`. 
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+
+        ---
+      courseData: |-
+        docker rm -f busybox_1 busybox_2 busybox_3 busybox_4 &
+
+        mkdir -p /data 
+        cat << 'EOF' > /data/Dockerfile
+        FROM nginx
+        EXPOSE 80
+        CMD echo "<head></head><body style=\"background-color:green;\"></body>">/usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+        EOF
+      foreground: _foreground
       verify: |-
-        [[ $(docker ps | grep -c "color/green:1.0") -ge 1 ]]
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+        [[ $(docker ps | grep -c "color/green:1.0") -ge 1 ]] &&
+        echo done
+
     - title: Running the Container with publish exposed ports
       task: |-
-        You have **color/green:1.0** image. The image runs **_nginx_** webserver, but you can't reach this one, because of exposed port(s) isn't published.
+        So, we have our container up and running. But it doesn't serve any service because of no ports exposed.
 
         ## Requirements:
         - run container with **color/green:1.0** image in **detach** mode;
         - publish exposed port to random port.  
 
-        For self-checking inspect the container is running; find out published port(s); then go to the **Checking** tab and enter published port.  
-        You should see **_green_** page.
+        For self-checking inspect the container is running; find out published port(s) (e.g. `32768`); then open in new tab `localhost:32768` URL.  
+        You should see **_green_** page.  
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:.....->80/tcp") -ge 1 ]]
+        [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:.....->80/tcp") -ge 1 ]] &&
+        echo done
+
     - title: Running the Container with publish exposed ports 2
       task: |-
-        Great, you ran the container with publish exposed port(s) to the random port(s), but what if you need to publish exposed port(s) to definite port of host?
+        Great, you ran the container with publishing exposed port(s) to the random port(s), but what if you need to publish exposed port(s) to specififc port of the host?  
 
         ## Requirements:
         - run container with **color/green:1.0** image in **detach** mode;
-        - publish exposed port to port **32100** of the host.
+        - publish exposed port to port **10084** of the host.
+          
+
+        For self-checking inspect the container is running; find out our published port; then open in new tab `localhost:10084` URL.  
+        You should see **_green_** page.  
+
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:32100->80/tcp") -eq 1 ]]
-    - title: Restart policy
+        [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:10084->80/tcp") -eq 1 ]] &&
+        echo done
+
+    - title: Restarting Policy
       task: |-
-        Create two containers which will restart:
-        - 1st - regardless of the exit status;
-        - 2nd - only if the container exits with a non-zero exit status and has 7 restart retries.  
+        What if the main process inside container fails? What happens with the container?
+        Let's simulate situation where our container ends in a few seconds after its start.
+
+        ## Task:
+
+        Create two containers with the commands working for a short period of time.<br>
+        Run these containers so that:
+        - The 1st one will be restarted regardless of the exit status;
+        - The 1st one will be restarted only if the container exits with a non-zero exit status and has 7 restart retries.  
 
         ## Requirements:
-        - 1st container:
-          - should runned in **detach** mode;
-          - should restart regardless of the exit status;
-          - container name: `restarter_1`;
-          - image name: `busybox`;
-          - command: `sleep 3`.
-        - 2nd container:
-          - should runned in **detach** mode;
-          - should restart only if the container exits with a non-zero exit status;
-          - should have 7 restart retries;
-          - container name: `restarter_2`;
-          - image name: `busybox`;
-          - command: `sleep -3`.
-      verify: !unsafe '[[ $(docker inspect -f "{{ .HostConfig.RestartPolicy }}" restarter_1) == "{always 0}" ]] && [[ $(docker inspect -f "{{ .HostConfig.RestartPolicy }}" restarter_2) == "{on-failure 7}" ]]'
+        - **Container #1**:
+          - runs in **detach** mode
+          - should restart regardless of the exit status
+          - container name: `restarter_1`
+          - image name: `busybox`
+          - command: `sleep 3`
+
+        - **Container #2**:
+          - should runned in **detach** mode
+          - should restart only if the container exits with a non-zero exit status
+          - should have 7 restart retries
+          - container name: `restarter_2`
+          - image name: `busybox`
+          - command: `sleep -3`
+          
+        Inspect statuses of created containers.  
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+        - https://docs.docker.com/config/containers/start-containers-automatically/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(docker inspect restarter_1 | jq -r '.[].HostConfig.RestartPolicy.Name') == "always" ]] && 
+        [[ $(docker inspect restarter_2 | jq -r '.[].HostConfig.RestartPolicy.Name') == "on-failure" ]] &&
+        [[ $(docker inspect restarter_2 | jq -r '.[].HostConfig.RestartPolicy.MaximumRetryCount') == "7" ]] &&
+        echo done
+
     - title: Executing Commands
       task: |-
         Run container and do the requirements below.
 
         ## Requirements:
-        - container should run without **detach** and **interactive** modes;
-        - use image `alpine`;
-        - should execute command for getting `os-release` info and record this one in `/root/alpine-release` file.
+        - Get Container's OS details (`os-release`) and save it into `/root/alpine-release` file on the Host.
+        - Don't use **detach**, **interactive** and **terminal** modes
+        - Image: `alpine`
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/commandline/exec/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        [[ $(grep -c 'Alpine Linux' /root/alpine-release) -eq 2 ]]
+        [[ $(grep -c 'Alpine Linux' /root/alpine-release) -eq 2 ]] &&
+        echo done
+
     - title: Executing Commands Inside Running Container
       task: |-
         We have deployed the `batman` container (check with `docker ps`).  
-        Enter to the container, create `/data` directory, create `/data/student` file and write your Lastname in this file.  
+        Enter to the container, create `/data` directory, create `/data/student` file and write your name - {{ .Student }} - to this file.  
 
         ## Requirements:
-        - `batman` container should contain `/data/student` file with your Lastname.  
+        - `batman` container should contain `/data/student` file with your Lastname. 
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+
+        ---
       courseData: |-
         docker run -d --name=batman busybox sleep infinity
+      foreground: _foreground
       verify: |-
-        [[ $(docker exec batman cat /data/student) ]]
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && until $(docker ps | egrep 'batman' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+        [[ $(docker exec batman cat /data/student) ]] &&
+        echo done
+
     - title: Stopping/Removing Containers
       task: |-
         Do the following tasks:
         - stop `batman` container, check it with `docker ps -a`;
-        - remove `restarter_1` container without stopping itself (force);
+        - remove `restarter_1` container without stopping it (force);
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        [[ $(docker ps | egrep -c "(batman|restarter_1)") == '0' ]]
+        [[ $(docker ps | egrep -c "(batman|restarter_1)") == '0' ]] &&
+        echo done
+
     - title: Other Options
       task: |-
         Run the container with the requirements below.
@@ -471,24 +1288,198 @@ module:
         - default user id: `1000`;
         - default user should belongs to group with `gid=0` (primary) and `gid=1200`(supplementary);
         - workdir: `/data`;
-        - container should have env variable: `STUDENT=<Lastname>`, where <Lastname> is your Lastname;
-        - commans: `sleep infinity`.
-      verify: !unsafe '[[ $(docker inspect -f "{{ .Config.User }}" busy) == "1000:0" ]] && [[ $(docker inspect -f "{{ .Config.Env }}" busy) =~ "STUDENT" ]] && [[ $(docker inspect -f "{{ .Config.WorkingDir }}" busy) == "/data" ]] && [[ $(docker inspect -f "{{ .HostConfig.GroupAdd }}" busy) =~ "1200" ]]'
+        - container should have env variable: `STUDENT={{ .StudentSurname }}`;
+        - command: `sleep infinity`.
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(docker inspect busy | jq -r '.[].Config.User') == "1000:0" ]] && 
+        [[ $(docker inspect busy | jq -c '.[].Config.Env' | grep -c STUDENT) -eq 1 ]] && 
+        [[ $(docker inspect busy | jq -r '.[].Config.WorkingDir') == "/data" ]] && 
+        [[ $(docker inspect busy | jq -r '.[].HostConfig.GroupAdd[]') == "1200" ]] &&
+        echo done
+
+    - title: Health checks
+      task: |-
+        Run two container with health checking and other the requirements below.
+
+        ## Requirements:
+        - **Container #1**:
+          - container should run in **detach** mode;
+          - container name: **nginx-health**;
+          - container should have its own health checks (settings - up to you);
+          - image name: **nginx**;
+
+        - **Container #2**:
+          - container should run in **detach** mode;
+          - container name: **tomcat-health**;
+          - container should have its own health checks (settings - up to you);
+          - image name: **tomcat**;
+          
+          
+        For self-checking inspect any container:  
+        ```
+        ### health probe with a success
+        [root@master /]# docker inspect tomcat-health | jq -r '.[].State.Health'
+        {
+          "Status": "healthy",
+          "FailingStreak": 0,
+          "Log": [
+            {
+              "Start": "2019-11-03T12:56:05.595320495+03:00",
+              "End": "2019-11-03T12:56:07.002057789+03:00",
+              "ExitCode": 0,
+              "Output": "HTTP/1.1 200 \r\nContent-Type: text/html;charset=UTF-8\r\nTransfer-Encoding: chunked\r\nDate: Sun, 03 Nov 2019 09:56:06 GMT\r\n\r\n"
+            },
+        ......
+
+        ### failed health probe 
+        root@master /]# docker inspect tomcat-health | jq -r '.[].State.Health'
+        {
+          "Status": "unhealthy",
+          "FailingStreak": 5,
+          "Log": [
+            {
+              "Start": "2019-11-03T13:06:14.825155222+03:00",
+              "End": "2019-11-03T13:06:15.96559207+03:00",
+              "ExitCode": 1,
+              "Output": ""
+            },
+        ....
+        ```
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(docker inspect nginx-health | jq -r '.[].State.Health.Status') == "healthy" ]] && 
+        [[ $(docker inspect tomcat-health | jq -r '.[].State.Health.Status') == "healthy" ]] && 
+        echo done
+
+    - title: Logs
+      task: |-
+        As you remember **docker logs** shows the command's **STDOUT** and **STDERR**. Using this infomation solve the next task.  
+
+        You're given failed docker container with name **nginx_wrong**. Find out where mistake occured and fix it.  
+
+        For your information - container was tried to start with the next command:  
+        `docker run -dt -p 10091:80 -v /tmp/index.html:/usr/share/nginx/html/index.html --name nginx_wrong -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf  nginx:alpine`  
+          
+        For self-checking open `localhost:10091` in new tab. You should see the message the container was fixed.  
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/commandline/logs/
+
+        ---
+      courseData: |-
+        mkdir -p /etc/nginx
+        cat << 'EOF' > /etc/nginx/nginx.conf
+        user  nginx;
+        worker_processes  auto;
+
+        error_log  /var/log/nginx/error.log warn;
+        pid        /var/run/nginx.pid;
+
+        events {
+            worker_connections  -1024;
+        }
+
+        http {
+            include       /etc/nginx/mime.types;
+            default_type  application/octet-stream;
+
+            log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                              '$status $body_bytes_sent "$http_referer" '
+                              '"$http_user_agent" "$http_x_forwarded_for"';
+
+            access_log  /var/log/nginx/access.log  main;
+
+            sendfile        on;
+            #tcp_nopush     on;
+
+            keepalive_timeout  65;
+
+            #gzip  on;
+
+            include /etc/nginx/conf.d/*.conf;
+        }
+        EOF
+        echo 'Container nginx_wrong was fixed! You are cool!' > /tmp/index.html
+        docker run -dt -p 10091:80 -v /tmp/index.html:/usr/share/nginx/html/index.html --name nginx_wrong -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf  nginx:alpine
+      foreground: _foreground
+      verify: |-
+        [[ $(curl -s localhost:10091 | grep -c nginx_wrong) -eq 1 ]] &&
+        echo done
+
+    - title: Log Driver Configuring
+      task: |-
+        Run the container with the requirements below.
+
+        ## Requirements:
+        - image: `nginx`;
+        - container name: `nginx_journal`;
+        - container should run in **detach** mode;
+        - container should send logs to journalctl;
+        - container should expose **80** port to the **10092** host port.    
+
+        After container creating make 5-10 requests to the web server: `curl localhost:10092`   
+
+        For self-checking try to execute `journalctl -ab CONTAINER_NAME=nginx_journal`. You should see the following output (as example):  
+        ```
+        [root@master /]# journalctl -ab CONTAINER_NAME=nginx_journal
+        WARNING: terminal is not fully functional
+        -- Logs begin at Fri 2019-11-01 20:06:25 UTC, end at Fri 2019-11-01 21:00:08 UTC. --
+        Nov 01 21:00:03 master 4e7b9c7bcb7e[27]: 172.17.0.1 - - [01/Nov/2019:21:00:03 +0000] "GET / HTTP/1.1" 200 612 "-"
+        Nov 01 21:00:04 master 4e7b9c7bcb7e[27]: 172.17.0.1 - - [01/Nov/2019:21:00:04 +0000] "GET / HTTP/1.1" 200 612 "-"
+        Nov 01 21:00:04 master 4e7b9c7bcb7e[27]: 172.17.0.1 - - [01/Nov/2019:21:00:04 +0000] "GET / HTTP/1.1" 200 612 "-"
+        Nov 01 21:00:05 master 4e7b9c7bcb7e[27]: 172.17.0.1 - - [01/Nov/2019:21:00:05 +0000] "GET / HTTP/1.1" 200 612 "-"
+        Nov 01 21:00:06 master 4e7b9c7bcb7e[27]: 172.17.0.1 - - [01/Nov/2019:21:00:06 +0000] "GET / HTTP/1.1" 200 612 "-"
+        Nov 01 21:00:07 master 4e7b9c7bcb7e[27]: 172.17.0.1 - - [01/Nov/2019:21:00:07 +0000] "GET / HTTP/1.1" 200 612 "-"
+        Nov 01 21:00:08 master 4e7b9c7bcb7e[27]: 172.17.0.1 - - [01/Nov/2019:21:00:08 +0000] "GET / HTTP/1.1" 200 612 "-"
+        lines 1-8/8 (END)
+        ```
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/
+        - https://docs.docker.com/engine/reference/commandline/logs/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(journalctl -ab CONTAINER_NAME=nginx_journal | grep $(docker ps | grep nginx_journal | awk '{print $1}') | wc -l) -ge 1 ]] &&
+        echo done
+
     intro: |-
-      # In this section you will do following:
+      # Docker Containers
 
-      - run container in **detach** and **interactive** modes;
-      - publish exposed ports to the random and definite ports;
-      - execute command in running containers;
-      - stop and remove containers;
-      - set other options: user/group settings, workdir, environment variables.
+      ![](https://miro.medium.com/max/500/1*lu5prM28fxIlbHmjPT8VIg.jpeg)
 
-      # Good Luck!
+      ## This time we will do the next
+      - run container in **detach** and **interactive** modes
+      - publish exposed ports to the random and definite ports
+      - execute command in running containers
+      - stop and remove containers
+      - set other options: user/group settings, workdir, environment variables
+      - explore docker containers mistakes using docker logs
+
+      ---
     finish: |-
-      # It's Done!
+      # Summary
 
-      Some useful commands to know:
+      Well, we have learned some useful key points aboutt conttainers. Obviously, it's just a basic knowledge.
 
+      Here's a list of useful commands you should capture:
+
+      ```
       docker run -d myhttpd:1.0
 
       docker run -P -d myhttpd:1.0
@@ -511,7 +1502,12 @@ module:
 
       docker run -d --label app=web1 nginx
 
-      </pre>
+      docker logs (container_name | container_id)
+
+
+      docker run -dt --log-driver=journald --name httpd httpd
+      journalctl -ab CONTAINER_NAME=httpd
+      ```
     environment:
       hideintro: false
       showdashboards: true
@@ -520,77 +1516,133 @@ module:
       dashboards:
         - name: User
           port: 8080
-        - name: Checking
-          port: 32000
-  - course_id: docker-volumes
-    title: Working with Docker Volumes
-    time: 1 hour
-    steps:
-    - title: Welcome
-      task: |-
-        ## Let us know who you are.
+        - name: localhost
+          port: 32768
 
-        Please open "**User**" Tab and fill required information
-      verify: |-
-        [ -f /opt/.user ]
+  - course_id: 03-volumes
+    title: Docker volumes
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Docker Volumes Introduction
+      task: |-
+        ![Docker Volumes](https://docs.docker.com/storage/images/types-of-mounts-volume.png)
+
+        Volumes are the preferred mechanism for persisting data generated by and used by Docker containers. The volume’s contents exist outside the lifecycle of a given container.  
+        If your container generates non-persistent state data, consider using a tmpfs mount to avoid storing the data anywhere permanently, and to increase the container’s performance by avoiding writing into the container’s writable layer.  
+
+
+        ## Working with Volumes
+        - `docker volume create` - Create a volume;
+        - `docker volume inspect` - Display detailed information on one or more volumes;
+        - `docker volume ls` - List volumes;
+        - `docker volume prune` - Remove all unused local volumes;
+        - `docker volume rm` - Remove one or more volumes.
+
+
+        ## Task
+
+        Inspect docker volumes and answer the questions below.  
+
+
+        ## Documentation:
+        - https://docs.docker.com/storage/volumes/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
     - title: Creating Volume for the Container
       task: |-
         Run container with creating volume. Do the requirements below.
 
         ## Requirements:
         - container should run in **detach** mode;
-        - container should expose **80** container port to **32150** host port;
+        - container should expose **80** container port to **10082** host port;
         - container should create volume with the next container destination: `/usr/share/nginx/html`;
-        - container name: **n32150**;
+        - container name: **c10082**;
         - image name: **nginx**.  
 
 
-        Inspect the container and find the created volume path on the host: `docker inspect n32150 | jq -r '.[].Mounts[].Source'`  
+        Inspect the container and find the created volume path on the host:  
+        `docker inspect c10082 | jq -r '.[].Mounts[].Source'`  
         Go to the path and discover `index.html` file.  
-        Change this `index.html` file: `echo 'This is n32150 container' > index.html`.  
+        Change this `index.html` file:  
+        `echo 'This is c10082 container' > index.html`.  
 
+        For self-cheking open in new tab `localhost:10082`. You should see our note.
 
-        Go to the **Checking** tab and enter **32150** port. You should see our note.
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+        ## Documentation:
+        - https://docs.docker.com/storage/volumes/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        [[ $(grep -c n32150 $(docker inspect n32150 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]]
+        [[ $(grep -c c10082 $(docker inspect c10082 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]] &&
+        echo done
+
     - title: Mounting Data from Host
       task: |-
-        You
-         are given `/root/index.html` file.  
+        You are given `/root/index.html` file.  
         Run **nginx** container in detach mode with mounting **index.html** into container.  
 
         ## Requirements:
         - container should run in **detach** mode;
         - container should mount `/root/index.html` file on host to `/usr/share/nginx/html/index.html` on container;
-        - container should expose **80** container port to **32100** host port;
-        - container name: **n32100**;
+        - container should expose **80** container port to **10083** host port;
+        - container name: **c10083**;
         - used image: **nginx**.  
 
-        For self-checking open **Checking** tab and enter **32100** port. You should see yellow page.
-      verify: |-
-        [[ $(grep -c yellow $(docker inspect n32100 | jq -r '.[].Mounts[].Source')) -ge 1 ]]
+        For self-checking open `localhost:10083` in a new tab. You should see yellow page.  
+
+        ## Documentation:
+        - https://docs.docker.com/storage/volumes/
+
+        ---
       courseData: |-
         echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
+
+      foreground: _foreground
+      verify: |-
+        [[ $(grep -c yellow $(docker inspect c10083 | jq -r '.[].Mounts[].Source')) -ge 1 ]] &&
+        echo done
+
+    - title: _title
+      task: _task
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
     - title: Named Volume for the Container
       task: |-
-        Run  container with the requirements below.  
+        Run container with the requirements below.  
 
         ## Requirements:
         - container should run in **detach** mode;
-        - container should expose **80** container port to **32200** host port;
-        - container should create volume with name **n32200_data** and the next container destination: `/usr/share/nginx/html`;
-        - container name: **n32200**;
+        - container should expose **80** container port to **10084** host port;
+        - container should create volume with name **c10084_data** and the next container destination: `/usr/share/nginx/html`;
+        - container name: **c10084**;
         - used image: **nginx**.  
+          
+
+        Go to the `/var/lib/docker/volumes/c10084_data/_data` directory and find `index.html` file.  
+        Change this file: `echo 'This is the c10084 container' > index.html`.  
+
+        For self-checking open `localhost:10084` in a new tab. You should see our note.  
 
 
-        Go to the `/var/lib/docker/volumes/n32200_data/_data` directory and find `index.html` file.  
-        Change this file: `echo 'This is the n32200 container' > index.html`.
+        ## Documentation:
+        - https://docs.docker.com/storage/volumes/
 
-        For self-checking open **Checking** tab and enter **32200** port. You should see our note.
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        [[ $(grep -c n32200 $(docker inspect n32200 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]]
+        [[ $(grep -c c10084 $(docker inspect c10084 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]] &&
+        echo done
+
     - title: Sharing data between Containers
       task: |-
         Run  containers with the requirements below.  
@@ -601,60 +1653,82 @@ module:
           - should have name: **html_data**;
           - should mount `/root/index.html` file on host to `/usr/share/nginx/html/index.html` on container;
           - used image: **busybox**;  
-        - 1st web container:
+        - **Web Container #1**:
           - container should run in **detach** mode;
-          - container should expose **80** container port to **32250** host port;
+          - container should expose **80** container port to **10085** host port;
           - container should use volume from **html_data** container;
-          - container name: **n32250**;
+          - container name: **c10085**;
           - used image: **nginx**.  
-        - 2st web container:
+        - **Web container #2**:
           - container should run in **detach** mode;
-          - container should expose **80** container port to **32300** host port;
+          - container should expose **80** container port to **10086** host port;
           - container should use volume from **html_data** container;
-          - container name: **n32300**;
-          - used image: **nginx**.
-
-        For self-checking open **Checking** tab and enter **32250** and **32300** ports. You should see note: "_This is the busybox container content_".
-      verify: |-
-        [[ $(grep -c busybox $(docker inspect n32250 | jq -r '.[].Mounts[].Source')) -eq 1 ]] && [[ $(grep -c busybox $(docker inspect n32300 | jq -r '.[].Mounts[].Source')) -eq 1 ]]
+          - container name: **c10086**;
+          - used image: **nginx**.  
+          
+        For self-checking open **Checking** tab and enter **10085** and **10086** ports. You should see note: "_This is the busybox container content_".  
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/storage/volumes/
+          
+        ---
       courseData: |-
         echo 'This is the busybox container content' > /root/index.html
+      foreground: _foreground
+      verify: |-
+        [[ $(grep -c busybox $(docker inspect c10085 | jq -r '.[].Mounts[].Source')) -eq 1 ]] && 
+        [[ $(grep -c busybox $(docker inspect c10086 | jq -r '.[].Mounts[].Source')) -eq 1 ]] &&
+        echo done
+
     - title: Docker Volumes
       task: |-
         Create docker volume with `docker volume create ...`.  
         Inspect created volume, find out **Mountpoint**.  
         Go to the **Mountpoint** path and create **index.html** file with the following content:  
-        `My custom docker volume with name n32400_custom_volume`  
-
+        `My custom docker volume with name c10087_custom_volume`  
+          
         Run container which will use the created custom volume.
 
         ## Requirements:
-        - custom volume name: **n32400_custom_volume**;
+        - custom volume name: **c10087_custom_volume**;
         - container should run in **detach** mode;
-        - container should expose **80** container port to **32400** host port;
-        - container should use **n32400_custom_volume** volume with the next container destination: `/usr/share/nginx/html`;
-        - container name: **n32400**;
+        - container should expose **80** container port to **10087** host port;
+        - container should use **c10087_custom_volume** volume with the next container destination: `/usr/share/nginx/html`;
+        - container name: **c10087**;
         - used image: **nginx**.  
 
-        For self-checking open **Checking** tab and enter **32400** port. You should see our note.
-      verify: |-
-        [[ $(grep -c n32400 $(docker volume inspect n32400_custom_volume | jq -r '.[].Mountpoint')/*) -ge 1 ]]
-    intro: |-
-      # In this section you will do following:
+        For self-checking open `localhost:10087` in a new tab. You should see our note.  
 
+
+        ## Documentation:
+        - https://docs.docker.com/storage/volumes/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(grep -c c10087 $(docker volume inspect c10087_custom_volume | jq -r '.[].Mountpoint')/*) -ge 1 ]] &&
+        echo done
+
+    intro: |-
+      # Docker Volumes
+
+      ![](https://bioinf-galaxian.erasmusmc.nl/public/galaxy/training-material/_site/training-material//topics/admin/images/docker_volume.png)
+
+      ## This time we will do the next
       - create volumes for the container;
       - create named volume for the container;
       - share data between continers;
       - create and manage docker volumes.
 
-      # Good Luck!
     finish: |-
-      # It's Done!
+      # Summary
 
-      Some useful commands to know:
+      We have introduced with Docker Volumes.
+      Some useful commands you should capture:
 
-      <pre class="file">
-
+      ```
       docker run -d -p 80:80 -v /usr/share/nginx/html nginx
       docker run -d -p 80:80 -v nginx_data:/usr/share/nginx/html nginx
 
@@ -664,8 +1738,7 @@ module:
       docker volume create --name http-custom-data
       docker volume ls
       docker volume inspect http-custom-data
-
-      </pre>
+      ```
     environment:
       hideintro: false
       showdashboards: true
@@ -674,75 +1747,250 @@ module:
       dashboards:
         - name: User
           port: 8080
-        - name: Checking
-          port: 32000
-  - course_id: docker-networks
-    title: Working with Docker Networks
+        - name: localhost
+          port: 32768
+
+  - course_id: 04-networks
+    title: Docker networks
     difficulty: beginner
     time: 45 minutes
     steps:
-    - title: Welcome
+    - title: Docker Networks Introduction
       task: |-
-        ## Let us know who you are.
+        ![Docker Bridge Network](http://img.scoop.it/bmExZyvGWidultcwx9hCb7nTzqrqzN7Y9aBZTaXoQ8Q=)
 
-        Please open "**User**" Tab and fill required information
-      verify: |-
-        [ -f /opt/.user ]
-      courseData: |-
-        docker network create -d bridge --subnet=192.168.0.0/16 --gateway=192.168.0.1 --ip-range=192.168.1.0/24 --opt "com.docker.network.driver.mtu"="1400" my_custom_network_1
-        docker network create -d bridge --subnet=172.17.0.0/16 --gateway=172.17.0.1 --ip-range=172.17.17.0/24 --opt "com.docker.network.driver.mtu"="900" my_custom_network_2
-    - title: Docker Network Inspection 
+        ## Working with Network
+        - `docker network connect` - Connect a container to a network;
+        - `docker network create` - Create a network;
+        - `docker network disconnect` - Disconnect a container from a network;
+        - `docker network inspect` - Display detailed information on one or more networks;
+        - `docker network ls` - List networks;
+        - `docker network prune` - Remove all unused networks;
+        - `docker network rm` - Remove one or more networks.
+
+
+        ## Network Drivers
+        Docker’s networking subsystem is pluggable, using drivers. Several drivers exist by default, and provide core networking functionality:  
+
+        `docker info | grep Network`  
+          
+        - **bridge**: The default network driver. Bridge networks are usually used when your applications run in standalone containers that need to communicate.
+        - **host**: For standalone containers, remove network isolation between the container and the Docker host, and use the host’s networking directly.
+        - **overlay**: Overlay networks connect multiple Docker daemons together and enable swarm services to communicate with each other.
+        - **macvlan**: Macvlan networks allow you to assign a MAC address to a container, making it appear as a physical device on your network. Using the macvlan driver is sometimes the best choice when dealing with legacy applications that expect to be directly connected to the physical network, rather than routed through the Docker host’s network stack.
+        - **null**: For this container, disable all networking. Usually used in conjunction with a custom network driver.  
+          
+
+        ## Task
+
+        We've deployed a few docker networks. Inspect them and answer the questions below.    
+          
+        ## Documentation:
+        - https://docs.docker.com/v17.09/engine/userguide/networking/#default-networks
+        - https://docs.docker.com/engine/reference/commandline/network/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
+    - title: HOST Network
       task: |-
-        We've deployed a few docker networks. Inspect them and answer the questions below.
-
-        >>Q1: What of these are a network driver?<<
-        [ ] overlay
-        [x] bridge
-        [x] host
-        [ ] ntfs
-
-        >>Q2: Enter the subnet of "bridge" network<<
-        =~= 172.18.0.1/24
-
-        >>Q3: Is IP masquarade enabled in "bridge" network?<<
-        ( ) false
-        (x) true
-
-        >>Q4: Enter the driver type of "my_custom_network_1" network<<
-        === bridge
-
-        >>Q5: Enter the subnet of "my_custom_network_1" network<<
-        =~= 192.168.0.0/16
-
-        >>Q6: Enter the MTU value of "my_custom_network_1" network<<
-        === 1400
-
-        >>Q7: Enter the gateway of "my_custom_network_2" network<<
-        =~= 172.17.0.1
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-    - title: Network creating
-      task: |-
-        Create docker network with the requirements below.
+        Run container and attach it to the **host** network. Do the requirements below.
 
         ## Requirements:
-        - driver type: **bridge**
+        - container should run in **detach** mode;
+        - container name: **httpd_host**;
+        - container should be attached to the host network; 
+        - image name: **httpd**.  
+
+
+        For self-cheking open in new tab `localhost`. You should see "It works" message.
+
+        ## Documentation:
+        - https://docs.docker.com/v17.09/engine/userguide/networking/#default-networks
+        - https://docs.docker.com/engine/reference/commandline/network/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        [[ $(curl -s localhost | grep -c "It works") -eq 1 ]] &&
+        echo done
+
+    - title: BRIDGE Network
+      task: |-
+        Run two containers with the requirements below.
+
+        ## Requirements:
+        - **Container #1**:
+          - container should run in **detach** mode with a pseudo-TTY allocating;
+          - container name: **alpine_busy**;
+          - image name: **alpine**;
+
+        - **Container #2**:
+          - container should run in **detach** mode with a pseudo-TTY allocating;
+          - container name: **busybox_busy**;
+          - image name: **busybox**;
+          
+
+        Inspect the "bridge" network and answer the question below.  
+
+        ## Documentation:
+        - https://docs.docker.com/v17.09/engine/userguide/networking/#default-networks
+        - https://docs.docker.com/engine/reference/commandline/network/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
+    - title: User-defined network
+      task: |-
+        Create custom network 
+
+        ## Parameters:
+        - **Network name**: `{{ .StudentShort }}-bridge`
+        - **Driver**: `bridge`
+        - **Subnet**: `123.45.1.0/24`
+        - **IPRange**: `123.45.1.0/24`
+        - **Label**: `careatedby={{ .StudentName }}_{{ .StudentSurname }}`
+
+        ## Hint:
+
+        You can check all configuration parameters by inspecting this network
+
+        ## Documentation:
+        - https://docs.docker.com/v17.09/engine/userguide/networking/#default-networks
+        - https://docs.docker.com/engine/reference/commandline/network_create/
+        - https://docs.docker.com/engine/reference/commandline/network/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        source /etc/venture
+
+        [ -n "$(docker network ls | grep ${StudentShort})" ] &&
+        [ "$(docker network inspect ${StudentShort}-bridge | jq -r '.[].Driver')" == "bridge" ] &&
+        [ -n "$(docker network inspect ${StudentShort}-bridge | jq -r '.[].IPAM.Config[]| select(.IPRange == "123.45.1.0/24")')" ] &&
+        [ -n "$(docker network inspect ${StudentShort}-bridge | jq -r '.[].IPAM.Config[]| select(.Subnet == "123.45.1.0/24")')" ] &&
+        [ "$(docker network inspect ${StudentShort}-bridge | jq -r '.[].Labels.createdby')" == "${StudentName}_${StudentSurname}" ] &&
+        echo done
+
+    - title: Ping-Pong
+      task: |-
+        We have run two containers for you. But they can't talk to each other.  
+        ```
+        [root@master /]# docker exec alpine_ping ping -c1 alpine_pong
+        ping: bad address 'alpine_pong'
+        ```  
+
+        Please troubleshoot and fix it.  
+
+
+        ## Requirements:
+        - Container **alpine_ping** should ping container **apline_pong** by its name;
+        - You mustn't change `/etc/hosts` file
+
+
+        For self-cheking try to ping these containers:  
+        ```
+        [root@master /]# docker exec alpine_ping ping -c3 alpine_pong
+        PING alpine_pong (192.168.1.1): 56 data bytes
+        64 bytes from 192.168.1.1: seq=0 ttl=64 time=0.120 ms
+        64 bytes from 192.168.1.1: seq=1 ttl=64 time=0.588 ms
+        64 bytes from 192.168.1.1: seq=2 ttl=64 time=0.171 ms
+
+        --- alpine_pong ping statistics ---
+        3 packets transmitted, 3 packets received, 0% packet loss
+        round-trip min/avg/max = 0.120/0.293/0.588 ms
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/v17.09/engine/userguide/networking/#default-networks
+        - https://docs.docker.com/engine/reference/commandline/network/
+
+        ---
+      courseData: |-
+        docker network rm my_custom_network_1
+        docker network rm my_custom_network_2
+        docker run -dt --name alpine_ping alpine
+        docker run -dt --name alpine_pong alpine
+      foreground: _foreground
+      verify: |-
+        [[ $(docker exec alpine_ping ping -c1 alpine_pong) ]] &&
+        [ -z "$(docker exec -it alpine_ping cat /etc/hosts | grep alpine_pong)" ] &&
+        [ -z "$(docker exec -it alpine_pong cat /etc/hosts | grep alpine_ping)" ] &&
+        echo done
+
+    - title: Containers in user-defined network
+      task: |-
+        Run Nginx and Tomcat in Custom Network created on previous step (specify label which points to
+        custom bridge network).  
+          
+
+        ## Requirements:
+        - **Container #1**:
+          - container should run in **detach** mode;
+          - container name: **nginx-{{ .StudentShort }}-bridge**;
+          - container should be attached to the **{{ .StudentShort }}-bridge** network;
+          - container should have the same label as **{{ .StudentShort }}-bridge** network;
+          - image name: **nginx**;
+
+        - **Container #2**:
+          - container should run in **detach** mode;
+          - container name: **tomcat-{{ .StudentShort }}-bridge**;
+          - container should be attached to the **{{ .StudentShort }}-bridge** network;
+          - container should have the same label as **{{ .StudentShort }}-bridge** network;
+          - image name: **tomcat**;
+          
+
+        Inspect the **{{ .StudentShort }}-bridge** network and answer the question below.  
+
+        ## Documentation:
+        - https://docs.docker.com/v17.09/engine/userguide/networking/#default-networks
+        - https://docs.docker.com/engine/reference/commandline/network/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
     intro: |-
-      # In this section you will do following:
+      # Docker Networks
 
-      - FILL!!!!
+      ![](https://www.nuagenetworks.net/wp-content/uploads/2016/02/docker-turtles-communication.jpg)
 
-      # Good Luck!
+      ## This time we will do the next
+      - inspect docker networks
+      - create docker network
+      - attach containers to network
+
+
     finish: |-
-      # It's Done!
+      # Summary
 
-      Some useful commands to know:
+      We have introduced with Docker Networks.
+      Some useful commands you should capture:
 
-      <pre class="file">
+      ```
+      docker network ls
+      docker network inspect bridge
 
-      FILL!!!!
+      docker run --net=none -d --name inNoneContainer busybox
+      docker run -d --network=host --name=nginx nginx
 
-      </pre>
+      docker run -d -it --name=my_container_1 busybox
+      docker run -d -it --name=my_container_2 busybox
+      docker network inspect bridge | jq '.[].Containers'
+
+      docker network create < network_name >
+      docker network create <options> <network>
+      docker network create --help
+
+      docker run -d --name=inmybridge1 --net=my_bridge_network centos sleep infinity
+      ```
     environment:
       hideintro: false
       showdashboards: true
@@ -751,39 +1999,394 @@ module:
       dashboards:
         - name: User
           port: 8080
-  - course_id: docker-cgroups
-    title: Working with CGroups
+        - name: localhost
+          port: 32768
+
+  - course_id: 05-compose
+    title: Docker compose
     difficulty: beginner
     time: 45 minutes
     steps:
-    - title: Welcome
+    - title: Docker-Compose introduction
       task: |-
-        ## Let us know who you are.
+        ![Docker compose](https://1.bp.blogspot.com/-zj9LQqh10LY/WOlW16xO0DI/AAAAAAAAAp8/Ye5Vk9YNssAyncZV5QEPOX2_ySQe7QPkwCLcB/s1600/compose.png)
 
-        Please open "**User**" Tab and fill required information
+        Compose is a tool for defining and running multi-container Docker applications.  
+        The Compose file is a **YAML** file defining services, networks and volumes. The default path for a Compose file is `./docker-compose.yml`.  
+
+        Use Cases:
+        - Development environments
+        - Automated testing environments
+        - Single host deployments
+
+
+        ## Working with Docker-Compose
+        - **Lifecycle**:
+          - `create` - Create services
+          - `start` - Start services
+          - `stop` - Stop services
+          - `restart` - Restart services
+          - `kill` - Kill containers
+          - `pause` - Pause services
+          - `unpause` - Unpause services
+          - `up [-d]` - Create and start containers [detached mode]
+          - `down` - Stop and remove containers, networks, images, and volumes
+
+        - **Info, Logs**:
+          - `ps` - List containers
+          - `port` - Print the public port for a port binding
+          - `top` - Display the running processes
+          - `logs` - View output from containers
+
+        - **Build and Validate**:
+          - `build` - Build or rebuild services
+          - `config` - Validate and view the Compose file
+
+        - **Working with Registry**:
+          - `pull` - Pull service images
+          - `push` - Push service images.
+
+
+        ## Documentation:
+        - https://docs.docker.com/compose/
+        - https://docs.docker.com/compose/compose-file/
+        - https://docs.docker.com/compose/reference/overview/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
+    - title: Docker-compose file (ENV, restart, ports)
+      task: |-
+        You have a command like this:
+        `docker run -d -e COURSE=compose -e MAINTAINER={{ .StudentShort }}--restart on-failure -p 10082:80 --name httpd_web httpd`  
+          
+          
+        ## Task:
+        - Create `docker-compose.yml` file which reproduces the same service
+        - Run the stack from `docker-compose.yml` file
+
+
+        For self-cheking execute `docker-compose ps`. You should see the following output:  
+        ```
+        root@docker-host / $ docker-compose ps
+          Name          Command        State           Ports
+        ------------------------------------------------------------
+        httpd_web   httpd-foreground   Up      0.0.0.0:10082->80/tcp
+        ```
+
+        Please pay attention to the name of this container. It should be `httpd_web`
+
+        ## Documentation:
+        - https://docs.docker.com/compose/
+        - https://docs.docker.com/compose/compose-file/
+        - https://docs.docker.com/compose/reference/overview/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        [ -f /opt/.user ]
-    - title: Working with
+        source /etc/venture
+
+        [ "$(docker inspect httpd_web | jq -r '.[].HostConfig.RestartPolicy.Name')" == "on-failure" ] &&
+        docker inspect httpd_web | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep '1.24.1' &&
+        docker inspect httpd_web | jq -r '.[].Config.Env[]' | grep 'COURSE=compose' &&
+        docker inspect httpd_web | jq -r '.[].Config.Env[]' | grep "MAINTAINER=${StudentShort}" &&
+        docker inspect httpd_web | jq -r '.[].HostConfig.PortBindings."80/tcp"[].HostPort' | egrep '^10082$'
+
+    - title: Docker-compose file (ENV file, ports, volumes)
       task: |-
-        task
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
+        You're given the following command:  
+        `docker run -d --env-file /task/{{ .Current }}/nginx_env -p 10083:80 -p 50000:50000 -v /task/{{ .Current }}/index.html:/usr/share/nginx/html/index.html --log-driver journald --name nginx_web nginx:1.16`  
+          
+          
+        ## Requirements:
+        - create docker-compose file and up stack (container in our case) with `docker-compose`;
+        - repeat the given `docker run` command in **docker-compose** file.  
+
+
+        For self-cheking execute `docker-compose ps`. You should see the following output:  
+        ```
+        [root@master /]# docker-compose ps
+          Name            Command          State                        Ports
+        ------------------------------------------------------------------------------------------
+        nginx_web   nginx -g daemon off;   Up      0.0.0.0:50000->50000/tcp, 0.0.0.0:10083->80/tcp
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/compose/
+        - https://docs.docker.com/compose/compose-file/
+        - https://docs.docker.com/compose/reference/overview/
+
+        ---
+      courseData: |-
+        source /etc/venture
+
+        mkdir -p /task/${Current}
+        cat << 'EOF' > /task/${Current}/nginx_env
+        COURSE=compose
+        MAINTAINER=${StudentShort}
+        TASK=${Current}
+        EOF
+
+        sed -i 's/${StudentShort}/'${StudentShort}'/' /task/${Current}/nginx_env
+        sed -i 's/${Current}/'${Current}'/' /task/${Current}/nginx_env
+
+        cat << 'EOF' > /task/${Current}/index.html
+        This is the nginx_web container started by docker-compose!
+        EOF
+
+      foreground: _foreground
+      verify: |-
+        source /etc/venture
+
+        docker inspect nginx_web | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep '1.24.1' &&
+        docker inspect nginx_web | jq -r '.[].Config.Image' | egrep '^nginx:1.16$' &&
+        docker inspect nginx_web | jq -r '.[].Config.Env[]' | grep "COURSE=compose" &&
+        docker inspect nginx_web | jq -r '.[].Config.Env[]' | grep "TASK=${Current}" &&
+        docker inspect nginx_web | jq -r '.[].Config.Env[]' | grep "MAINTAINER=${StudentShort}" &&
+        docker inspect nginx_web | jq -r '.[].HostConfig.PortBindings."80/tcp"[].HostPort' | egrep '^10083$' &&
+        docker inspect nginx_web | jq -r '.[].HostConfig.PortBindings."50000/tcp"[].HostPort' | egrep '^50000$' &&
+        docker inspect nginx_web | jq -r '.[].HostConfig.LogConfig.Type' | egrep '^journald$' &&
+        docker inspect nginx_web | jq -r '.[].Mounts[].Destination' | egrep '/usr/share/nginx/html/index.html' &&
+        curl -s localhost:10083 | grep "$(cat /task/${Current}/index.html)"
+
+    - title: Docker-compose file (tomcat, nginx)
+      task: |-
+        Create docker-compose file to run Nginx and Tomcat. Tomcat service should run in Nginx Network
+        namespace. Forward http requests to Tomcat (upstream 127.0.0.1:8080)
+          
+          
+        ## Requirements:
+        - nginx container should expose **80** port to the **10084** host port;
+        - request to the nginx should return tomcat default page;
+        - nginx container:
+          - container name: **nginx**;
+          - image: **nginx:alpine**;  
+        - tomcat container:
+          - container name: **tomcat**;
+          - image: **tomcat:jdk8-openjdk-slim**.
+          
+
+        For self-cheking execute `docker-compose ps`. You should see the following output:  
+        ```
+        [root@master /]# docker-compose ps
+         Name          Command          State           Ports
+        -------------------------------------------------------------
+        nginx    nginx -g daemon off;   Up      0.0.0.0:10084->80/tcp
+        tomcat   catalina.sh run        Up
+        [root@master /]#
+        [root@master /]# curl -s localhost:10084 | grep title
+                <title>Apache Tomcat/8.5.47</title>
+        [root@master /]#
+        ```
+          
+          
+        ## Documentation:
+        - https://docs.docker.com/compose/
+        - https://docs.docker.com/compose/compose-file/
+        - https://docs.docker.com/compose/reference/overview/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        docker inspect nginx | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep '1.24.1' &&
+        docker inspect nginx | jq -r '.[].Config.Image' | egrep '^nginx:alpine$' &&
+        docker inspect nginx | jq -r '.[].HostConfig.PortBindings."80/tcp"[].HostPort' | egrep '^10084$' &&
+        docker inspect tomcat | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep '1.24.1' &&
+        docker inspect tomcat | jq -r '.[].Config.Image' | egrep '^tomcat:jdk8-openjdk-slim$' &&
+        docker inspect tomcat | jq -r '.[].NetworkSettings.Networks' | grep '{}' &&
+        [ $(curl -s localhost:10084 | grep -c "title.Apache.Tomcat.8") -eq 1 ]
+
+    - title: Docker-Compose
+      task: |-
+        We have got `/task/{{ .Current }}/docker-compose.yml` file. It simply creates all resources as following:
+        - User-defined Network
+        - Custom Volume
+        - Service (Container) with necessary options
+
+        ## Task:
+
+        Please inspect this file and create all resources with `docker run ...` commands. Use the same names as in docker-compose.yml file
+
+
+      courseData: |-
+        source /etc/venture
+
+        mkdir -p /task/${Current}
+        cat <<EOF > /task/${Current}/docker-compose.yml
+        version: '2'
+
+        services:
+          redis:
+            hostname: redis-server
+            container-name: redis-server
+            image: 'bitnami/redis:5.0'
+            environment:
+              # ALLOW_EMPTY_PASSWORD is recommended only for development.
+              - ALLOW_EMPTY_PASSWORD=yes
+              - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+            ports:
+              - '6379:6379'
+            volumes:
+              - 'redis_data:/bitnami/redis/data'
+
+        volumes:
+          redis_data:
+
+        EOF
+      foreground: _foreground
+      verify: |-
+        docker inspect redis-server | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep null &&
+        docker inspect redis-server | jq -r '.[].Config.Image' | egrep '^bitnami/redis:5.0$' &&
+        docker inspect redis-server | jq -r '.[].Config.Env[]' | grep '^ALLOW_EMPTY_PASSWORD=yes$' &&
+        docker inspect redis-server | jq -r '.[].Config.Env[]' | grep 'REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL' &&
+        docker inspect redis-server | jq -r '.[].Config.Hostname' | grep '^redis-server$' &&
+        docker inspect redis-server | jq -r '.[].HostConfig.PortBindings."6379/tcp"[].HostPort' | egrep '^6379$' &&
+        docker volume inspect redis_data &&
+        docker inspect redis-server | jq -r '.[].Mounts[].Name' | egrep '^redis_data$' &&
+        docker inspect redis-server | jq -r '.[].Mounts[].Destination' | egrep '^/bitnami/redis/data$'
+
+    - title: Docker-Compose. PHP and NGINX
+      task: |-
+        We have got `/task/{{ .Current }}/nginx_php` with `docker-compose` and a few other files. They simply create all resources as following:
+        - User-defined Network
+        - Custom Volume
+        - Service (Container) with necessary options
+
+        ## Task:
+
+        Please inspect these files and create all resources with `docker run ...` commands. Use the same names as in `docker-compose.yml` file.
+
+        ### Checking
+        For self-checking try to make request to **web** container:
+        ```
+        root@docker-host /task/{{ .Current }}/nginx_php $  curl localhost:10087
+        Connected successfully. Great work!
+        ``` 
+
+      courseData: |-
+        source /etc/venture
+
+        mkdir -p /task/${Current}/nginx_php/app
+        cat << 'EOF' > /task/${Current}/nginx_php/app/index.php
+        <?php
+        $servername = "db";
+        $username = "admin";
+        $password = "test";
+        $dbname = "database";
+
+        try {
+            $conn = new PDO("mysql:host=$servername;dbname=database", $username, $password);
+            // set the PDO error mode to exception
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            echo "Connected successfully. Great work!";
+            }
+        catch(PDOException $e)
+            {
+            echo "Connection failed: " . $e->getMessage();
+            }
+        ?>
+        EOF
+
+        cat <<EOF > /task/${Current}/nginx_php/Dockerfile
+        FROM php:7.2-apache
+        RUN apt-get update
+        RUN docker-php-ext-install pdo pdo_mysql mysqli
+        EOF
+
+        cat <<EOF > /task/${Current}/nginx_php/docker-compose.yml
+        version: '3'
+
+        services:
+          web:
+            container_name: web
+            hostname: web
+            build: 
+              context: /task/${Current}/nginx_php
+            image: web_locally_build
+            environment:
+              - ALLOW_OVERRIDE=true
+            ports:
+              - "10087:80"
+            volumes:
+              - ./app:/var/www/html/
+
+          db:
+            container_name: db
+            hostname: db
+            image: mysql:5.7
+            restart: always
+            volumes:
+              - ./mysql:/var/lib/mysql
+            environment:
+              MYSQL_ROOT_PASSWORD: root
+              MYSQL_USER: admin
+              MYSQL_PASSWORD: test
+              MYSQL_DATABASE: database
+            ports:
+              - "8889:3306"
+
+        EOF
+      foreground: _foreground
+      verify: |-
+        docker inspect db | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep null &&
+        docker inspect db | jq -r '.[].Config.Env[]' | egrep '^MYSQL_ROOT_PASSWORD=root$' &&
+        docker inspect db | jq -r '.[].Config.Env[]' | egrep '^MYSQL_USER=admin$' &&
+        docker inspect db | jq -r '.[].Config.Env[]' | egrep '^MYSQL_PASSWORD=test$' &&
+        docker inspect db | jq -r '.[].Config.Env[]' | egrep '^MYSQL_DATABASE=database$' &&
+        docker inspect db | jq -r '.[].Config.Hostname' | grep '^db$' &&
+        docker inspect db | jq '.[].NetworkSettings.Networks.bridge' | grep null &&
+        docker inspect db | jq -r '.[].HostConfig.PortBindings."3306/tcp"[].HostPort' | egrep '^8889$' &&
+        docker inspect db | jq -r '.[].Mounts[].Destination' | egrep '^/var/lib/mysql$' &&
+        docker inspect web | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep null &&
+        docker inspect web | jq -r '.[].Config.Image' | grep 'web_locally_build' &&
+        docker inspect web | jq -r '.[].Config.Hostname' | grep '^web$' &&
+        docker inspect web | jq -r '.[].HostConfig.PortBindings."80/tcp"[].HostPort' | egrep '^10087$' &&
+        docker inspect web | jq -r '.[].Mounts[].Destination' | egrep '^/var/www/html[/]*$' &&
+        docker inspect web | jq '.[].NetworkSettings.Networks.bridge' | grep null &&
+        curl -s localhost:10087 | grep 'Connected successfully. Great work!'
+
     intro: |-
-      # In this section you will do following:
+      # Docker-Compose
 
-      - FILL!!!!
+      ![](http://openwhisk.apache.org/images/deployments/logo-docker-compose-text.svg)
 
-      # Good Luck!
+      ## This time we will do the next
+      - defining and running multi-container Docker applications
+
+      ## Let's start!
+
     finish: |-
-      # It's Done!
+      # Summary
 
-      Some useful commands to know:
+      We have introduced with Docker Networks.
+      Some useful commands you should capture:
 
-      <pre class="file">
+      ```
+      docker-compose up -d
+      docker-compose ps
 
-      FILL!!!!
+      docker-compose exec mariadb mysqladmin -ppassword version
 
-      </pre>
+      docker-compose images
+
+      docker-compose logs mariadb
+
+      docker-compose restart mariadb
+      docker-compose stop mariadb
+
+      docker-compose down
+      docker-compose down --volumes
+
+      docker-compose build
+      docker-compose up -d
+      docker-compose up -d --build
+      docker-compose up -d --no-build
+      docker-compose up -d --no-cache
+      ```
     environment:
       hideintro: false
       showdashboards: true
@@ -792,79 +2395,302 @@ module:
       dashboards:
         - name: User
           port: 8080
-  - course_id: docker-ns
-    title: Working with Docker Namespaces
-    time: 45 minutes
-    steps:
-    - title: Welcome
-      task: |-
-        ## Let us know who you are.
+        - name: localhost
+          port: 32768
 
-        Please open "**User**" Tab and fill required information
-      verify: |-
-        [ -f /opt/.user ]
-    - title: Working with
-      task: |-
-        task
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-    intro: |-
-      # In this section you will do following:
-
-      - FILL!!!!
-
-      # Good Luck!
-    finish: |-
-      # It's Done!
-
-      Some useful commands to know:
-
-      <pre class="file">
-
-      FILL!!!!
-
-      </pre>
-    environment:
-      hideintro: false
-      showdashboards: true
-      uilayout: terminal-iframe
-      imageid: kubernetes
-      dashboards:
-        - name: User
-          port: 8080
-  - course_id: docker-compose
-    title: Working with Docker Compose
+  - course_id: 06-limits
+    title: Docker limits (namespaces, cgroups)
     difficulty: beginner
     time: 45 minutes
     steps:
-    - title: Welcome
+    - title: Linux Kernel Namespaces and Control Groups in Docker
       task: |-
-        ## Let us know who you are.
+        ![](https://cdn-images-1.medium.com/max/800/0*Eie6amq_FGqEtRPN.png)
 
-        Please open "**User**" Tab and fill required information
+        **Cgroups** - limits how much you can use
+          - Resource metering and limiting:
+          - memory
+          - CPU
+          - block I/O
+          - network
+          - Device node `/dev/*` access control  
+          
+        **Namespaces** - limits what you can see (and therefore use)
+          - Provide processes with their own view of the system
+          - Multiple namespaces:
+            - pid – isolates the process ID number space
+            - net – manages network devices
+            - mnt – to see distinct single- directory hierarchies
+            - uts – isolating hostnames
+            - ipc – manages shared memory areas, message queues, and semaphores
+          - Each process is in one namespace of each type
+
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/#pid-settings---pid
+        - https://docs.docker.com/engine/reference/run/#uts-settings---uts
+        - https://docs.docker.com/engine/reference/run/#ipc-settings---ipc
+        - https://docs.docker.com/engine/reference/run/#network-settings
+        - https://docs.docker.com/engine/reference/run/#runtime-constraints-on-resources
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
+    - title: PID Namespace
+      task: |-
+        You're given the running container with name **nginx_pid**.  
+        Run another container with `sleep infinity` command in **nginx_pid** container PID Namespace.  
+          
+
+        ## Requirements:
+        - container name: **busy_sleep_inf**;
+        - should run in **detach** mode;
+        - image: **busybox**;
+        - command: `sleep infinity`;
+        - you should see `sleep infinity` process from **busy_sleep_inf** container in running processes in **nginx_pid** container.  
+          
+
+        For self-cheking execute `ps` in **busy_sleep_inf** container. You should see the following output:  
+        ```
+        [root@master /]# docker exec busy_sleep_inf ps
+        PID   USER     TIME  COMMAND
+            1 root      0:00 nginx: master process nginx -g daemon off;
+            7 101       0:00 nginx: worker process
+            8 root      0:00 sleep infinity
+           30 root      0:00 ps
+
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/#pid-settings---pid
+        - https://docs.docker.com/engine/reference/run/#uts-settings---uts
+        - https://docs.docker.com/engine/reference/run/#ipc-settings---ipc
+        - https://docs.docker.com/engine/reference/run/#network-settings
+        - https://docs.docker.com/engine/reference/run/#runtime-constraints-on-resources
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
       verify: |-
-        [ -f /opt/.user ]
-    - title: Working with
+        [[ $(docker exec busy_sleep_inf ps | grep -c "nginx..master") -eq 1 ]] &&
+        echo done
+
+    - title: NET Namespace
       task: |-
-        task
-      foreground: |-
-        clear && echo -n "Prepairing Environment " && while $(docker image ls | egrep '(gcr.io|weaveworks|quay.io|prom|katacoda)' >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-    intro: |-
-      # In this section you will do following:
+        You're given the running container with name **nginx-net**.<br>
+        Run another container in **nginx-net** NET Namespace.  
+          
 
-      - FILL!!!!
+        ## Requirements:
+        - container name: **net-tools**;
+        - should run in **detach** mode;
+        - image: **sbeliakou/net-tools**;
+        - **net-tools** should run in **nginx-net** container NET Namespace.  
+          
 
-      # Good Luck!
-    finish: |-
-      # It's Done!
+        For self-cheking execute commands in **net-tools** container. You should see the following output:  
+        ```
+        [root@master /]# docker exec nginx-net hostname -i
+        172.17.0.4
+        [root@master /]# docker exec net-tools hostname -i
+        172.17.0.4
+        [root@master /]# docker exec net-tools netstat -tlpn
+        Active Internet connections (only servers)
+        Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+        tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      -
+        [root@master /]# docker exec net-tools curl -sIL localhost
+        HTTP/1.1 200 OK
+        Server: nginx/1.17.5
+        ...
+        ```
 
-      Some useful commands to know:
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/#pid-settings---pid
+        - https://docs.docker.com/engine/reference/run/#uts-settings---uts
+        - https://docs.docker.com/engine/reference/run/#ipc-settings---ipc
+        - https://docs.docker.com/engine/reference/run/#network-settings
+        - https://docs.docker.com/engine/reference/run/#runtime-constraints-on-resources
 
-      <pre class="file">
 
-      FILL!!!!
+        ---
+      courseData: |-
+        docker run -d --name nginx-net nginx:alpine
+      foreground: _foreground
+      verify: |-
+        docker inspect net-tools | jq -r '.[].Config.Image' | grep sbeliakou/net-tools && 
+        [[ $(docker inspect net-tools | jq -r '.[].HostConfig.NetworkMode') == "container:$(docker inspect nginx-net | jq -r '.[].Id')" ]] &&
+        echo done
 
-      </pre>
+    - title: UTS Namespace
+      task: |-
+        Create container and run it in UTS namespace of the Host.    
+          
+
+        ## Requirements:
+        - container name: **busy-host**;
+        - should run in **detach** mode;
+        - image: **busybox**;
+        - command: `sleep infinity`;
+        - should run in UTS Namespace of the host.  
+          
+
+        For self-cheking execute command `hostname` in **busy-host** container. You should see the following output:  
+        ```
+        root@docker-host / $ hostname
+        docker-host
+        root@docker-host / $ docker exec busy-host hostname
+        docker-host
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/engine/reference/run/#pid-settings---pid
+        - https://docs.docker.com/engine/reference/run/#uts-settings---uts
+        - https://docs.docker.com/engine/reference/run/#ipc-settings---ipc
+        - https://docs.docker.com/engine/reference/run/#network-settings
+        - https://docs.docker.com/engine/reference/run/#runtime-constraints-on-resources
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        docker inspect busy-host | jq '.[].Config.Image' | grep busybox &&
+        docker inspect busy-host | jq -j '.[].Config.Cmd[]' | grep sleepinfinity &&
+        [[ $(docker inspect busy-host | jq -r '.[].HostConfig.UTSMode') == "host" ]] &&
+        echo done
+
+    - title: Cgroups. Memory Limits
+      task: |-
+        Create container and run it with requirements below.    
+          
+
+        ## Requirements:
+        - container name: **tomcat**;
+        - should run in **detach** mode;
+        - image: **tomcat:jdk8-openjdk-slim**;
+        - container should have **100 Mb** memory limit;
+        - container should use unlimited swap limit;
+        - container should reserve **50 Mb** of memory.  
+          
+
+        For self-cheking execute `docker stats`. You should see the following output:  
+        ```
+        [root@master /]# docker stats tomcat --no-stream
+        CONTAINER ID    NAME     CPU %    MEM USAGE / LIMIT   MEM %    NET I/O   BLOCK I/O    PIDS
+        800bb51cf0ae    tomcat   0.73%    65.55MiB / 100MiB   65.55%   0B / 0B   160MB / 0B   43
+
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/config/containers/resource_constraints/
+        - https://docs.docker.com/engine/reference/commandline/stats/
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        # docker run --name tomcat -d -m 100M --memory-swap -1 --memory-reservation 50M tomcat:jdk8-openjdk-slim
+
+        [[ $(docker inspect tomcat | jq -r '.[].HostConfig.MemorySwap') == "-1" ]] &&
+        [[ $(docker inspect tomcat | jq -r '.[].HostConfig.MemoryReservation') != "0" ]] &&
+        [[ $(docker inspect tomcat | jq -r '.[].HostConfig.Memory') != "0" ]] &&
+        echo done
+
+    - title: Cgroups. CPU Limits
+      task: |-
+        Create container and run it with requirements below.    
+          
+
+        ## Requirements:
+        - container name: **cpu-stress**;
+        - should run in **detach** mode;
+        - image: **alpine**;
+        - command: `md5sum /dev/urandom`
+        - container should have **20%** CPU limit. 
+          
+
+        For self-cheking execute `docker stats`. You should see the following output (for example):  
+        ```
+        [root@master /]# docker stats cpu-stress --no-stream
+        CONTAINER ID    NAME        CPU %    MEM USAGE / LIMIT   MEM %    NET I/O   BLOCK I/O    PIDS
+        946310f1ca97    cpu-stress  20.16%   572KiB / 1.941GiB   0.03%    0B / 0B   8.19kB / 0B  1
+        [root@master /]#
+        [root@master /]#
+        [root@master /]# docker stats cpu-stress --no-stream
+        CONTAINER ID    NAME        CPU %    MEM USAGE / LIMIT   MEM %    NET I/O   BLOCK I/O    PIDS
+        946310f1ca97    cpu-stress  19.72%   572KiB / 1.941GiB   0.03%    0B / 0B   8.19kB / 0B  1
+        [root@master /]#
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/config/containers/resource_constraints/
+        - https://docs.docker.com/engine/reference/commandline/stats/
+
+
+        ---
+      courseData: _courseData
+      foreground: _foreground
+      verify: |-
+        docker inspect cpu-stress | jq -r '.[].HostConfig.NanoCpus | select(. == 200000000)' | grep -v ^$ ||
+        docker inspect cpu-stress | jq -r '.[].HostConfig.CpuQuota | select(. == 20000)' | grep -v ^0$ &&
+        # [[ $(docker inspect cpu-stress | jq -r '.[].HostConfig.CpuQuota') == "20000" ]] &&
+        echo done
+
+    - title: _title
+      task: _task
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
+    - title: _title
+      task: _task
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
+    - title: _title
+      task: _task
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  - course_id: 01-images
+    title: Docker images
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: _title
+      task: _task
+      courseData: _courseData
+      foreground: _foreground
+      verify: _verify
+    intro: _intro
+    finish: _finish
     environment:
       hideintro: false
       showdashboards: true
@@ -873,4 +2699,5 @@ module:
       dashboards:
         - name: User
           port: 8080
-
+        - name: localhost
+          port: 32768

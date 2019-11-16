@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Kubernetes Stand
+    </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+        }
+        
+        .iframe-container {
+            height: 100vh;
+            margin-top: -41px;
+            padding-top: 41px;
+        }
+        
+        .iframe-container.right {
+            margin-top: 0px;
+            padding-top: 0px;
+        }
+        
+        .iframe-container iframe {
+            border: none;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .left {
+            width: 60%;
+            float: left;
+            border-right: #dee2e6 solid 1px;
+        }
+        
+        .right {
+            width: 40%;
+            float: right;
+        }
+        
+        .nav-tabs {
+            border-bottom: none;
+        }
+
+        .nav-tabs .nav-link {
+            font-family: Menlo,Consolas;
+            color: rgb(16,16,16);
+        }
+        
+        .nav-tabs .nav-item:hover {
+            background-color: #d9d9d9;
+        }
+        .nav-tabs .nav-link.active {
+            color: #fff;
+            background-color: rgb(16,16,16);
+            font-family: Menlo,Consolas;
+            font-size: 10;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class='left'>
+        <ul class="nav nav-tabs" style="margin-left: 10px; height: 41px;">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tab1"> tty: master </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab2"> Dashboard </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab3"> Ingress </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="iframe-container tab-pane active show" id="tab1">
+                <iframe src='http://localhost:8022'></iframe>
+            </div>
+            <div class="iframe-container tab-pane " id="tab2">
+                <iframe src='http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/'></iframe>
+            </div>
+            <div class="iframe-container tab-pane " id="tab3">
+                <iframe src='http://localhost/green'></iframe>
+            </div>
+        </div>
+    </div>
+    <div class='iframe-container right'>
+        <iframe src='http://localhost:8081/content'></iframe>
+    </div>
+</body>
+
+
+</html>

@@ -1,0 +1,20 @@
+- q: What network does the containers belong to?
+  type: radio
+  options:
+    - none
+    - bridge
+    - host
+    - my_container_1
+  answer_item: 2
+
+- q: How many containers belong to the bridge network?
+  type: text
+  answer_cmd: docker network inspect bridge | jq -r '.[].Containers|length'
+
+- q: What is "IPv4Address" of busybox_busy container?
+  type: text
+  answer_cmd: docker network inspect bridge | jq -r ".[].Containers[\"$(docker inspect busybox_busy|jq -r '.[].Id')\"].IPv4Address"
+
+- q: What is "IPv4Address" of alpine_busy container?
+  type: text
+  answer_cmd: docker network inspect bridge | jq -r ".[].Containers[\"$(docker inspect alpine_busy|jq -r '.[].Id')\"].IPv4Address"

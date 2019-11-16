@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- <style type="text/css">
+    #web>rect {
+        stroke: black;
+        fill: black !important;
+    }
+
+    rect {
+        fill: #ECECFF;
+        stroke: #9370db !important;
+    }
+  </style> -->
+  <link rel="stylesheet" href="https://mermaidjs.github.io/mermaid-live-editor/src.96cd87af.css">
+  <link rel="stylesheet" href="https://mermaidjs.github.io/mermaid-live-editor/src.663a718e.js">
+  <script>
+    mermaid.initialize({
+      theme:'neutral',
+      logLevel:'fatal',
+      securityLevel:'strict',
+      startOnLoad:true,
+      arrowMarkerAbsolute:false,
+    });
+  </script>
+  <script src="https://unpkg.com/mermaid@8.4.0/dist/mermaid.min.js"></script>
+</head>
+<body>
+  
+  <div class="mermaid">
+    stateDiagram
+      webSvc: Web Service
+      web: Web pods
+      dbSvc: DB Service
+      db: DB pods
+      secret: DB Credentials
+      dbPvc: Persistent Volume Claim
+      pv: Persistens Volume
+      [*] --> webSvc
+      webSvc --> web
+      web --> dbSvc
+      dbSvc --> db
+      secret --> web
+      secret --> db
+      db --> dbPvc
+      dbPvc --> pv
+  </div>
+    
+  <!-- <script>mermaid.initialize({startOnLoad:true});</script> -->
+
+</body>
+</html>

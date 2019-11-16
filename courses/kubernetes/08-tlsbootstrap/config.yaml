@@ -1,0 +1,15 @@
+env:
+  type: kubernetes
+  hosts:
+  - master
+  - node
+layout:
+  - type: tabs
+    tabs:
+      - name: Terminal
+        url: //localhost:8022
+      - name: Terminal
+        url: //localhost:8022
+  - type: split
+  - type: task
+    url: //localhost:8081/content

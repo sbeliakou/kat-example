@@ -1,0 +1,30 @@
+version: "2.3"
+
+services:
+  docker-playground:
+    build:
+      context: ../../
+      dockerfile: ./${MODULE}/resources/Dockerfile
+    image: sbeliakou/lab-docker:playground
+    container_name: docker-playground
+    hostname: docker-playground
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      - var_lib_docker:/var/lib/docker
+    tmpfs:
+      - /run
+      - /tmp
+    ports:
+      - 8022:8022
+      - 10080-10100:10080-10100
+    labels:
+      lab.devops: yes
+      lab.name: ${MODULE}:${TRAINING}
+      lab.env: ${PWD}
+    privileged: true
+    tty: true
+    cpus: 0.75
+    network_mode: bridge
+
+volumes:
+  var_lib_docker:

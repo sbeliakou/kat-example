@@ -1,0 +1,19 @@
+- q: What is the namespace where metrics server is running?
+  type: text
+  answer_item: kube-system
+- q: What is the name of the pod metrics server?
+  type: text
+  answer_cmd: kubectl get pods -n kube-system | grep metrics | awk '{printf $1}'
+- q: What is the name of the container running in metrics server pod?
+  type: text
+  answer_item: metrics-server
+- q: What is the IP address of the host where the pod metrics server is running?
+  type: text
+  answer_cmd: kubectl get pods -n kube-system $(kubectl get pods -n kube-system | grep metrics-server | awk '{print $1}') -o jsonpath='{.status.hostIP}'
+- q: Please choose the correct about Metrics Server
+  type: radio
+  options:
+    - It's been deployed as daemonset
+    - It's been deployed as deployment
+    - It's been deployed as job
+  answer_item: 2

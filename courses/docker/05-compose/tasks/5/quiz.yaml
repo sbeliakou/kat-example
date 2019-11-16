@@ -1,0 +1,8 @@
+- q: Which orchestration system is only suited to single-computer orchestration? 
+  type: radio
+  options:
+    - docker compose
+    - ecs
+    - Kubernetes
+    - none of these above
+  answer_item: 1

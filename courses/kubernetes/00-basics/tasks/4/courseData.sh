@@ -1,0 +1,1 @@
+kubectl run newpod --generator=run-pod/v1 --image=busybox --command sleep 1000

@@ -1,0 +1,9 @@
+- q: What is the source of error in 'bobby' container in 'stranger' pod?
+  type: radio
+  options:
+    - nginx application isn't configured to communicate with this image
+    - the application inside this image is faulty
+    - permission issue
+    - a docker image with this name doesn't exist on Docker Hub
+    - there's an issue with docker daemon
+  answer_item: 4
