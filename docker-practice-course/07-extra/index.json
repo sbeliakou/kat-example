@@ -1,0 +1,98 @@
+{
+  "title": "Docker extra tasks",
+  "description": "",
+  "difficulty": "beginner",
+  "time": "45 minutes",
+  "details": {
+    "steps": [
+       {
+        "title": "Docker Daemon Logging Driver",
+        "text": "step0.md",
+        "verify": "step0-verify.sh",
+        "courseData": "step0-courseData.sh",
+        "code": "step0-foreground.sh"
+       }
+       ,
+       {
+        "title": "Docker Daemon Users",
+        "text": "step1.md",
+        "verify": "step1-verify.sh",
+        "courseData": "step1-courseData.sh",
+        "code": "step1-foreground.sh"
+       }
+       ,
+       {
+        "title": "Docker Daemon Remote Access",
+        "text": "step2.md",
+        "verify": "step2-verify.sh",
+        "courseData": "step2-courseData.sh",
+        "code": "step2-foreground.sh"
+       }
+       ,
+       {
+        "title": "Docker Daemon Restore",
+        "text": "step3.md",
+        "verify": "step3-verify.sh",
+        "courseData": "step3-courseData.sh",
+        "code": "step3-foreground.sh"
+       }
+       ,
+       {
+        "title": "Docker Daemon Metrics",
+        "text": "step4.md",
+        "verify": "step4-verify.sh",
+        "courseData": "step4-courseData.sh",
+        "code": "step4-foreground.sh"
+       }
+       ,
+       {
+        "title": "Container Vulnerabilities. Anchore Engine",
+        "text": "step5.md",
+        "verify": "step5-verify.sh",
+        "courseData": "step5-courseData.sh",
+        "code": "step5-foreground.sh"
+       }
+       ,
+       {
+        "title": "Container Vulnerabilities. Anchore CLI. Scanning",
+        "text": "step6.md",
+        "verify": "step6-verify.sh",
+        "courseData": "step6-courseData.sh",
+        "code": "step6-foreground.sh"
+       }
+       ,
+       {
+        "title": "Flask Application",
+        "text": "step7.md",
+        "verify": "step7-verify.sh",
+        "courseData": "step7-courseData.sh",
+        "code": "step7-foreground.sh"
+       }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "runPrep.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+"environment": {
+    "hideintro": false,
+    "showdashboards": true,
+    "uilayout": "terminal-iframe",
+    "dashboards": [
+      {"name": "User", "href": "https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com"}
+      ,
+      {"name": "localhost", "href": "https://[[HOST_SUBDOMAIN]]-32768-[[KATACODA_HOST]].environments.katacoda.com"}
+    ]
+  },
+  "backend": {
+    "imageid": "kubernetes"
+  }
+}
+
+
+
+
+

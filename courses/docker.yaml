@@ -37,7 +37,7 @@ module:
 
         ---
     - title: Docker 101. Dockerfile
-      courseData: _courseData
+      courseData: ""
       task: |-
         ![](https://deploybot.com/assets/guides/_740x345_crop_center-center/docker-head-big@2x.png)
 
@@ -64,7 +64,7 @@ module:
       verify: |-
         [[ $(ls /tomcat/Dockerfile) ]]
     - title: Docker 101. Creating Docker Images
-      courseData: _courseData
+      courseData: ""
       task: |-
         ![](https://deploybot.com/assets/guides/_740x345_crop_center-center/docker-head-big@2x.png)
 
@@ -98,11 +98,11 @@ module:
         - https://docs.docker.com/
 
         ---
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(docker images | grep -c my-first-app) -eq 1 ]]
     - title: Docker 101. Running Containers from Images
-      courseData: _courseData
+      courseData: ""
       task: |-
         ![](https://deploybot.com/assets/guides/_740x345_crop_center-center/docker-head-big@2x.png)
 
@@ -137,12 +137,12 @@ module:
 
         ## Documentation:
         - https://docs.docker.com/engine/reference/commandline/run/
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(curl -s localhost:10080 | grep -c "title.Apache.Tomcat") -eq 1 ]] &&
         [[ $(curl -s localhost:32768 | grep -c "title.Apache.Tomcat") -eq 1 ]]
     - title: Docker Introduction. Image Running
-      courseData: _courseData
+      courseData: ""
       task: |-
 
         ![](https://deploybot.com/assets/guides/_740x345_crop_center-center/docker-head-big@2x.png)
@@ -207,12 +207,12 @@ module:
         ## Task:
 
         Please stop all containers and remove them permanently
-      foreground: _foreground
+      foreground: ""
       verify: |-
         cp $0 /tmp/
-        [ $(docker info --format '{{.Containers}}') -eq 0 ]
+        [ $(docker ps | wc -l) -eq 1 ]
     - title: Investigating Docker Environment
-      courseData: _courseData
+      courseData: ""
       task: |-
         ## Docker Architecture 
         ![Docker Architecture](https://www.aquasec.com/wiki/download/attachments/2854889/Docker_Architecture.png)
@@ -255,8 +255,8 @@ module:
         Inspect Docker Configuration and answer the questions below. 
 
         --- 
-      foreground: _foreground
-      verify: _verify
+      foreground: ""
+      verify: ""
     intro: |-
       # Docker Basics
 
@@ -325,9 +325,9 @@ module:
         - **nginx**
         - **busybox**
         - **alpine:3.9.4** 
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      courseData: ""
+      foreground: ""
+      verify: ""
 
     - title: Image Building
       task: |-
@@ -393,7 +393,7 @@ module:
         COPY index_blue.html /usr/share/nginx/html/index.html
         CMD nginx -g 'daemon off;'
         EOF
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(docker ps | egrep -c "color/blue:2.6.*0.0.0.0:10082->80/tcp") -eq 1 ]] &&
         [[ $(docker ps | egrep -c "color/green:1.0.*0.0.0.0:10081->80/tcp") -eq 1 ]]
@@ -405,9 +405,9 @@ module:
         ## Requirements:
         - new image name(:tag): `myweb:0.1`
         - base image: `centos:7`
-        - label: `AUTHOR={{ .StudentShort }}`
+        - label: `AUTHOR=ivanov`
         - **httpd** webserver should be installed
-        - **index.html** default httpd page should contain `'Student: {{ .StudentName }} {{ .StudentSurname }}'`
+        - **index.html** default httpd page should contain `'Student: Ivan Ivanov'`
         - port **80** should be exposed
 
         Run your image by executing:  
@@ -423,14 +423,14 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         shortname=$(echo ${STUDENT} | sed 's/^\(.\).* \(.*\)/\1\2/' | tr 'A-Z' 'a-z')
 
         [[ $(docker ps | egrep -c "myweb:0.1.*0.0.0.0:10083->80/tcp") -eq 1 ]] &&
         curl -s localhost:10083 | grep -i "Student: ${STUDENT}" && 
-        [[ $(docker image inspect myweb:0.1 | jq -r '.[].Config.Labels."AUTHOR"') == "${shortname}" ]] &&
+        docker image inspect myweb:0.1 | jq -r '.[].Config.Labels[] | grep "AUTHOR" &&
         echo done
 
     - title: Tag changing
@@ -441,7 +441,7 @@ module:
         ## Requirements:
         - change docker image tag:
           - **from**: `myweb:0.1`
-          - **to**: `{{ .StudentShort }}/httpd:1.0`
+          - **to**: `ivanov/httpd:1.0`
 
         Inspect docker images, you should see new image with tag.<br>
 
@@ -454,11 +454,11 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         shortname=$(echo ${STUDENT} | sed 's/^\(.\).* \(.*\)/\1\2/' | tr 'A-Z' 'a-z')
-        docker image ls | grep "${shortname}/httpd *1.0" &&
+        docker image ls | grep "/httpd *1.0" &&
         echo done
 
     - title: ENTRYPOINT and CMD
@@ -494,8 +494,8 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker image inspect pinger | jq -r '.[].ContainerConfig.Entrypoint[]') == "ping" ]] &&
         [[ $(docker image inspect pinger | jq -r '.[].ContainerConfig.Cmd' | grep -c "dockerhub.com") -eq 1 ]] &&
@@ -535,8 +535,8 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker run c8j11 java -version 2>&1 | grep -c "openjdk.*11") -ge 1 ]] &&
         [[ $(docker run c7j180 java -version 2>&1 | grep -c "openjdk.*1.8.0") -ge 1 ]] &&
@@ -552,7 +552,7 @@ module:
         - work directory: **/data**;
         - **test_file1** file should be copied to work directory;
         - content of **test_arch.tar** archive should be copied to work directory;
-        - image should have environment variable: `MAINTAINER={{ .StudentName }}_{{ .StudentSurname }}`
+        - image should have environment variable: `MAINTAINER=Ivan Ivanov`
         - new image name: **mybusybox**;  
 
         For self-checking try to execute:<br>
@@ -578,7 +578,7 @@ module:
         echo 'megatestfile2' > test_file2 &&
         tar -cf test_arch.tar test_file2 &&
         rm test_file2
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(docker image inspect mybusybox | jq -r '.[].ContainerConfig.WorkingDir') == '/data' ]] &&
         [[ $(docker run mybusybox ls | grep -c test_file) -eq 2 ]] &&
@@ -646,7 +646,7 @@ module:
         cp -r java-hello-world-with-maven/* .
         rm -rf java-hello-world-with-maven
 
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(docker image inspect single_app | jq -r '.[].Config.Cmd[]'| grep -c java) -eq 1 ]] &&
         [[ $(docker image inspect multi_app | jq -r '.[].Config.Cmd[]'| grep -c java) -eq 1 ]] &&
@@ -767,7 +767,7 @@ module:
         EOF
 
 
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(docker image inspect go_simple | jq -r '.[].Config.Cmd[]'|grep -c web.go) -eq 1 ]] &&
         [[ $(docker image inspect go_multi | jq -r '.[].Config.Cmd|length') -eq 1 ]] &&
@@ -782,7 +782,7 @@ module:
 
         ## Requirements:
         - create new Docker Hub account: [register](https://hub.docker.com/signup?next=%2F%3Fref%3Dlogin);
-        - **IMPORTANT!**: Docker ID should be `{{ .StudentName }}{{ .StudentSurname}}`
+        - **IMPORTANT!**: Docker ID should be like `ivanivanov`
         - after registration execute `docker login` for logging into your account in console.  
           
           
@@ -794,8 +794,8 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(cat /root/.docker/config.json | jq -r '.auths."https://index.docker.io/v1/".auth') != "null" ]] ||
         [[ $(cat /home/$(cat /etc/group|grep docker|cut -d: -f4)/.docker/config.json | jq -r '.auths."https://index.docker.io/v1/".auth') != "null" ]] && 
@@ -807,15 +807,15 @@ module:
 
 
         ## Requirements:
-        - image name:tag : `{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-centos`
+        - image name:tag : `ivanivanov/nginx:centos`
         - base image: **centos:7**;
         - **nginx** web server should be installed;
         - container should expose **80** port;
-        - **nginx** web server should return image name e.g.`{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-centos` as the only content of home page.  
+        - **nginx** web server should return image name e.g.`ivanivanov/nginx:centos` as the only content of home page.  
 
           
         After building run the following command:<br>
-        `docker run -d -p 10090:80 --name nginx-centos-{{ .Current }} {{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-centos`<br>
+        `docker run -d -p 10090:80 --name nginx-centos ivanivanov<br>
 
         Check the service on `localhost:10090`, you should see correct message. 
           
@@ -830,11 +830,11 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
-        [[ $(docker exec nginx-centos-11 cat /etc/redhat-release | grep -c CentOS) -eq 1 ]] &&
-        [[ $(docker exec nginx-centos-11 ps -ef | grep -c [n]ginx) -ge 2 ]] && 
+        [[ $(docker exec nginx-centos cat /etc/redhat-release | grep -c CentOS) -eq 1 ]] &&
+        [[ $(docker exec nginx-centos ps -ef | grep -c [n]ginx) -ge 2 ]] && 
         echo done
 
     - title: Custom image (nginx on ubuntu)
@@ -843,15 +843,15 @@ module:
 
 
         ## Requirements:
-        - image name:tag : `{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-ubuntu`
+        - image name:tag : `ivanivanov/nginx:ubuntu`
         - base image: **ubuntu**;
         - **nginx** web server should be installed;
         - container should expose **80** port;
-        - **nginx** web server should return image name e.g.`{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-ubuntu` as the only content on home page.  
+        - **nginx** web server should return image name e.g.`ivanivanov/nginx:ubuntu` as the only content on home page.  
           
           
         For checking run the following command:  
-        `docker run -d -p 10091:80 --name nginx-ubuntu-{{ .Current }} {{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-ubuntu`  
+        `docker run -d -p 10091:80 --name nginx-ubuntu ivanivanov 
 
         Check the service on `localhost:10091`, you should see correct message. 
           
@@ -866,11 +866,11 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
-        [[ $(docker exec nginx-ubuntu-12 cat /etc/os-release | grep -c ID=ubuntu) -eq 1 ]] &&
-        [[ $(docker exec nginx-ubuntu-12 ps -ef | grep -c [n]ginx) -ge 2 ]] && 
+        [[ $(docker exec nginx-ubuntu cat /etc/os-release | grep -c ID=ubuntu) -eq 1 ]] &&
+        [[ $(docker exec nginx-ubuntu ps -ef | grep -c [n]ginx) -ge 2 ]] && 
         echo done
 
     - title: Custom image (nginx on alpine)
@@ -879,15 +879,15 @@ module:
 
 
         ## Requirements:
-        - new image name: `{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-alpine`
+        - new image name: `ivanivanov/nginx:alpine`
         - base image: **alpine**;
         - **nginx** web server should be installed;
         - container should expose **80** port;
-        - **nginx** web server should return image name e.g.`{{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-alpine` as default page.  
+        - **nginx** web server should return image name e.g.`ivanivanov/nginx:alpine` as default page.  
           
           
         For checking run the following command:  
-        `docker run -d -p 10092:80 --name nginx-alpine-{{ .Current }} {{ .StudentName }}{{ .StudentSurname}}/nginx:{{ .Current }}-alpine`  
+        `docker run -d -p 10092:80 --name nginx-alpine ivanivanov 
 
         Check the service on `localhost:10092`, you should see correct message. 
           
@@ -902,11 +902,11 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
-        [[ $(docker exec nginx-alpine-13 cat /etc/os-release | grep -c ID=alpine) -eq 1 ]] &&
-        [[ $(docker exec nginx-alpine-13 ps -ef | grep -c [n]ginx) -ge 2 ]] && 
+        [[ $(docker exec nginx-alpine cat /etc/os-release | grep -c ID=alpine) -eq 1 ]] &&
+        [[ $(docker exec nginx-alpine ps -ef | grep -c [n]ginx) -ge 2 ]] && 
         echo done
 
     - title: Custom image (tomcat on centos)
@@ -915,14 +915,14 @@ module:
 
 
         ## Requirements:
-        - new image name: `{{ .StudentName }}{{ .StudentSurname}}/tomcat:{{ .Current }}-centos`
+        - new image name: `ivanivanov/tomcat:centos`
         - base image: **centos:7**;
         - container should expose **8080** port;  
         - **tomcat** app server should be installed and started.  
           
 
         For checking run the following command:  
-        `docker run -d -p 10093:8080 --name tomcat-centos-{{ .Current }} {{ .StudentName }}{{ .StudentSurname}}/tomcat:{{ .Current }}-centos`  
+        `docker run -d -p 10093:8080 --name tomcat-centos ivanivanov  
         Open in your browser `localhost:10093`, you should see tomcat default page.  
           
         If container works fine, pull your image in docker hub.  
@@ -936,12 +936,12 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         source /etc/venture
-        [[ $(docker exec tomcat-centos-14 cat /etc/redhat-release | grep -c CentOS) -eq 1 ]] &&
-        [[ $(docker exec tomcat-centos-14 ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
+        [[ $(docker exec tomcat-centos cat /etc/redhat-release | grep -c CentOS) -eq 1 ]] &&
+        [[ $(docker exec tomcat-centos ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
         echo done
 
     - title: Custom image (tomcat on ubuntu)
@@ -950,14 +950,14 @@ module:
 
 
         ## Requirements:
-        - new image name: `{{ .StudentName }}{{ .StudentSurname }}/tomcat:{{ .Current }}-ubuntu`
+        - new image name: `ivanivanov/tomcat:ubuntu`
         - base image: **ubuntu**;
         - container should expose **8080** port;  
         - **tomcat** app server should be installed and started.  
           
 
         For checking run the following command:  
-        `docker run -d -p 10094:8080 --name tomcat-ubuntu-{{ .Current }} {{ .StudentName }}{{ .StudentSurname }}/tomcat:{{ .Current }}-ubuntu`  
+        `docker run -d -p 10094:8080 --name tomcat-ubuntu ivanivanov/tomcat:ubuntu`  
         Open in your browser `localhost:10094`, you should see tomcat default page.  
           
         If container works fine, pull your image in docker hub.  
@@ -971,11 +971,11 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
-        [[ $(docker exec tomcat-ubuntu-15 cat /etc/os-release | grep -c ID=ubuntu) -eq 1 ]] &&
-        [[ $(docker exec tomcat-ubuntu-15 ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
+        [[ $(docker exec tomcat-ubuntu cat /etc/os-release | grep -c ID=ubuntu) -eq 1 ]] &&
+        [[ $(docker exec tomcat-ubuntu ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
         echo done
 
     - title: Custom image (tomcat on alpine)
@@ -984,14 +984,14 @@ module:
 
 
         ## Requirements:
-        - new image name: `{{ .StudentName }}{{ .StudentSurname }}/tomcat:{{ .Current }}-alpine`
+        - new image name: `ivanivanov/tomcat:alpine`
         - base image: **alpine**;
         - container should expose **8080** port;  
         - **tomcat** app server should be installed and started.  
           
 
         For checking run the following command:  
-        `docker run -d -p 10095:8080 --name tomcat-alpine-{{ .Current }} {{ .StudentName }}{{ .StudentSurname }}/tomcat:{{ .Current }}-alpine`  
+        `docker run -d -p 10095:8080 --name tomcat-alpine ivanivanov/tomcat:alpine`  
         Check the service on `localhost:10095`, you should see tomcat default page.  
           
         If container works fine, pull your image in docker hub.  
@@ -1004,11 +1004,11 @@ module:
         - https://docs.docker.com/engine/reference/commandline/images/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
-        [[ $(docker exec tomcat-alpine-16 cat /etc/os-release | grep -c ID=alpine) -eq 1 ]] &&
-        [[ $(docker exec tomcat-alpine-16 ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
+        [[ $(docker exec tomcat-alpine cat /etc/os-release | grep -c ID=alpine) -eq 1 ]] &&
+        [[ $(docker exec tomcat-alpine ps -ef | grep -c "java.*tomcat") -eq 1 ]] && 
         echo done
 
     intro: |-
@@ -1100,9 +1100,9 @@ module:
 
         ## Documentation:
         - https://docs.docker.com/engine/reference/run/
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      courseData: ""
+      foreground: ""
+      verify: ""
 
     - title: Running the Container in detach mode
       task: |-
@@ -1128,7 +1128,7 @@ module:
         EXPOSE 80
         CMD echo "<head></head><body style=\"background-color:green;\"></body>">/usr/share/nginx/html/index.html && nginx -g 'daemon off;'
         EOF
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(docker ps | grep -c "color/green:1.0") -ge 1 ]] &&
         echo done
@@ -1148,8 +1148,8 @@ module:
         - https://docs.docker.com/engine/reference/run/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:.....->80/tcp") -ge 1 ]] &&
         echo done
@@ -1171,8 +1171,8 @@ module:
         - https://docs.docker.com/engine/reference/run/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker ps | grep -c "color/green:1.0.*0.0.0.0:10084->80/tcp") -eq 1 ]] &&
         echo done
@@ -1212,8 +1212,8 @@ module:
         - https://docs.docker.com/config/containers/start-containers-automatically/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker inspect restarter_1 | jq -r '.[].HostConfig.RestartPolicy.Name') == "always" ]] && 
         [[ $(docker inspect restarter_2 | jq -r '.[].HostConfig.RestartPolicy.Name') == "on-failure" ]] &&
@@ -1233,8 +1233,8 @@ module:
         - https://docs.docker.com/engine/reference/commandline/exec/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(grep -c 'Alpine Linux' /root/alpine-release) -eq 2 ]] &&
         echo done
@@ -1242,7 +1242,7 @@ module:
     - title: Executing Commands Inside Running Container
       task: |-
         We have deployed the `batman` container (check with `docker ps`).  
-        Enter to the container, create `/data` directory, create `/data/student` file and write your name - {{ .Student }} - to this file.  
+        Enter to the container, create `/data` directory, create `/data/student` file and write your name - ivanov - to this file.  
 
         ## Requirements:
         - `batman` container should contain `/data/student` file with your Lastname. 
@@ -1254,7 +1254,7 @@ module:
         ---
       courseData: |-
         docker run -d --name=batman busybox sleep infinity
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(docker exec batman cat /data/student) ]] &&
         echo done
@@ -1271,8 +1271,8 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker ps | egrep -c "(batman|restarter_1)") == '0' ]] &&
         echo done
@@ -1288,7 +1288,7 @@ module:
         - default user id: `1000`;
         - default user should belongs to group with `gid=0` (primary) and `gid=1200`(supplementary);
         - workdir: `/data`;
-        - container should have env variable: `STUDENT={{ .StudentSurname }}`;
+        - container should have env variable: `STUDENT=ivanov`;
         - command: `sleep infinity`.
           
           
@@ -1297,8 +1297,8 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker inspect busy | jq -r '.[].Config.User') == "1000:0" ]] && 
         [[ $(docker inspect busy | jq -c '.[].Config.Env' | grep -c STUDENT) -eq 1 ]] && 
@@ -1356,8 +1356,8 @@ module:
         ```
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker inspect nginx-health | jq -r '.[].State.Health.Status') == "healthy" ]] && 
         [[ $(docker inspect tomcat-health | jq -r '.[].State.Health.Status') == "healthy" ]] && 
@@ -1413,7 +1413,7 @@ module:
         EOF
         echo 'Container nginx_wrong was fixed! You are cool!' > /tmp/index.html
         docker run -dt -p 10091:80 -v /tmp/index.html:/usr/share/nginx/html/index.html --name nginx_wrong -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf  nginx:alpine
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(curl -s localhost:10091 | grep -c nginx_wrong) -eq 1 ]] &&
         echo done
@@ -1452,8 +1452,8 @@ module:
         - https://docs.docker.com/engine/reference/commandline/logs/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(journalctl -ab CONTAINER_NAME=nginx_journal | grep $(docker ps | grep nginx_journal | awk '{print $1}') | wc -l) -ge 1 ]] &&
         echo done
@@ -1549,9 +1549,9 @@ module:
         - https://docs.docker.com/storage/volumes/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      courseData: ""
+      foreground: ""
+      verify: ""
 
     - title: Creating Volume for the Container
       task: |-
@@ -1577,8 +1577,8 @@ module:
         - https://docs.docker.com/storage/volumes/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(grep -c c10082 $(docker inspect c10082 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]] &&
         echo done
@@ -1604,16 +1604,10 @@ module:
       courseData: |-
         echo '<head></head><body style="background-color:yellow;"></body>' > /root/index.html
 
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(grep -c yellow $(docker inspect c10083 | jq -r '.[].Mounts[].Source')) -ge 1 ]] &&
         echo done
-
-    - title: _title
-      task: _task
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
 
     - title: Named Volume for the Container
       task: |-
@@ -1637,8 +1631,8 @@ module:
         - https://docs.docker.com/storage/volumes/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(grep -c c10084 $(docker inspect c10084 | jq -r '.[].Mounts[].Source')/index.html) -ge 1 ]] &&
         echo done
@@ -1675,7 +1669,7 @@ module:
         ---
       courseData: |-
         echo 'This is the busybox container content' > /root/index.html
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(grep -c busybox $(docker inspect c10085 | jq -r '.[].Mounts[].Source')) -eq 1 ]] && 
         [[ $(grep -c busybox $(docker inspect c10086 | jq -r '.[].Mounts[].Source')) -eq 1 ]] &&
@@ -1705,8 +1699,8 @@ module:
         - https://docs.docker.com/storage/volumes/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(grep -c c10087 $(docker volume inspect c10087_custom_volume | jq -r '.[].Mountpoint')/*) -ge 1 ]] &&
         echo done
@@ -1790,9 +1784,9 @@ module:
         - https://docs.docker.com/engine/reference/commandline/network/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      courseData: ""
+      foreground: ""
+      verify: ""
 
     - title: HOST Network
       task: |-
@@ -1812,8 +1806,8 @@ module:
         - https://docs.docker.com/engine/reference/commandline/network/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(curl -s localhost | grep -c "It works") -eq 1 ]] &&
         echo done
@@ -1841,20 +1835,20 @@ module:
         - https://docs.docker.com/engine/reference/commandline/network/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      courseData: ""
+      foreground: ""
+      verify: ""
 
     - title: User-defined network
       task: |-
         Create custom network 
 
         ## Parameters:
-        - **Network name**: `{{ .StudentShort }}-bridge`
+        - **Network name**: `ivanov-bridge`
         - **Driver**: `bridge`
         - **Subnet**: `123.45.1.0/24`
         - **IPRange**: `123.45.1.0/24`
-        - **Label**: `careatedby={{ .StudentName }}_{{ .StudentSurname }}`
+        - **Label**: `careatedby=ivan_ivanov`
 
         ## Hint:
 
@@ -1866,8 +1860,8 @@ module:
         - https://docs.docker.com/engine/reference/commandline/network/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         source /etc/venture
 
@@ -1917,7 +1911,7 @@ module:
         docker network rm my_custom_network_2
         docker run -dt --name alpine_ping alpine
         docker run -dt --name alpine_pong alpine
-      foreground: _foreground
+      foreground: ""
       verify: |-
         [[ $(docker exec alpine_ping ping -c1 alpine_pong) ]] &&
         [ -z "$(docker exec -it alpine_ping cat /etc/hosts | grep alpine_pong)" ] &&
@@ -1933,29 +1927,29 @@ module:
         ## Requirements:
         - **Container #1**:
           - container should run in **detach** mode;
-          - container name: **nginx-{{ .StudentShort }}-bridge**;
-          - container should be attached to the **{{ .StudentShort }}-bridge** network;
-          - container should have the same label as **{{ .StudentShort }}-bridge** network;
+          - container name: **nginx-ivanov-bridge**;
+          - container should be attached to the **ivanov-bridge** network;
+          - container should have the same label as **ivanov-bridge** network;
           - image name: **nginx**;
 
         - **Container #2**:
           - container should run in **detach** mode;
-          - container name: **tomcat-{{ .StudentShort }}-bridge**;
-          - container should be attached to the **{{ .StudentShort }}-bridge** network;
-          - container should have the same label as **{{ .StudentShort }}-bridge** network;
+          - container name: **tomcat-ivanov-bridge**;
+          - container should be attached to the **ivanov-bridge** network;
+          - container should have the same label as **ivanov-bridge** network;
           - image name: **tomcat**;
           
 
-        Inspect the **{{ .StudentShort }}-bridge** network and answer the question below.  
+        Inspect the **ivanov-bridge** network and answer the question below.  
 
         ## Documentation:
         - https://docs.docker.com/v17.09/engine/userguide/networking/#default-networks
         - https://docs.docker.com/engine/reference/commandline/network/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      courseData: ""
+      foreground: ""
+      verify: ""
 
     intro: |-
       # Docker Networks
@@ -2053,14 +2047,14 @@ module:
         - https://docs.docker.com/compose/reference/overview/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      courseData: ""
+      foreground: ""
+      verify: ""
 
     - title: Docker-compose file (ENV, restart, ports)
       task: |-
         You have a command like this:
-        `docker run -d -e COURSE=compose -e MAINTAINER={{ .StudentShort }}--restart on-failure -p 10082:80 --name httpd_web httpd`  
+        `docker run -d -e COURSE=compose -e MAINTAINER=ivanov --restart on-failure -p 10082:80 --name httpd_web httpd`  
           
           
         ## Task:
@@ -2084,8 +2078,8 @@ module:
         - https://docs.docker.com/compose/reference/overview/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         source /etc/venture
 
@@ -2098,7 +2092,7 @@ module:
     - title: Docker-compose file (ENV file, ports, volumes)
       task: |-
         You're given the following command:  
-        `docker run -d --env-file /task/{{ .Current }}/nginx_env -p 10083:80 -p 50000:50000 -v /task/{{ .Current }}/index.html:/usr/share/nginx/html/index.html --log-driver journald --name nginx_web nginx:1.16`  
+        `docker run -d --env-file /task/nginx_env -p 10083:80 -p 50000:50000 -v /task/index.html:/usr/share/nginx/html/index.html --log-driver journald --name nginx_web nginx:1.16`  
           
           
         ## Requirements:
@@ -2123,21 +2117,21 @@ module:
       courseData: |-
         source /etc/venture
 
-        mkdir -p /task/${Current}
-        cat << 'EOF' > /task/${Current}/nginx_env
+        mkdir -p /task
+        cat << 'EOF' > /task/nginx_env
         COURSE=compose
         MAINTAINER=${StudentShort}
         TASK=${Current}
         EOF
 
-        sed -i 's/${StudentShort}/'${StudentShort}'/' /task/${Current}/nginx_env
-        sed -i 's/${Current}/'${Current}'/' /task/${Current}/nginx_env
+        sed -i 's/${StudentShort}/'${StudentShort}'/' /task/nginx_env
+        sed -i 's/'${Current}'/' /task/nginx_env
 
-        cat << 'EOF' > /task/${Current}/index.html
+        cat << 'EOF' > /task/index.html
         This is the nginx_web container started by docker-compose!
         EOF
 
-      foreground: _foreground
+      foreground: ""
       verify: |-
         source /etc/venture
 
@@ -2150,7 +2144,7 @@ module:
         docker inspect nginx_web | jq -r '.[].HostConfig.PortBindings."50000/tcp"[].HostPort' | egrep '^50000$' &&
         docker inspect nginx_web | jq -r '.[].HostConfig.LogConfig.Type' | egrep '^journald$' &&
         docker inspect nginx_web | jq -r '.[].Mounts[].Destination' | egrep '/usr/share/nginx/html/index.html' &&
-        curl -s localhost:10083 | grep "$(cat /task/${Current}/index.html)"
+        curl -s localhost:10083 | grep "$(cat /task/index.html)"
 
     - title: Docker-compose file (tomcat, nginx)
       task: |-
@@ -2189,8 +2183,8 @@ module:
         - https://docs.docker.com/compose/reference/overview/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         docker inspect nginx | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep '1.24.1' &&
         docker inspect nginx | jq -r '.[].Config.Image' | egrep '^nginx:alpine$' &&
@@ -2202,7 +2196,7 @@ module:
 
     - title: Docker-Compose
       task: |-
-        We have got `/task/{{ .Current }}/docker-compose.yml` file. It simply creates all resources as following:
+        We have got `/task/docker-compose.yml` file. It simply creates all resources as following:
         - User-defined Network
         - Custom Volume
         - Service (Container) with necessary options
@@ -2215,8 +2209,8 @@ module:
       courseData: |-
         source /etc/venture
 
-        mkdir -p /task/${Current}
-        cat <<EOF > /task/${Current}/docker-compose.yml
+        mkdir -p /task
+        cat <<EOF > /task/docker-compose.yml
         version: '2'
 
         services:
@@ -2237,7 +2231,7 @@ module:
           redis_data:
 
         EOF
-      foreground: _foreground
+      foreground: ""
       verify: |-
         docker inspect redis-server | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep null &&
         docker inspect redis-server | jq -r '.[].Config.Image' | egrep '^bitnami/redis:5.0$' &&
@@ -2251,7 +2245,7 @@ module:
 
     - title: Docker-Compose. PHP and NGINX
       task: |-
-        We have got `/task/{{ .Current }}/nginx_php` with `docker-compose` and a few other files. They simply create all resources as following:
+        We have got `/task/nginx_php` with `docker-compose` and a few other files. They simply create all resources as following:
         - User-defined Network
         - Custom Volume
         - Service (Container) with necessary options
@@ -2263,15 +2257,15 @@ module:
         ### Checking
         For self-checking try to make request to **web** container:
         ```
-        root@docker-host /task/{{ .Current }}/nginx_php $  curl localhost:10087
+        root@docker-host /task/nginx_php $  curl localhost:10087
         Connected successfully. Great work!
         ``` 
 
       courseData: |-
         source /etc/venture
 
-        mkdir -p /task/${Current}/nginx_php/app
-        cat << 'EOF' > /task/${Current}/nginx_php/app/index.php
+        mkdir -p /task/nginx_php/app
+        cat << 'EOF' > /task/nginx_php/app/index.php
         <?php
         $servername = "db";
         $username = "admin";
@@ -2291,13 +2285,13 @@ module:
         ?>
         EOF
 
-        cat <<EOF > /task/${Current}/nginx_php/Dockerfile
+        cat <<EOF > /task/nginx_php/Dockerfile
         FROM php:7.2-apache
         RUN apt-get update
         RUN docker-php-ext-install pdo pdo_mysql mysqli
         EOF
 
-        cat <<EOF > /task/${Current}/nginx_php/docker-compose.yml
+        cat <<EOF > /task/nginx_php/docker-compose.yml
         version: '3'
 
         services:
@@ -2305,7 +2299,7 @@ module:
             container_name: web
             hostname: web
             build: 
-              context: /task/${Current}/nginx_php
+              context: /task/nginx_php
             image: web_locally_build
             environment:
               - ALLOW_OVERRIDE=true
@@ -2330,7 +2324,7 @@ module:
               - "8889:3306"
 
         EOF
-      foreground: _foreground
+      foreground: ""
       verify: |-
         docker inspect db | jq -r '.[].Config.Labels."com.docker.compose.version"' | grep null &&
         docker inspect db | jq -r '.[].Config.Env[]' | egrep '^MYSQL_ROOT_PASSWORD=root$' &&
@@ -2432,9 +2426,9 @@ module:
         - https://docs.docker.com/engine/reference/run/#ipc-settings---ipc
         - https://docs.docker.com/engine/reference/run/#network-settings
         - https://docs.docker.com/engine/reference/run/#runtime-constraints-on-resources
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      courseData: ""
+      foreground: ""
+      verify: ""
 
     - title: PID Namespace
       task: |-
@@ -2470,8 +2464,8 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         [[ $(docker exec busy_sleep_inf ps | grep -c "nginx..master") -eq 1 ]] &&
         echo done
@@ -2516,7 +2510,7 @@ module:
         ---
       courseData: |-
         docker run -d --name nginx-net nginx:alpine
-      foreground: _foreground
+      foreground: ""
       verify: |-
         docker inspect net-tools | jq -r '.[].Config.Image' | grep sbeliakou/net-tools && 
         [[ $(docker inspect net-tools | jq -r '.[].HostConfig.NetworkMode') == "container:$(docker inspect nginx-net | jq -r '.[].Id')" ]] &&
@@ -2552,8 +2546,8 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         docker inspect busy-host | jq '.[].Config.Image' | grep busybox &&
         docker inspect busy-host | jq -j '.[].Config.Cmd[]' | grep sleepinfinity &&
@@ -2587,8 +2581,8 @@ module:
         - https://docs.docker.com/engine/reference/commandline/stats/
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         # docker run --name tomcat -d -m 100M --memory-swap -1 --memory-reservation 50M tomcat:jdk8-openjdk-slim
 
@@ -2629,68 +2623,43 @@ module:
 
 
         ---
-      courseData: _courseData
-      foreground: _foreground
+      courseData: ""
+      foreground: ""
       verify: |-
         docker inspect cpu-stress | jq -r '.[].HostConfig.NanoCpus | select(. == 200000000)' | grep -v ^$ ||
         docker inspect cpu-stress | jq -r '.[].HostConfig.CpuQuota | select(. == 20000)' | grep -v ^0$ &&
         # [[ $(docker inspect cpu-stress | jq -r '.[].HostConfig.CpuQuota') == "20000" ]] &&
         echo done
 
-    - title: _title
-      task: _task
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+    intro: |-
+      # Namespaces and Cgroups
 
-    - title: _title
-      task: _task
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      ![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGFs16iFjahI5mJdQnzl72R5KICIE4n-XrfHu3LYOuikcxGMhB2Q&s)
 
-    - title: _title
-      task: _task
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
+      ## This time we will do the next
+      - introsuce to the linux namespaces and cgroups
+      - run container in different namespaces (e.g. pid, utc)
+      - restrict container resources (CPU and Memory)
 
 
+    finish: |-
+      # Summary
 
+      We have introduced with Docker Networks.
+      Some useful commands you should capture:
 
+      ```
+      docker run --rm --pid=container:web-conatiner centos ps
 
+      docker run -d -it --net=container:nginx sbeliakou/net-tools
 
+      docker run --rm --uts=host busybox hostname
 
+      docker run -d -m 300M --memory-reservation 100M centos sleep infinity
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  - course_id: 01-images
-    title: Docker images
-    difficulty: beginner
-    time: 45 minutes
-    steps:
-    - title: _title
-      task: _task
-      courseData: _courseData
-      foreground: _foreground
-      verify: _verify
-    intro: _intro
-    finish: _finish
+      docker run -it -d --cpu-quota=25000 --name cpu0.25_1 alpine md5sum /dev/urandom
+      docker run -it -d --cpus=0.25 --name cpu0.25_2 alpine md5sum /dev/urandom
+      ```
     environment:
       hideintro: false
       showdashboards: true
@@ -2701,3 +2670,567 @@ module:
           port: 8080
         - name: localhost
           port: 32768
+
+  - course_id: 07-extra
+    title: Docker extra tasks
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Docker Daemon Logging Driver
+      task: |-
+        Change **Logging Driver** of docker daemon settings from `json-file` to `syslog`  
+
+        You just should see the output like following:
+
+        ```
+        $ docker info | grep Logging
+        Logging Driver: syslog
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+        - https://docs.docker.com/engine/reference/commandline/dockerd/
+
+
+        ---
+      courseData: ""
+      foreground: ""
+      verify: |-
+        [ `docker info 2>&1 | grep -c "Logging.Driver..syslog"` -eq 1 ] &&
+        echo done
+
+    - title: Docker Daemon Users
+      task: |-
+        Create user **admin** and grand him privelegues to manage docker.
+
+        ## Requirements:
+        - user name: **admin**
+        - **admin** should have access to manage docker
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+        - https://docs.docker.com/engine/reference/commandline/dockerd/
+
+
+        You just should have seen following output:
+
+        ```
+        [admin@master /]# docker info
+        Containers: 0
+         Running: 0
+        ...
+        ```
+
+        ---
+      courseData: ""
+      foreground: ""
+      verify: |-
+        [[ $(cat /etc/group | grep -c "docker:.:[0-9]*.*admin") -ge 1 ]] &&
+        echo done
+
+    - title: Docker Daemon Remote Access
+      task: |-
+        Expose Docker Daemon to TCP Socket: `0.0.0.0:2375`.  
+
+        ## Requirements:
+        - docker have to get connections on **2375** port
+
+
+        ## Check
+        You should see following output:
+        ```
+        root@docker-host / $ curl -s 0.0.0.0:2375/info | jq -r '.'
+        {
+          "ID": "BJVF:S2JA:XYGZ:WWQL:GNRZ:VCVZ:FAN7:FOV2:SZ56:RIGI:6U7Q:R6JD",
+          "Containers": 0,
+          "ContainersRunning": 0,
+          "ContainersPaused": 0,
+          "ContainersStopped": 0,
+          "Images": 0,
+           ...
+
+        ```
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+        - https://docs.docker.com/engine/reference/commandline/dockerd/
+
+        ---
+      courseData: ""
+      foreground: ""
+      verify: |-
+        [[ $(curl -s 0.0.0.0:2375/info | jq -r '.Driver') == $(docker info 2>&1 | grep "Storage Driver"| cut -d' ' -f4) ]] &&
+        echo done
+
+    - title: Docker Daemon Restore
+      task: |-
+        Configure docker daemon to Keep containers alive during daemon downtime.  
+
+        ## Requirements:
+        - docker containers have to remain running if the daemon becomes unavailable
+
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+        - https://docs.docker.com/engine/reference/commandline/dockerd/
+
+        ---
+      courseData: ""
+      foreground: ""
+      verify: |-
+        [[ $(cat /etc/docker/daemon.json | jq -r '."live-restore"') == "true" ]] &&
+        echo done
+
+    - title: Docker Daemon Metrics
+      task: |-
+        Expose Docker native metrics interface.  
+
+        ## Requirements:
+        - docker daemon should expose Prometheus-compatible metrics on port 9323
+
+
+        ## Check
+        Run prometeus with the next command:
+        ```
+        docker run -d --name=my-prometheus \
+            --net=host \
+            --restart=always \
+            -v /data/prometheus.yml:/etc/prometheus/prometheus.yml \
+            prom/prometheus
+        ```
+        ### Use Prometheus
+        Verify that the Docker target is listed at `http://localhost:9090/targets/`.  
+        ![target](https://docs.docker.com/config/thirdparty/images/prometheus-targets.png)
+
+        Create a graph. Click the **Graphs** link in the Prometheus UI. Choose a metric from the combo box to the right of the **Execute** button (e.g. `engine_daemon_container_states_containers`), and click **Execute**.<br>
+        The screenshot below shows the graph for `engine_daemon_network_actions_seconds_count`.
+        ![](https://docs.docker.com/config/thirdparty/images/prometheus-graph_idle.png)
+
+
+
+        ## Documentation:
+        - https://docs.docker.com/config/daemon/
+        - https://docs.docker.com/engine/reference/commandline/dockerd/
+        - https://docs.docker.com/config/thirdparty/prometheus/
+
+        ---
+      courseData: |-
+        mkdir -p /data && cd /data
+
+        cat << 'EOF' > prometheus.yml
+        # my global config
+        global:
+          scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+          evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+          # scrape_timeout is set to the global default (10s).
+
+          # Attach these labels to any time series or alerts when communicating with
+          # external systems (federation, remote storage, Alertmanager).
+          external_labels:
+              monitor: 'codelab-monitor'
+
+        # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+        rule_files:
+          # - "first.rules"
+          # - "second.rules"
+
+        # A scrape configuration containing exactly one endpoint to scrape:
+        # Here it's Prometheus itself.
+        scrape_configs:
+          # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+          - job_name: 'prometheus'
+
+            # metrics_path defaults to '/metrics'
+            # scheme defaults to 'http'.
+
+            static_configs:
+              - targets: ['localhost:9090']
+
+          - job_name: 'docker'
+                 # metrics_path defaults to '/metrics'
+                 # scheme defaults to 'http'.
+
+            static_configs:
+              - targets: ['localhost:9323']
+        EOF
+
+      foreground: ""
+      verify: |-
+        [[ $(cat /etc/docker/daemon.json | jq -r '."experimental"') == "true" ]] &&
+        [[ $(cat /etc/docker/daemon.json | jq -r '."metrics-addr"'| grep -c :9323) -eq 1 ]] &&
+        [[ $(docker ps | grep -c "prom/prometheus") -ge 1 ]] &&
+        echo done
+
+    - title: Container Vulnerabilities. Anchore Engine
+      task: |-
+        Install Anchore Engine Server. Verify installation.  
+
+        ## Requirements:
+        - anchore engine should be installed;
+        - wait until the core vulnerability data feeds have completed before proceeding 
+
+
+        ## Check
+        Run prometeus with the next command:
+        ```
+        root@docker-host ~/aevolume $ docker-compose ps
+                     Name                            Command                  State               Ports         
+        --------------------------------------------------------------------------------------------------------
+        aevolume_anchore-db_1             docker-entrypoint.sh postgres    Up             5432/tcp              
+        aevolume_engine-analyzer_1        /docker-entrypoint.sh anch ...   Up (healthy)   8228/tcp              
+        aevolume_engine-api_1             /docker-entrypoint.sh anch ...   Up (healthy)   0.0.0.0:8228->8228/tcp
+        aevolume_engine-catalog_1         /docker-entrypoint.sh anch ...   Up (healthy)   8228/tcp              
+        aevolume_engine-policy-engine_1   /docker-entrypoint.sh anch ...   Up (healthy)   8228/tcp              
+        aevolume_engine-simpleq_1         /docker-entrypoint.sh anch ...   Up (healthy)   8228/tcp 
+
+        ```
+
+        ```
+        root@docker-host ~/aevolume $ docker-compose exec engine-api anchore-cli system status
+        Service policy_engine (anchore-quickstart, http://engine-policy-engine:8228): up
+        Service catalog (anchore-quickstart, http://engine-catalog:8228): up
+        Service apiext (anchore-quickstart, http://engine-api:8228): up
+        Service analyzer (anchore-quickstart, http://engine-analyzer:8228): up
+        Service simplequeue (anchore-quickstart, http://engine-simpleq:8228): up
+
+        Engine DB Version: 0.0.11
+        Engine Code Version: 0.5.1
+
+        ```
+
+        ```
+        root@docker-host ~/aevolume $ docker-compose exec engine-api anchore-cli system feeds list
+        Feed        Group   LastSync          RecordCount
+        vulnerabilities   alpine:3.1  2019-11-06T10:12:24.156013  1370
+        vulnerabilities   alpine:3.3  2019-11-06T10:12:29.196017  457
+        vulnerabilities   alpine:3.4  2019-11-06T10:12:37.156832  681
+        ...
+
+        ```
+
+
+
+        ## Documentation:
+        - https://github.com/anchore/anchore-engine
+        - https://docs.anchore.com/current/docs/engine/engine_installation/docker_compose/
+
+        ---
+
+      courseData: ""
+      foreground: ""
+      verify: |-
+        [[ $(docker ps | grep -c aevolume_) -ge 6 ]] &&
+        echo done
+
+    - title: Container Vulnerabilities. Anchore CLI. Scanning
+      task: |-
+        Install Anchore CLI. Verify installation. 
+        Using Anchore CLI scan 3 different images.   
+
+        ## Requirements:
+        - anchore CLI should be installed;
+        - scan 3 different images from docker.io: **centos**, **nginx**, **postgres**
+        - write result of scanning - OS vulnerabilities:
+          - for **centos** - to file `/root/centos_vuln`
+          - for **nginx** - to file `/root/nginx_vuln`
+          - for **postgres** - to file `/root/postgres_vuln`
+
+
+        ## Check
+        Anchore CLI installation:
+        ```
+        root@docker-host ~/aevolume $ anchore-cli --version
+        anchore-cli, version 0.5.0
+        ```
+        Let's check `ubuntu:latest`:
+        ```
+        root@docker-host ~/aevolume $ anchore-cli image add docker.io/library/ubuntu:latest
+        Image Digest: sha256:e4355b66995c96b4b468159fc5c7e3540fcef961189ca13fee877798649f531a
+        Parent Digest: sha256:c19173c5ada610a5989151111163d28a67368362762534d8a8121ce95cf2bd5a
+        Analysis Status: not_analyzed
+        ...
+
+        # a few minutes later
+        root@docker-host ~/aevolume $ anchore-cli image list
+        Full Tag                          Image Digest              Analysis Status        
+        docker.io/library/ubuntu:latest   sha256:e4355b...49f531a   analyzed
+
+        root@docker-host ~/aevolume $ anchore-cli image vuln docker.io/library/ubuntu:latest os
+        Vulnerability ID  Package         Severity  Fix   Vulnerability URL
+        CVE-2009-5155   libc-bin-2.27-3ubuntu1  Low     None  https://people.canonical.com/~ubuntu-security/cve/2009/CVE-2009-5155.html
+        CVE-2009-5155   libc6-2.27-3ubuntu1   Low     None  https://people.canonical.com/~ubuntu-security/cve/2009/CVE-2009-5155.html
+        ...
+
+        ```
+
+
+        ## Documentation:
+        - https://github.com/anchore/anchore-cli
+        - https://github.com/anchore/anchore-engine
+        - https://docs.anchore.com/current/docs/engine/engine_installation/docker_compose/
+
+        ---
+      courseData: ""
+      foreground: ""
+      verify: |-
+        anchore-cli --url http://localhost:8228/v1 --u admin --p foobar image list | grep "centos.*analyzed" &&
+        anchore-cli --url http://localhost:8228/v1 --u admin --p foobar image list | grep "nginx.*analyzed" &&
+        anchore-cli --url http://localhost:8228/v1 --u admin --p foobar image list | grep "postgres.*analyzed" &&
+        echo done
+
+    - title: Flask Application
+      task: |-
+        Containerize Python-FLASK application developed in Python LAB Module.  
+
+        ## Requirements:
+        - container and image name: `myflask`;
+        - container should run in detach mode;
+        - container should publish exposed port to the `10088` host port; 
+        - Response page should display following data (at least):
+          - Python Version it is running on
+          - Flask Server version
+          - Systems OS Name, Release Version, Family Name
+          - Kernel Version
+          - Container build date/time
+          - Page generation date/time in zones UTC0, Europe/Minsk
+          - System Host Name, IP address
+          - Student (Developer) Name
+          - Custom Environment Variable PARAMETER
+          - Container Life time
+
+
+        ## Check
+        You should get the output (**as example**):
+        ```
+        root@docker-host /python $ curl localhost:10088
+        Python version: 2.7.17 (default, Oct 23 2019, 23:58:07)  
+        Flask version: 1.1.1 
+        Kernel version: 3.10.0-1062.4.1.el7.x86_64 
+        ...
+        ```
+
+
+        ## Documentation:
+        - https://www.palletsprojects.com/p/flask/
+        - https://docs.docker.com/engine/reference/builder/
+        - https://docs.docker.com/engine/reference/commandline/build/
+        - https://docs.docker.com/engine/reference/commandline/image/
+        - https://docs.docker.com/engine/reference/commandline/images/
+
+        ---
+
+      courseData: ""
+      foreground: ""
+      verify: |-
+        FLASK_OUTPUT=$(docker exec myflask flask --version)
+
+        [[ $(curl -s localhost:10088) =~ $(echo "${FLASK_OUTPUT}"| awk 'FNR==1'| cut -d' ' -f2) ]] &&
+        [[ $(curl -s localhost:10088) =~ $(echo "${FLASK_OUTPUT}"| awk 'FNR==2'| cut -d' ' -f2) ]] &&
+        [[ $(curl -s localhost:10088) =~ $(docker exec myflask uname -r) ]] &&
+        echo done
+
+    intro: |-
+      # Docker Extras
+
+      ![img](https://opensourceforu.com/wp-content/uploads/2017/08/Docker-Monitoring.jpg)
+
+      ## This time we will do the next
+      - explore other Docker settings and features such as logging, vulnerabilities discovering etc.
+
+
+      ## Let's start!
+
+    finish: |-
+      # Summary
+
+      That's it for now.
+
+      ```
+      docker version
+      docker info
+      cat /etc/docker/daemon.json
+      ```
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+        - name: localhost
+          port: 32768
+
+  - course_id: 10-exam1
+    title: Docker exam1
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Description
+      task: |-
+        The example demonstrates how to run Zabbix server with MySQL database support, Zabbix web interface based on the Nginx web server and Zabbix Java gateway.
+
+        ## Task
+        Could you please create `docker-compose.yml` file based on the "docker run" commands listed below:
+
+        - **Zabbix Web Front End Service**
+        ```
+        # docker run -t \
+            --name zabbix-web-nginx-mysql \
+            -e DB_SERVER_HOST="mysql-server" \
+            -e MYSQL_DATABASE="zabbix" \
+            -e MYSQL_USER="zabbix" \
+            -e MYSQL_PASSWORD="zabbix_pwd" \
+            -e MYSQL_ROOT_PASSWORD="root_pwd" \
+            --link mysql-server:mysql \
+            --link zabbix-server-mysql:zabbix-server \
+            -p 80:80 \
+            --restart unless-stopped \
+            -d zabbix/zabbix-web-nginx-mysql:alpine-4.4.1
+        ```
+
+        - **Zabbix Server Instance**
+        ```
+        # docker run -t \
+            --name zabbix-server-mysql \
+            -e DB_SERVER_HOST="mysql-server" \
+            -e MYSQL_DATABASE="zabbix" \
+            -e MYSQL_USER="zabbix" \
+            -e MYSQL_PASSWORD="zabbix_pwd" \
+            -e MYSQL_ROOT_PASSWORD="root_pwd" \
+            -e ZBX_JAVAGATEWAY="zabbix-java-gateway" \
+            --link mysql-server:mysql \
+            --link zabbix-java-gateway:zabbix-java-gateway \
+            -p 10051:10051 \
+            --restart unless-stopped \
+            -d zabbix/zabbix-server-mysql:centos-4.4.1
+        ```
+
+        - **MySQL Server Instance**
+        ```
+        # docker run -t \
+            --name mysql-server \
+            --restart unless-stopped \
+            -e MYSQL_DATABASE="zabbix" \
+            -e MYSQL_USER="zabbix" \
+            -e MYSQL_PASSWORD="zabbix_pwd" \
+            -e MYSQL_ROOT_PASSWORD="root_pwd" \
+            -d mysql:5.7 \
+            --character-set-server=utf8 --collation-server=utf8_bin
+        ```
+
+        - **Zabbix Java Gateway Service**
+        ```
+        # docker run -t \
+            --name zabbix-java-gateway \
+            --restart unless-stopped \
+            -d zabbix/zabbix-java-gateway:centos-4.4.1
+        ```
+
+        ## Notes:
+        - <img src="https://www.freeiconspng.com/uploads/warning-logo-png-symbols-warning-icon-17.png" width="18"> Please don't use obsolete options in the new `docker-compose.yml` file
+        - You should use volumes for persisting DB data
+
+        ## Documentation:
+        - https://docs.docker.com/compose/
+        - https://docs.docker.com/compose/compose-file/
+        - https://docs.docker.com/compose/reference/overview/
+        - https://www.zabbix.com/documentation/current/manual/installation/containers
+
+        ---
+      courseData: ""
+      foreground: ""
+      verify: |-
+        COMPOSE_VERSION=$(docker-compose version | awk 'NR==1{print$3}' | tr -d ,)
+
+        [[ $(docker inspect zabbix-web-nginx-mysql | jq -r '.[].Config.Labels."com.docker.compose.version"') == ${COMPOSE_VERSION} ]] &&
+        [[ $(docker inspect zabbix-server-mysql | jq -r '.[].Config.Labels."com.docker.compose.version"') == ${COMPOSE_VERSION} ]] &&
+        [[ $(docker inspect mysql-server | jq -r '.[].Config.Labels."com.docker.compose.version"') == ${COMPOSE_VERSION} ]] &&
+        [[ $(docker inspect zabbix-java-gateway | jq -r '.[].Config.Labels."com.docker.compose.version"') == ${COMPOSE_VERSION} ]] &&
+        docker inspect zabbix-web-nginx-mysql | jq -r '.[].Config.Tty'         | grep true &&
+        docker inspect zabbix-web-nginx-mysql | jq -r '.[].Config.Env[]'       | grep DB_SERVER_HOST &&
+        docker inspect zabbix-web-nginx-mysql | jq -r '.[].Config.Env[]'       | grep MYSQL_DATABASE &&
+        docker inspect zabbix-web-nginx-mysql | jq -r '.[].Config.Env[]'       | grep MYSQL_USER &&
+        docker inspect zabbix-web-nginx-mysql | jq -r '.[].Config.Env[]'       | grep MYSQL_PASSWORD &&
+        docker inspect zabbix-web-nginx-mysql | jq -r '.[].Config.Env[]'       | grep MYSQL_ROOT_PASSWORD &&
+        docker inspect zabbix-web-nginx-mysql | jq -r '.[].NetworkSettings.Ports."80/tcp"[].HostPort' | grep 80 &&
+        docker inspect zabbix-web-nginx-mysql | jq -r '.[].HostConfig.RestartPolicy.Name' | grep unless-stopped &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].Config.Tty'         | grep true &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].Config.Env[]'       | grep DB_SERVER_HOST &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].Config.Env[]'       | grep MYSQL_DATABASE &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].Config.Env[]'       | grep MYSQL_USER &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].Config.Env[]'       | grep MYSQL_PASSWORD &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].Config.Env[]'       | grep MYSQL_ROOT_PASSWORD &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].Config.Env[]'       | grep ZBX_JAVAGATEWAY &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].NetworkSettings.Ports."10051/tcp"[].HostPort' | grep 10051 &&
+        docker inspect zabbix-server-mysql    | jq -r '.[].HostConfig.RestartPolicy.Name' | grep unless-stopped &&
+        docker inspect mysql-server           | jq -r '.[].Config.Tty'         | grep true &&
+        docker inspect mysql-server           | jq -r '.[].Config.Env[]'       | grep MYSQL_DATABASE &&
+        docker inspect mysql-server           | jq -r '.[].Config.Env[]'       | grep MYSQL_USER &&
+        docker inspect mysql-server           | jq -r '.[].Config.Env[]'       | grep MYSQL_PASSWORD &&
+        docker inspect mysql-server           | jq -r '.[].Config.Env[]'       | grep MYSQL_ROOT_PASSWORD &&
+        docker inspect mysql-server           | jq -r '.[].Config.Cmd[]'       | grep character-set-server &&
+        docker inspect mysql-server           | jq -r '.[].Config.Cmd[]'       | grep collation-server &&
+        docker inspect mysql-server           | jq -r '.[].HostConfig.RestartPolicy.Name' | grep unless-stopped &&
+        docker inspect zabbix-java-gateway    | jq -r '.[].HostConfig.RestartPolicy.Name' | grep unless-stopped &&
+        echo done
+    intro: |-
+      # Docker Exam Task
+
+      ![](http://ithare.com/wp-content/uploads/BB_part153_BookChapter22b_v4.png)
+
+      ## Let's start!
+
+    finish: |-
+      # Exam Finished
+
+      ![](http://ithare.com/wp-content/uploads/BB_part168_BookChapter11b_v1.png)
+
+      Thank you very much!
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+        - name: localhost
+          port: 32768
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # - course_id: 01-images
+  #   title: Docker images
+  #   difficulty: beginner
+  #   time: 45 minutes
+  #   steps:
+  #   - title: _title
+  #     task: _task
+  #     courseData: ""
+  #     foreground: ""
+  #     verify: ""
+  #   intro: _intro
+  #   finish: _finish
+  #   environment:
+  #     hideintro: false
+  #     showdashboards: true
+  #     uilayout: terminal-iframe
+  #     imageid: kubernetes
+  #     dashboards:
+  #       - name: User
+  #         port: 8080
+  #       - name: localhost
+  #         port: 32768

@@ -3,50 +3,56 @@
   "description": "Practical Docker Tasks",
   "courses": [
    {
-      "course_id": "docker-daemon",
-      "title": "Working with Docker Daemon",
+      "course_id": "00-basics",
+      "title": "Docker basics",
       "description": ""
    }
    ,
    {
-      "course_id": "docker-images",
-      "title": "Working with Docker Images",
+      "course_id": "01-images",
+      "title": "Docker images",
       "description": ""
    }
    ,
    {
-      "course_id": "docker-containers",
-      "title": "Working with Docker Containers",
+      "course_id": "02-containers",
+      "title": "Docker containers",
       "description": ""
    }
    ,
    {
-      "course_id": "docker-volumes",
-      "title": "Working with Docker Volumes",
+      "course_id": "03-volumes",
+      "title": "Docker volumes",
       "description": ""
    }
    ,
    {
-      "course_id": "docker-networks",
-      "title": "Working with Docker Networks",
+      "course_id": "04-networks",
+      "title": "Docker networks",
       "description": ""
    }
    ,
    {
-      "course_id": "docker-cgroups",
-      "title": "Working with CGroups",
+      "course_id": "05-compose",
+      "title": "Docker compose",
       "description": ""
    }
    ,
    {
-      "course_id": "docker-ns",
-      "title": "Working with Docker Namespaces",
+      "course_id": "06-limits",
+      "title": "Docker limits (namespaces, cgroups)",
       "description": ""
    }
    ,
    {
-      "course_id": "docker-compose",
-      "title": "Working with Docker Compose",
+      "course_id": "07-extra",
+      "title": "Docker extra tasks",
+      "description": ""
+   }
+   ,
+   {
+      "course_id": "10-exam1",
+      "title": "Docker exam1",
       "description": ""
    }
   ]
