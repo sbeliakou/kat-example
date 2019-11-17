@@ -4,167 +4,973 @@ module:
   description: Practical Kubernetes Tasks
   db_name: kubernetes
   courses:
-  - course_id: k8s-init
-    title: Creating Kubernetes Cluster
-    description: Creating multi node Kubernetes cluster with kubeadm
+  - course_id: 00-basics
+    title: Kubernetes basic
     difficulty: beginner
-    time: 30 minutes
+    time: 45 minutes
     steps:
-      - title: Welcome
-        task: |-
-          ## Let us know who you are.
+    - title: Namespaces
+      task: |-
+        In case you want to organize multiple users into separate teams projects, you can divide cluster into "sub-clusters" using **_Namespaces_**. The names of the resources/objects created inside a **Namespace** are unique, but not across Namespaces.
 
-          Please open "**User**" Tab and fill required information
+        ## Useful Commands:
+        ```
+        kubectl create -f namespace.yaml
+        kubectl get namespaces
+        kubectl get namespaces --show-labels
+        kubectl get ns << NS_NAME >>
+        kubectl explain namespace << NS_NAME >>
+        kubectl describe ns << NS_NAME >>
+        kubectl delete ns << NS_NAME >>
+        ```
 
-          `touch /.ok`
-        verify: |-
-          [ -f /opt/.user ]
-      - title: Initialize Kubernetes Control Plain
-        task: |-
-          Initialize Master node with `kubeadm`
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+      courseData: |-
+        until kubectl get node master -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep True; do sleep 1; done
+        kubectl taint node master node-role.kubernetes.io/master-
+        kubectl label node master node-role.kubernetes.io/worker=
 
-          ## Parameters:
-          - token: `abcdef.0123456789abcdef`
-          - token life duration: `20m`
+        fruits=(apricot currant mango peach avocado guava lemon papaya orange tamarind)
 
-          ## Tips:
-          - You can destroy cluster configuration with `kubeadm reset cluster`
+        n=$(cat /dev/urandom | tr -dc '0-9' | fold -w 256 | head -n 1 | head --bytes 1)
+        ns1="${fruits[n]}-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1  | tr 'A-Z' 'a-z')"
+        kubectl create ns ${ns1}
+        kubectl label ns ${ns1} secret="santa-doesnt-like-this-fruit"
 
-          ## Documentation:
-          - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
-        verify: |-
-          kubectl get nodes >/dev/null 2>&1 &&
-          kubeadm token list | grep abcdef.0123456789abcdef >/dev/null &&
-          [ `kubeadm token list | grep abcdef.0123456789abcdef | awk '{print $2}' | sed 's/[^0-9]//g'` -le 20 ]
-      - title: Configure kubectl utility
-        task: |-
-          Configure current user to operate with kubernetes API with `kubectl`
+        n=$(cat /dev/urandom | tr -dc '0-9' | fold -w 256 | head -n 1 | head --bytes 1)
+        ns2="${fruits[n]}-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1  | tr 'A-Z' 'a-z')"
+        kubectl create ns ${ns2}
+        kubectl label ns ${ns2} secret="santa-likes-this-fruit"
+      foreground: ""
+      verify: ""
 
-          ## Requiremets:
-          - user: `root`
+    - title: Creating and Deleting Namespaces
+      task: |-
+        ## Useful Commands:
+        ```
+        kubectl get ns
+        kubectl create ns <<namespace>>
+        kubectl delete ns <<namespace>>
 
-          ## Documentation:
-          - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
-        verify: |-
-          kubectl get nodes >/dev/null 2>&1
-        foreground: clear
-      - title: Deploy POD Network
-        task: |-
-          Deploy `weave` POD Network
+        kubectl label <<resource type>> <<resource name>> <<key=value>>
+        ```
 
-          ## Tips:
-          - Check that CNI pods are running
-
-          ## Documentation:
-          - https://www.weave.works/blog/weave-net-kubernetes-integration/
-          - https://www.weave.works/docs/net/latest/kubernetes/kube-addon/
-        verify: |-
-          kubectl get pods -n kube-system | grep weave | grep Running >/dev/null
-        foreground: clear
-      - title: Join Worker Node
-        task: |-
-          Join `node01` to the cluster 
-
-          ## Tips:
-          - Remember token is *abcdef.0123456789abcdef*?
-          - Default API Port on master is *6443*
-          - Use `ssh node01` to connect to `node01` host
-          - Wait till node01 turns to `Ready` state
-
-          ## Documentation:
-          - https://www.weave.works/blog/weave-net-kubernetes-integration/
-          - https://www.weave.works/docs/net/latest/kubernetes/kube-addon/
-        foreground: clear
-      - title: Decorate Worker Node with Custom Label
-        task: |-
-          Label *node01* as `worker`
-
-          ```
-          kubectl get nodes
-          NAME     STATUS   ROLES    AGE     VERSION
-          master   Ready    master   3m43s   v1.14.0
-          node01   Ready    worker   46s     v1.14.0
-          ```
+        ## Tasks:
+        1. Create Namespace `cucumber-prod`
+        2. Delete Namespace `potato-dev`
+        3. Create Namespace `{{ .StudentShort }}` and label it with the labels below:
+            - `name={{ .StudentName }}`
+            - `surname={{ .StudentSurname }}`
 
 
-          ## Tips:
-          - You should just label necessary node as `node-role.kubernetes.io/<< node role >>`
+      courseData: |-
+        kubectl create ns potato-dev
+      foreground: ""
+      verify: |-
+        nn=$(echo ${STUDENT} | tr 'A-Z' 'a-z' | sed 's/\(.\).* /\1/')
+        n1=$(echo ${STUDENT} | tr 'A-Z' 'a-z' | sed 's/ .*//')
+        n2=$(echo ${STUDENT} | tr 'A-Z' 'a-z' | sed 's/.* //')
 
-          ## Documentation:
-          - http://kubernetesbyexample.com/labels/
-          - https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#updating-labels
-        verify: |-
-          kubectl get node node01 --show-labels | grep 'node-role.kubernetes.io/worker=' >/dev/null
-      - title: Deploy Kubernetes Dashboard
-        task: |-
-          Deploy Dashboard Manifest from [here](https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
+        kubectl get ns cucumber-prod > /dev/null 2>&1 &&
+        [ "$(kubectl get ns 2>/dev/null | grep potato-dev)" == "" ] && 
+        kubectl get ns $nn &&
+        kubectl get ns $nn --show-labels | grep name=$n1 &&
+        kubectl get ns $nn --show-labels | grep surname=$n2
 
-          ## Create Admin User
+    - title: Pods
+      task: |-
+        A Kubernetes pod is a group of containers with shared storage, network, and cgroup that are always scheduled to run on the same node. A pod is also the the smallest deployable unit of compute that can be created and managed by Kubernetes.
 
-          ```yaml
-          apiVersion: v1
-          kind: ServiceAccount
-          metadata:
-            name: admin-user
-            namespace: kube-system
-          ---
-          apiVersion: rbac.authorization.k8s.io/v1beta1
-          kind: ClusterRoleBinding
-          metadata:
-            name: admin-user
-          roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: cluster-admin
-          subjects:
-          - kind: ServiceAccount
-            name: admin-user
-            namespace: kube-system
-          ```
+        ![A Pod](https://raw.githubusercontent.com/sbeliakou/mentor/master/.img/pods.png)
 
-          ## Get Admin Secret
+        ## Useful commands:
+        ```
+        kubectl get podd
+        kubectl get pods -n <<namespace>>
+        kubectl get pods <<pod_name>>
+        kubectl get pods <<pod_name>> -n <<namespace>>
+        kubectl get pods <<pod_name>> --all-namespaces
+        kubectl get pods <<pod_name>> -o yaml
+        kubectl get pods <<pod_name>> -o wide
 
-          ```
-          SECRET_NAME="$(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')"
-          kubectl get secret -n kube-system ${SECRET_NAME} -o jsonpath='{.data.token}' | base64 -d
-          ```
+        kubectl describe pods <<pod_name>> 
+        kubectl describe pods <<pod_name>> -n <<namespace>> 
 
-          ## Proxy Dashboard
+        kubectl apply -f <<pod-manifest.yaml>>
+        kubectl delete -f <<pod-manifest.yaml>>
 
-          Expose Dashord from inside cluster with `kubectl proxy` command:
+        kubectl run <<pod_name>> [-n <<namespace>>] --generator=run-pod/v1 --image=<<pod_image>>
+        kubectl run <<pod_name>> [-n <<namespace>>] --generator=run-pod/v1 --image=<<pod_image>> -- --command <<container_command>>
+        ```
 
-          ```
-          kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
-          ```
+        ## Let's explore what Pods are about
+      courseData: |-
+        kubectl create ns customer
 
-          ## Explore Kubernetes Cluster on "Dashboard" Tab
+        cat << EOF | kubectl apply -n customer -f -
+        apiVersion: apps/v1
+        kind: ReplicaSet
+        metadata:
+          name: abc
+          labels:
+            app: abc
+        spec:
+          replicas: 6
+          selector:
+            matchLabels:
+              app: abc
+          template:
+            metadata:
+              labels:
+                app: abc
+            spec:
+              containers:
+              - name: abc
+                image: busybox
+                command:
+                - sleep
+                - "10000"
+        EOF
+      foreground: ""
+      verify: ""
 
-          Please use token authentication from previous step
+    - title: Pods
+      task: |-
+        We've just created a pod.
 
-          ## Documentation:
-          - https://github.com/kubernetes/dashboard
-          - https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
-        verify: |-
-          [ `kubectl get deployment -n kube-system kubernetes-dashboard -o jsonpath='{.spec.template.spec.containers[0].name}'` == "kubernetes-dashboard" ] &&
-          [ `kubectl get svc -n kube-system kubernetes-dashboard -o jsonpath='{.spec.ports[0].targetPort}'` == "8443" ] &&
-          [ `kubectl get ep -n kube-system kubernetes-dashboard -o jsonpath="{.subsets[*].addresses[0].nodeName}"` == 'node01' ]
-      - title: Deploy Metrics-server
-        task: |-
-          Deploy Metrics Server from [here](https://raw.githubusercontent.com/kubernetes/kops/master/addons/metrics-server/v1.8.x.yaml)
+        Let's explore it.
+      courseData: kubectl run newpod --generator=run-pod/v1 --image=busybox --command sleep 1000
+      foreground: ""
+      verify: ""
 
-          ## Check that:
-          - Metrics Server is deployed successfully and is `Running`
-          - Command `kubectl top nodes` shows performance statistics by nodes
-          - Command `kubectl top pods --all-namespaces` shows performance statistics by pods
+    - title: Pods
+      task: |-
+        We just created a new POD. Ignore the state of the POD for now.
 
-          ## Documentation:
-          - https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/
-          - https://github.com/kubernetes-incubator/metrics-server
-        verify: |-
-          [ `kubectl get pods -n kube-system $(kubectl get pods -n kube-system | grep metrics | awk '{print $1}') -o jsonpath='{.status.phase}'` == "Running" ]
+        You need to look at all the pods in detail to figure it out
+      courseData: |-
+        cat << EOF | kubectl apply -f -
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            run: stranger
+          name: stranger
+          namespace: default
+        spec:
+          containers:
+          - name: billy
+            image: busybox
+            command:
+            - sleep
+            - "1000"
+          - name: bobby
+            image: agentx
+            command:
+            - sleep
+            - "1000"
+        EOF
+      foreground: ""
+      verify: ""
+
+    - title: Creating a Pod
+      task: |-
+        Please find a pod definition in `/opt/practice/web-pod.yaml` and deploy it.
+
+        Once it's done, please answer the following question:
+      courseData: |-
+        mkdir -p /opt/practice/
+        kubectl create ns microservices
+        cat << EOF > /opt/practice/web-pod.yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            app: webserver
+          name: webserver
+          namespace: microservices
+        spec:
+          containers:
+          - image: nginx
+            name: webservice
+        EOF
+      foreground: ""
+      verify: ""
+
+    - title: Creating a Pod
+      task: |-
+        Create a new pod with the name '`redis`' and with the image '`redis:123`'
+        And yes the image name is wrong!
+
+        Create a pod-definition file.
+
+        ## Requirements:
+        - **Name**: `redis`
+        - **Image Name**: `redis:123`
+        - **Namespace**: `default`
+
+
+      courseData: ""
+      foreground: ""
+      verify: |-
+        kubectl get po -n default redis -o jsonpath='{.metadata.name}' | egrep '^redis$' && 
+        kubectl get po -n default redis -o jsonpath='{.spec.containers[0].image}' | egrep '^redis:123$'
+
+    - title: Pods
+      task: |-
+        Now change the image name on the pod to '`redis`'.
+        Update the pod-definition file and use '`kubectl apply`' or '`kubectl edit pod redis`' commands.
+
+        # Requirements:
+        - **Name**: `redis`
+        - **Image Name**: `redis:5.0.6-alpine3.10`
+      courseData: ""
+      foreground: ""
+      verify: |-
+        kubectl get po -n default redis -o jsonpath='{.metadata.name}' | egrep '^redis$' && 
+        kubectl get po -n default redis -o jsonpath='{.spec.containers[0].image}' | egrep '^redis:5.0.6-alpine3.10$'
+
+    - title: Deployments
+      task: |-
+        A Kubernetes **deployment** manages scheduling and lifecycle of pods. Deployments provide several key features for managing pods, including rolling out pods updates, rolling back, and easily scaling pods horizontally.
+
+        ## Useful Commands:
+        ```
+        kubectl apply -f deployment.yaml
+        kubectl get deploy
+        kubectl get deploy --show-labels
+        kubectl get deploy -n <<namespace>>
+        kubectl get deploy -o yaml
+        kubectl describe deploy -n <<namespace>>
+        kubectl delete deploy <<namespace>>
+        ```
+
+      courseData: |-
+        kubectl create ns simians
+        echo << EOF > | kubectl apply -f -
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: crazymonkey
+          namespace: simians
+        spec:
+          replicas: 12
+          selector:
+            matchLabels:
+              name: crazymonkey
+          template:
+            metadata:
+              labels:
+                name: crazymonkey
+            spec:
+              containers:
+              - name: main
+                image: busybox888
+                command: ["/bin/sh", "-c", "echo Hello ${STUDENT}! && sleep 3600"]
+        EOF
+      foreground: ""
+      verify: ""
+
+    - title: Deployment
+      task: |-
+        Let's try to fix our deployment. Its manifest is located here: `/opt/practice/monkeys.yaml`.
+        There is an issue in the file, so try to fix it. And redeploy.
+
+        Wait until all pods come up
+      courseData: |-
+        cat << EOF > /opt/practice/monkeys.yaml
+        apiVersion: apps/v1
+        kind: deployment
+        metadata:
+          name: crazymonkey
+          namespace: simians
+        spec:
+          replicas: 12
+          selector:
+            matchLabels:
+              name: crazymonkey
+          template:
+            metadata:
+              labels:
+                name: crazymonkey
+            spec:
+              containers:
+              - name: main
+                image: busybox888
+                command: ["/bin/sh", "-c", "echo Hello ${STUDENT}! && sleep 3600"
+        EOF
+      foreground: ""
+      verify: |-
+        rs=$(kubectl get deployments -n simians crazymonkey -o jsonpath='{.status.replicas}')
+        rrs=$(kubectl get deployments -n simians crazymonkey -o jsonpath='{.status.readyReplicas}')
+
+        [ "$rs" == "12" ] &&
+        [ "$rs" == "$rrs" ] &&
+        kubectl get deployments -n simians crazymonkey -o jsonpath='{.spec.template.spec.containers[0].image}' | egrep '^busybox'
+
+    - title: Service (SVC)
+      task: |-
+        Kubernetes Pods are mortal. They are born and when they die, they are not resurrected. If you use a Deployment to run your app, it can create and destroy Pods dynamically.
+
+        Each Pod gets its own IP address, however in a Deployment, the set of Pods running in at the moment in time could be different from the set of Pods running that application a moment later.
+
+        Simply saying, a Service aggregates pods at backend and acts as a LoadBalancer.
+
+        Here's simple definition of the service:
+        ```
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: echo-service
+        spec:
+          selector:
+            app: << set the same label as deployment has >>
+          ports:
+            - protocol: TCP
+              port: 80
+              targetPort: 8080
+        ```
+
+        ## Task:
+        - Deploy Echo Application from here: `/opt/practice/web-echo-deployment.yaml`
+        - Deploy Echo Service from the snippet above
+
+        ## Validation:
+        To see if svc has own IP
+        ```
+        $ kubectl get svc echo-service
+        NAME           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+        echo-service   ClusterIP   10.102.161.86   <none>        80/TCP    13s
+        ```
+
+        To see if our svc (ep) has discovered backends
+        ```
+        $ kubectl describe ep echo-service 
+        Name:         echo-service
+        Namespace:    default
+        Labels:       <none>
+        Annotations:  endpoints.kubernetes.io/last-change-trigger-time: 2019-11-02T11:50:32Z
+        Subsets:
+          Addresses:          10.244.0.59,10.244.0.60,10.244.0.61,10.244.0.62,10.244.0.63
+          NotReadyAddresses:  <none>
+          Ports:
+            Name     Port  Protocol
+            ----     ----  --------
+            <unset>  8080  TCP
+
+        # Or simply this:
+        $ kubectl get ep echo-service -o jsonpath='{.subsets[*].addresses[*].ip}'
+        10.244.0.59 10.244.0.60 10.244.0.61 10.244.0.62 10.244.0.63
+        ```
+
+        To check what addresses our pods have (note: we use the same selector as svc):
+        ```
+        $ kubectl get pods -l app=echo-application -o wide
+        NAME                       READY   STATUS    RESTARTS   AGE  IP            NODE     NOMINATED NODE   READINESS GATES
+        web-echo-547479747-tgwhf   1/1     Running   0          1m   10.244.0.59   master   <none>           <none>
+        web-echo-547479747-qtqph   1/1     Running   0          1m   10.244.0.60   master   <none>           <none>
+        web-echo-547479747-fb65d   1/1     Running   0          1m   10.244.0.61   master   <none>           <none>
+        web-echo-547479747-cqfc9   1/1     Running   0          1m   10.244.0.62   master   <none>           <none>
+        web-echo-547479747-z8hjz   1/1     Running   0          1m   10.244.0.63   master   <none>           <none>
+        ```
+
+        ## Documentation
+        - https://kubernetes.io/docs/concepts/services-networking/service/
+      courseData: |-
+        cat << EOF > /opt/practice/web-echo-deployment.yaml
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: web-echo
+          labels:
+            app: echo-application
+        spec:
+          replicas: 5
+          selector:
+            matchLabels:
+              app: echo-application
+          template:
+            metadata:
+              labels:
+                # POD label for selecting
+                app: echo-application
+            spec:
+              containers:
+              - name: main
+                image: sbeliakou/web-echo:1
+        EOF
+      foreground: ""
+      verify: |-
+        rs=$(kubectl get deployment web-echo -o jsonpath='{.status.replicas}')
+        rrs=$(kubectl get deployment web-echo -o jsonpath='{.status.readyReplicas}')
+        pod_lbl=$(kubectl get deployment web-echo -o jsonpath='{.metadata.labels.app}')
+        svc_lbl=$(kubectl get svc echo-service -o jsonpath='{.spec.selector.app}')
+
+        [ $rs -eq $rrs ] && 
+        [ "${pod_lbl}" == "${svc_lbl}" ]
+
+    - title: Publishing Services (ServiceTypes)
+      task: |-
+        For some parts of your application (for example, frontends) you may want to expose a Service onto an external IP address, that’s outside of your cluster.
+
+        Kubernetes ServiceTypes allow you to specify what kind of Service you want. The default is `ClusterIP`.
+
+        Type values and their behaviors are:
+        - **ClusterIP**: Exposes the Service on a cluster-internal IP. This is the default ServiceType.
+        - **NodePort**: Exposes the Service on each Node’s IP at a static port (the NodePort).
+        - **LoadBalancer**: Exposes the Service externally using a CLOUD provider’s load balancer.
+
+        ## Task:
+        Expose Web-Echo Deployment to NodePort
+
+        Example definition:
+        ```yaml
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: << svc-name >>
+        spec:
+          ports:
+          - nodePort: << node port >>
+            port: << svc port >>
+            protocol: TCP
+            targetPort: << pod port >>
+          selector:
+            << selecting rules >>
+          type: NodePort
+        ```
+
+        ## Requirements:
+        - **Svc Name**: `svc-echo-nodeport-30080`
+        - **Svc Type**: `NodePort`
+        - **Node Port**: `30080`
+        - **Pod Target Port**: `8080`
+        - **Pod Selector**: `app=echo-application`
+
+        ## Documentation
+        - https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+      courseData: ""
+      foreground: ""
+      verify: |-
+        kubectl get svc svc-echo-nodeport-30080 -o jsonpath='{.spec.ports[*].nodePort}' | egrep '^30080$' &&
+        curl localhost:30080 | grep 'hostname: web-echo'
+
     intro: |-
-      # In this section you will do following:
+      # Getting Familiar with Kubernetes
 
+      ![img](https://www.openshift.com/hubfs/images/enterprise-kubernetes.svg?t=1527106851625)
+
+      ## This time we will learn following concepts:
+      - Namespaces
+      - Pods
+      - Deployments
+      - Services
+
+      ### Let's start!
+
+    finish: |-
+      ## That's it for now.
+    environment:
+      hideintro: false
+      showdashboards: true
+      uilayout: terminal-iframe
+      imageid: kubernetes
+      dashboards:
+        - name: User
+          port: 8080
+        - name: localhost
+          port: 32768
+
+  - course_id: 01-cluster
+    title: Kubernetes cluster
+    difficulty: beginner
+    time: 45 minutes
+    steps:
+    - title: Kubernetes Control Plane
+      task: |-
+        ![cluster](https://raw.githubusercontent.com/sbeliakou/mentor/master/.img/control_plane.png)
+
+        ## Task Description
+
+        We're going to initialize Cluster Control Plane (Master) with `kubeadm` tool.
+
+        The most common commands are:
+        - `kubeadm init ...`
+        - `kubeadm join ...`
+        - `kubeadm token ...`
+
+        Please follow the requirements and create the cluster.
+
+        ## Requirements:
+        - token: `abcdef.0123456789abcdef`
+        - token life duration: `20m`
+        - Pod Network CIDR: `10.244.0.0/16`
+
+        ## Tips:
+        - To initialize cluster control plane, please run following command `kubeadm init`. Please look for required options
+        - You can destroy cluster configuration with `kubeadm reset cluster`
+        - Use `--ignore-preflight-errors=all` to disable SWAP and IPTABLES setttings which fail preflight checks
+        - You can find nearly created admin config file (to operate with Kubernetes cluster) in `/etc/kubernetes/`
+
+        ## Verification:
+        ```
+        root@master:/# kubectl --kubeconfig=/etc/kubernetes/admin.conf get nodes
+        kubectl get nodes
+        NAME     STATUS   ROLES    AGE     VERSION
+        master   Ready    master   35s     v1.15.3
+
+        root@master:/# kubectl --kubeconfig=/etc/kubernetes/admin.conf get componentstatuses 
+        NAME                 STATUS    MESSAGE             ERROR
+        scheduler            Healthy   ok                  
+        controller-manager   Healthy   ok                  
+        etcd-0               Healthy   {"health":"true"}   
+        ```
+
+        ## Documentation:
+        - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+      courseData: ""
+      foreground: ""
+      verify: |-
+        export KUBECONFIG=/etc/kubernetes/admin.conf
+
+        kubectl get nodes >/dev/null 2>&1 &&
+        kubeadm token list | grep abcdef.0123456789abcdef >/dev/null &&
+        [ `kubeadm token list | grep abcdef.0123456789abcdef | awk '{print $2}' | egrep -c '[01][0-9]m'` -eq 1 ] &&
+        echo done
+
+    - title: You just should have seen following output
+      task: |-
+
+        ```
+        root@master:/# kubectl --kubeconfig=/etc/kubernetes/admin.conf get componentstatuses 
+        NAME                 STATUS    MESSAGE             ERROR
+        scheduler            Healthy   ok                  
+        controller-manager   Healthy   ok                  
+        etcd-0               Healthy   {"health":"true"}   
+        ```
+
+        It shows statuses of all core Kubernetes componenets.<br>
+        There's also `API Server`. But if you see the output as above it means API server works good.
+
+        As you see, currently it's not really convenient to use extra option `--kubeconfig=/etc/kubernetes/admin.conf`. But this is the way how we can be authorized on the cluster as admins. We will find better way for using this file next level.
+
+        To explore the infrastructure during the quiz, please use one of the following approaches:
+        - `export KUBECONFIG=/etc/kubernetes/admin.conf`
+        - `kubectl --kubeconfig=/etc/kubernetes/admin.conf ...`
+
+        Let's take a look at the infrastructure we have got right now.
+        ---
+      courseData: ""
+      foreground: ""
+      verify: ""
+
+    - title: Client Access to the Cluster - 1
+      task: |-
+        ## Requiremets:
+        - user `root` should be able to use tool kubectl for managing k8s cluster (localhost)
+
+        ## Verification:
+        ```
+        root@master:~$ kubectl get componentstatuses
+        NAME                 STATUS    MESSAGE             ERROR
+        controller-manager   Healthy   ok                  
+        scheduler            Healthy   ok                  
+        etcd-0               Healthy   {"health":"true"} 
+        ```
+
+        ## Documentation:
+        - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+      courseData: |-
+        rm -rf ~/.kube/
+      foreground: ""
+      verify: |-
+        kubectl get nodes >/dev/null 2>&1 &&
+        echo done
+
+    - title: Client Access to the Cluster - 2
+      task: |-
+        We have just created a user `user01`. Please do necessary configuration for this user so that it will be able to manage kubernetes cluster with `kubectl` tool
+
+        ## Requiremets:
+        - user `user01` should be able to use tool kubectl for managing k8s cluster (localhost)
+        - Use `sudo` to switch between user accounts
+        - User proper ownerships on required configuration file(s)
+
+        ## Verification:
+        ```
+        user01@master:/# kubectl get componentstatuses 
+        NAME                 STATUS    MESSAGE             ERROR
+        controller-manager   Healthy   ok                  
+        scheduler            Healthy   ok                  
+        etcd-0               Healthy   {"health":"true"}
+        ```
+
+        ## Documentation:
+        - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+
+      courseData: |-
+        USERNAME=user01
+        useradd ${USERNAME} -d /home/${USERNAME} -m -s /bin/bash
+        echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME}
+      foreground: ""
+      verify: sudo -u user01 -i kubectl get nodes
+
+    - title: Configuring `kubectl` bash Completion
+      task: |-
+        Configure `kubectl` bash completion for user `user01` permanently
+
+        ## Verification:
+        ```
+        user01@master:/# kubectl <tab><tab>
+        annotate       autoscale      cordon         drain          kustomize      port-forward   set            
+        api-resources  certificate    cp             edit           label          proxy          taint          
+        api-versions   cluster-info   create         exec           logs           replace        top            
+        apply          completion     delete         explain        options        rollout        uncordon       
+        attach         config         describe       expose         patch          run            version        
+        auth           convert        diff           get            plugin         scale          wait  
+        ```
+
+        ## Documentation:
+        - https://kubernetes.io/docs/tasks/tools/install-kubectl/#enabling-shell-autocompletion
+        - https://kubernetes.io/docs/reference/kubectl/cheatsheet/#kubectl-autocomplete
+
+      courseData: ""
+      foreground: ""
+      verify: sudo -u user01 -i /bin/bash -l -i -c 'type -t __start_kubectl' | grep function
+
+    - title: Deploying POD Network Driver
+      task: |-
+        ![network](https://assets.digitalocean.com/articles/k8s-networking/double-service.png)
+
+
+        ## Requirements:
+        - Pod Network Manifest File is located here: `/opt/manifests/pod-network.yaml`
+
+
+        ## Verification:
+        ```
+        kubectl get pods -n kube-system | grep kindnet
+        kindnet-2rs42    1/1     Running   0          3m18s
+
+        kubectl get nodes
+        NAME     STATUS   ROLES    AGE     VERSION
+        master   Ready    master   7m35s   v1.15.3
+        ```
+
+        ## Tips:
+        - Check that CNI pods are running
+      courseData: |-
+        cat << EOF | kubectl apply -f -
+        kind: ConfigMap
+        apiVersion: v1
+        metadata:
+          name: coredns
+          namespace: kube-system
+        data:
+          Corefile: |
+            .:53 {
+                errors
+                health
+                kubernetes cluster.local in-addr.arpa ip6.arpa {
+                   pods insecure
+                   fallthrough in-addr.arpa ip6.arpa
+                   ttl 30
+                }
+                forward . /etc/resolv.conf
+                cache 30
+                reload
+                loadbalance
+            }
+        EOF
+
+        # kubectl patch deployments.apps -n kube-system coredns -p '{
+        #   "spec": {
+        #     "replicas": 1, 
+        #     "template": {
+        #       "spec": {
+        #         "containters": [
+        #           {
+        #             "name": "coredns", 
+        #             "nodeSelector": {
+        #               "kubernetes.io/hostname": "master"
+        #             }
+        #           }
+        #         ]
+        #       }
+        #     }
+        #   }
+        # }'
+
+        kubectl rollout restart deployment -n kube-system coredns
+
+        mkdir -p /opt/manifests/
+        cat /kind/manifests/default-cni.yaml | sed 's/.. .PodSubnet ../10.244.0.0\/16/' > /opt/manifests/pod-network.yaml
+      foreground: ""
+      verify: |-
+        kubectl get pods -n kube-system | grep kindnet | grep Running >/dev/null && 
+        kubectl get nodes master -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep True
+
+    - title: Lost bootstrap token 
+      task: |-
+        Unfortunately token created during cluster initialization was lost.
+        Create a new bootstrap token.
+        (It's used for establishing trust with server. We will use it on the next step.)
+
+
+        ## Tips:
+        - token `abcdef.0123456789abcdef` was lost;
+        - create new `fedcba.fedcba9876543210` token;
+        - use `kubeadm token list` for checking.
+
+
+        ## Documentation:
+        - https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/
+        - https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-token/
+
+      courseData: kubeadm token delete abcdef.0123456789abcdef
+      foreground: ""
+      verify: [[ $(kubeadm token list | grep -c fedcba.fedcba9876543210) -eq 1 ]]
+
+    - title: Joining `node01` to the cluster 
+      task: |-
+        ![worker](https://raw.githubusercontent.com/sbeliakou/mentor/master/.img/cluster.png)
+
+        ## Task:
+        - Join worker node `node01` to the cluster
+        - Make sure Kubernetes service will start after system reboot automatically
+
+        Command to be used (on node01):
+        ```
+        kubeadm join <arguments>
+        ```
+
+        ## Tips:
+        - Remember, token should be `fedcba.fedcba9876543210`?
+        - Default API Port on `master` is `6443`
+        - Use `ssh node01` to connect to `node01` host
+        - Use also `--discovery-token-unsafe-skip-ca-verification` and  `--ignore-preflight-errors=all` options
+        - Wait till `node01` turns to `Ready` state
+
+        ## Verification:
+        ```
+        root@master:/# kubectl get nodes
+        NAME     STATUS   ROLES    AGE   VERSION
+        master   Ready    master   39m   v1.15.3
+        node01   Ready    <none>   70s   v1.15.3
+        ```
+
+        ## Documentation:
+        - https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
+
+
+      courseData: ""
+      foreground: ""
+      verify: |-
+        kubectl get nodes node01 -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep True &&
+        ssh node01 'systemctl list-unit-files' | grep enabled | grep kubelet.service
+
+    - title: Labeling Resources
+      task: |-
+        ## Requirements:
+        - Label *node01* node as `worker`
+
+        ```
+        kubectl get nodes
+        NAME     STATUS   ROLES      AGE     VERSION
+        master   Ready    master     3m43s   v1.15.3
+        node01   Ready    worker     46s     v1.15.3
+        ```
+
+        ## Tips:
+        - You should just label necessary node as `node-role.kubernetes.io/<< node role >>`
+        - Use commande like `kubectl label node <nodename> <labelname>=<labelvalue>`
+        - If you need to label resource with empty label just ommit `<labelvalue>`
+
+        ## Documentation:
+        - http://kubernetesbyexample.com/labels/
+        - https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#updating-labels
+        - https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#label
+
+      courseData: ""
+      foreground: ""
+      verify: kubectl get nodes node01 -o json | jq '.metadata.labels."node-role.kubernetes.io/worker"' | grep '""'
+
+    - title: Kubernetes Dashboard
+      task: |-
+        ![dashboard](https://github.com/kubernetes/dashboard/raw/master/docs/images/dashboard-ui.png)
+
+        ## Requirements:
+        - Please use following manifest: [kubernetes-dashboard.yaml on github](https://github.com/kubernetes/dashboard/blob/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml)
+
+        ## Guide:
+
+        ### Create Admin User
+
+        ```
+        kubectl create serviceaccount admin-user -n kube-system
+        kubectl create clusterrolebinding admin-user-clusterrolebinding \
+          --serviceaccount=kube-system:admin-user \
+          --clusterrole=cluster-admin
+        ```
+
+        ### Get Admin Secret
+
+        ```
+        SECRET_NAME="$(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')"
+        kubectl get secret -n kube-system ${SECRET_NAME} -o jsonpath='{.data.token}' | base64 -d
+        ```
+
+        ### Proxy Dashboard
+
+        Expose Dashord from inside cluster with `kubectl proxy` command:
+
+        ```
+        kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
+        ```
+
+        ### Explore Kubernetes Cluster on "Dashboard" Tab
+
+        Please use token authentication from previous step
+
+        ### Documentation:
+        - https://github.com/kubernetes/dashboard
+        - https://github.com/kubernetes/dashboard/wiki/Creating-sample-user
+
+      courseData: ""
+      foreground: ""
+      verify: |-
+        [ `kubectl get deployment -n kube-system kubernetes-dashboard -o jsonpath='{.spec.template.spec.containers[0].name}'` == "kubernetes-dashboard" ] &&
+        [ `kubectl get svc -n kube-system kubernetes-dashboard -o jsonpath='{.spec.ports[0].targetPort}'` == "8443" ] &&
+        [ `kubectl get ep -n kube-system kubernetes-dashboard -o jsonpath="{.subsets[*].addresses[0].nodeName}"` == 'node01' ] &&
+        echo done
+
+    - title: Deploying Metrics Server
+      task: |-
+        ![metrics](https://user-images.githubusercontent.com/21168270/46579266-95846680-ca40-11e8-86d3-a42291476db8.png)
+
+
+        ## Task:
+
+        Follow the [documentation steps](https://github.com/kubernetes-incubator/metrics-server) and deploy `metrics-server`.
+
+        You should update update metrics-server Deployment configuration so that it starts working correctly in your cluster:
+        ```
+        root@master:~# kubectl edit deployments -n kube-system metrics-server
+        ...
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        ...
+              containers:
+              - image: k8s.gcr.io/metrics-server-amd64:v0.3.6
+                imagePullPolicy: Always
+                name: metrics-server
+                command:
+                - /metrics-server
+                - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
+                - --kubelet-insecure-tls
+        ...
+        ```
+
+        ## Cautions:
+        - It usually takes a few minutes to start responding with metrics statistics, so don't worry.
+        - If Kubernetes responds with `Error from server (ServiceUnavailable): the server is currently unable to handle the request (get nodes.metrics.k8s.io)` or `error: metrics not available yet` just wait for a while
+
+        ## Check that:
+        - Metrics Server is deployed successfully and is `Running`
+        - Command `kubectl top nodes` shows performance statistics by nodes
+        - Command `kubectl top pods --all-namespaces` shows performance statistics by pods
+
+        ## Documentation:
+        - https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/
+        - https://github.com/kubernetes-incubator/metrics-server
+        - https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#top
+
+      courseData: ""
+      foreground: ""
+      verify: |-
+        kubectl get deployment -n kube-system metrics-server -o jsonpath='{.status.readyReplicas}' | grep 1 &&
+        kubectl top pods &&
+        kubectl top nodes
+
+    - title: Deploying Ingress-Controller
+      task: |-
+        ![ingress](https://raw.githubusercontent.com/sbeliakou/mentor/master/.img/ingress.png)
+
+
+        ## Requirements :
+        - [Ingress-controller manifest](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml)
+        - Ingress-controller Service Manifest: `/opt/manifests/ingress-svc.yaml`
+
+
+        ## Please be patient. It may take a while ...
+
+        ## Verification:  
+        - Make sure **nginx-ingress-controller-...** Pod is running in **ingress-nginx** namespace. Also you should see **ingress-nginx** service in **ingress-nginx** namespace.  
+        - Explore `localhost` page in your browser. You should see nginx ingress controller default page (*etc. openresty*). 
+        - Explore `localhost/green` page in your browser. You should see green color page.  
+          
+
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/services-networking/ingress/
+        - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+        - https://kubernetes.github.io/ingress-nginx/
+      courseData: |-
+        kubectl run allgood --generator=run-pod/v1 --image=sbeliakou/stubserver --port=80
+        kubectl expose pod allgood --name=allgood-svc --port=80
+
+        cat << EOF | kubectl apply -f-
+        apiVersion: networking.k8s.io/v1beta1
+        kind: Ingress
+        metadata:
+          name: allgood-ingress
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+        spec:
+          rules:
+          - http:
+              paths:
+              - path: /allgood
+                backend:
+                  serviceName: allgood-svc
+                  servicePort: 80
+        EOF
+
+
+        mkdir -p /opt/manifests/
+        cat << EOF > /opt/manifests/ingress-svc.yaml
+        kind: Service
+        apiVersion: v1
+        metadata:
+          name: ingress-nginx
+          namespace: ingress-nginx
+          labels:
+            app.kubernetes.io/name: ingress-nginx
+            app.kubernetes.io/part-of: ingress-nginx
+        spec:
+          externalIPs:
+          - 172.31.0.2
+          ports:
+          - name: http
+            port: 80
+            protocol: TCP
+            targetPort: http
+          selector:
+            app.kubernetes.io/name: ingress-nginx
+            app.kubernetes.io/part-of: ingress-nginx
+          sessionAffinity: None
+          type: ClusterIP
+        EOF
+
+      foreground: ""
+      verify: |-
+        [[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
+        echo done
+
+    intro: |-
+      # Cluster Creation with kubeadm
+
+      ## This time we will do the next
       - Initialize Kubernetes Control Plain
       - Configure kubectl utility
       - Depploy POD Network
@@ -173,1752 +979,481 @@ module:
       - Deploy Kubernetes Dashboard
       - Deploy Metrics-server
 
+      ### Let's start!
 
-      # Good Luck!
     finish: |-
-      # It's Done!
+      # Summary
 
-      Some useful commands to know:
+      We have created Kubernetes cluster of two nodes, configured client access, deployed dashboard, ingress-controller and metrics server.
+      Some useful commands you should capture:
 
-      <pre class="file">
-
+      ```
       kubectl get nodes
       kubectl cluster-info
       kubectl get componentstatus
 
-      kubectl get pods
-      kubectl get deployments
-      kubectl get svc
+      kubectl get ns ...
+      kubectl get po ...
+      kubectl get deployments ...
+      kubectl describe po ...
+      kubectl describe deployments ...
 
       kubectl top nodes
       kubectl top pods 
       kubectl top pods --all-namespaces
-      </pre>
+      ```
     environment:
       hideintro: false
       showdashboards: true
       uilayout: terminal-iframe
-      imageid: kubernetes-cluster
+      imageid: kubernetes
       dashboards:
         - name: User
           port: 8080
-        - name: K8s Dashboard
-          port: 8001
-  - course_id: k8s-pods
-    title: Pod Game
-    description: Managing Pods and all about them
+        - name: localhost
+          port: 32768
+
+  - course_id: 02-pods
+    title: Kubernetes Pods
     difficulty: beginner
     time: 45 minutes
     steps:
-      - title: Welcome
-        task: |-
-          ## Let us know who you are.
+    - title: Create a simple Pod
+      task: |-
+        ## Requirements:
+        - **Pod name**: `nginx-pod`
+        - **Pod image**: `nginx:alpine`
+        - **Pod label**: `app=nginx`
+        - **Namespace**: `default`
 
-          Please open "**User**" Tab and fill required information
 
-          `touch /.ok`
-        verify: |-
-          [ -f /opt/.user ]
-      - title: Simple Pod
-        task: |-
-          Create a simple Pod.
+        Wait till this pod comes into `Running` state
 
-          ## Requirements:
-          - Pod name: `nginx-pod`
-          - Pod image: `nginx:alpine`
-          - Pod label: `app=nginx`
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/workloads/pods/pod/
+        - https://kubernetes.io/docs/concepts/workloads/pods/pod-overview/#pod-templates
+      courseData: |-
+        until kubectl get node master -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep True; do sleep 1; done
+        kubectl taint node master node-role.kubernetes.io/master-
+        kubectl label node master node-role.kubernetes.io/worker=
+      foreground: ""
+      verify: |-
+        [ `kubectl get pods nginx-pod -o jsonpath='{.status.phase}'` == "Running" ] &&
+        [ `kubectl get pods nginx-pod -o jsonpath='{.spec.containers[0].image}'` == "nginx:alpine" ] &&
+        [ `kubectl get pods nginx-pod -o jsonpath='{.metadata.labels.app}'` == "nginx" ]
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/pods/pod/
-        verify: |-
-          [ `kubectl get pods nginx-pod -o jsonpath='{.status.phase}'` == "Running" ] &&
-          [ `kubectl get pods nginx-pod -o jsonpath='{.spec.containers[0].image}'` == "nginx:alpine" ] &&
-          [ `kubectl get pods nginx-pod -o jsonpath='{.metadata.labels.app}'` == "nginx" ]
-        foreground: |-
-          clear && echo -n "Preparing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        courseData: 
-      - title: A Pod with Multiple Containers
-        task: |-
-          Create a pod called `multi-pod` with two containers. 
+    - title: Troubleshooting Pods
+      task: A new Pod `web` has been deployed. It failed. 
+        Please fix it.
 
-          ## Requirements:
-          - **Container 1**:
-            - name: `alpha`
-            - image: `nginx:alpine`
-            - environment variables: type=main
+        ## Requirements:
+        - **Image**: `nginx` of `v1.16.1` based on `alpine`
+        - **Pod Status**: `Running`
 
-          - **Container 2**:
-            - name: `beta`
-            - image: `busybox`
-            - environment variables: type=sidecar
-            - command: `sleep 4800`
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/workloads/pods/pod/
+      courseData: |-
+        kubectl create ns webservices &&
+        kubectl run web --image=nginx:alpine-1.16 --generator=run-pod/v1 -n webservices
+      foreground: ""
+      verify: |-
+        [ `kubectl get pods web -n webservices -o jsonpath='{.status.phase}'` == "Running" ] &&
+        [ `kubectl get pods web -n webservices -o jsonpath='{.spec.containers[0].image}'` == "nginx:1.16.1-alpine" ]
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/pods/pod/
-        verify: |-
-          [ `kubectl get po multi-pod -o jsonpath='{.status.phase}'` == "Running" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="alpha")].image}'` == "nginx:alpine" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="alpha")].env[?(@.name=="type")].value}'` == "main" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="beta")].image}'` == "busybox" ] &&
-          [ `kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="beta")].env[?(@.name=="type")].value}'` == "sidecar" ] &&
-          [ "`kubectl get po multi-pod -o jsonpath='{.spec.containers[?(@.name=="beta")].command}'`" == "[sleep 4800]" ]
-      - title: Failed Web Service
-        task: |-
-          A new Pod `web` has been deployed. It failed. 
-          Please fix it.
+    - title: Troubleshooting Pods
+      task: |-
+        A new Pod `redis-db` has been deployed. It failed. 
+        Please fix it.
 
-          ## Requirements:
-          - image: `nginx` v1.16 build on `alpine`
-          - pod should be running
+        If it's required you can recreate a pod. But be careful.
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/pods/pod/
-        verify: |-
-          [ `kubectl get pods web -n webservices -o jsonpath='{.status.phase}'` == "Running" ] &&
-          [ `kubectl get pods web -n webservices -o jsonpath='{.spec.containers[0].image}'` == "nginx:1.16-alpine" ]
-        courseData: |-
-          kubectl create ns webservices &&
-          kubectl run web --image=nginx:alpine-1.16 --generator=run-pod/v1 -n webservices
-      - title: Failed Redis DB
-        task: |-
-          A new Pod `redis-db` has been deployed. It failed. 
-          Please fix it.
+        Wait till this pod comes into `Running` state.
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/pods/pod/
-        verify: |-
-          [ `kubectl get pods -n db redis-db -o jsonpath='{.status.phase}'` == "Running" ] &&
-          [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.initContainers[0].command[0]}'` == "sleep" ] &&
-          [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.initContainers[0].image}'` == "busybox" ] &&
-          [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.containers[0].image}'` == "redis:alpine" ]
-        courseData: |-
-          kubectl create ns db
-          cat << EOF | kubectl apply -n db -f-
-          apiVersion: v1
-          kind: Pod
-          metadata:
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/workloads/pods/pod/
+        - https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+
+      courseData: |-
+        kubectl create ns db
+        cat << EOF | kubectl apply -n db -f-
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: redis-db
+        spec:
+          containers:
+          - image: redis:alpine
             name: redis-db
-          spec:
-            containers:
-            - image: redis:alpine
-              name: redis-db
-            initContainers:
-            - image: busybox
-              name: starter
-              command: 
-              - s1eep
-              - "10"
-            restartPolicy: Never
-          EOF
-      - title: Static Pods
-        task: |-
-          Create a static Pod on `node01` node.
+          initContainers:
+          - image: busybox
+            name: starter
+            command: 
+            - sleeeep
+            - "10"
+          restartPolicy: Never
+        EOF
+      foreground: ""
+      verify: |-
+        [ `kubectl get pods -n db redis-db -o jsonpath='{.status.phase}'` == "Running" ] &&
+        [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.initContainers[0].command[0]}'` == "sleep" ] &&
+        [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.initContainers[0].image}'` == "busybox" ] &&
+        [ `kubectl get pods -n db redis-db -o jsonpath='{.spec.containers[0].image}'` == "redis:alpine" ]
 
-          ## Requirements:
-          - Pod name in metadata: `static-nginx` (might be automatically added `-node01` postfix in `kubectl get pods`)
-          - should be runned on `node01`
-          - image: `nginx`
+    - title: Creating a Pod
+      task: |-
+        Create a new pod with the name '`redis`' and with the image '`redis:123`'
+        And yes the image name is wrong!
 
-          For self-checking and discovering of static Pod's mechanism try to delete static Pod using `kubectl`. 
+        Create pod-definition file.
 
-          ## Documentation:
-          - https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/
-        verify: |-
-          [[ $(kubectl get pods static-nginx-node01 -o jsonpath='{.status.phase}') == "Running" ]] &&
-          [[ $(ssh node01 'cat /etc/kubernetes/manifests/* | grep -c static-nginx') -ge 1 ]]
-        foreground: |-
-          clear && echo -n "Preparing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        courseData: 
+        ## Requirements:
+        - **Name**: `redis`
+        - **Image Name**: `redis:123`
+        - **Namespace**: `default`
+
+      courseData: ""
+      foreground: ""
+      verify: |-
+        kubectl get po -n default redis -o jsonpath='{.metadata.name}' | egrep '^redis$' && 
+        kubectl get po -n default redis -o jsonpath='{.spec.containers[0].image}' | egrep '^redis:123$'
+
+    - title: Pods
+      task: |-
+        Now fix the image on the pod to '`redis`'.
+        Update the pod-definition file and use '`kubectl apply`' command or use '`kubectl edit pod redis`' command.
+
+        # Requirements:
+        - **Name**: `redis`
+        - **Image Name**: `redis:5.0.6-alpine3.10`
+      courseData: ""
+      foreground: ""
+      verify: |-
+        kubectl get po -n default redis -o jsonpath='{.metadata.name}' | egrep '^redis$' && 
+        kubectl get po -n default redis -o jsonpath='{.spec.containers[0].image}' | egrep '^redis:5.0.6-alpine3.10$'
+
+    - title: Static Pods
+      task: |-
+        Create static Pod.
+
+        ## Requirements:
+        - **Pod Name**: `static-nginx` (might be automatically added `-<<node-name>>` postfix in `kubectl get pods`)
+        - **Image**: `nginx`
+
+        For self-checking and discovering of static Pod's mechanism try to delete static Pod using `kubectl`. 
+
+        ## Documentation:
+        - https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/
+      courseData: ""
+      foreground: ""
+      verify: |-
+        [ "$(kubectl get pods static-nginx-master -o jsonpath='{.status.phase}')" == "Running" ] &&
+        grep static-nginx /etc/kubernetes/manifests/*
+
     intro: |-
-      # In this section you will do following:
+      # Practicing with Pods
 
-      - create, label and troubleshooting Pods
-      - create static Pods
-      - create Pods with many containers
+      Here we have collected a number of scenarios which will help you to get more experienced working with Pods.
 
-      # Good Luck!
+      - Creating Pods
+      - Learming Init Containers
+      - Troubleshooting various issues with Pods
+      - Getting familiar with how Kubernetes manages this resources
+
+      ### Here we go
+
     finish: |-
-      # It's Done!
-
-      Some useful commands to know:
-
-      <pre class="file">
-
-      kubectl run web --image=httpd --generator=run-pod/v1
-      kubectl run web --image=httpd --generator=run-pod/v1 --dry-run -o yaml
-      kubectl label pod foo app=web
-
-      kubectl describe pod web
-      kubectl get pod web -o yaml
-      </pre>
+      # Here we are
     environment:
       hideintro: false
       showdashboards: true
       uilayout: terminal-iframe
-      imageid: kubernetes-cluster
+      imageid: kubernetes
       dashboards:
         - name: User
           port: 8080
-  - course_id: k8s-deployments
-    title: Deployment Game
-    description: Managing Deployments and all about them
+        - name: localhost
+          port: 32768
+
+  - course_id: 03-deployments
+    title: Kubernetes Deployments
     difficulty: beginner
     time: 45 minutes
     steps:
-      - title: Welcome!
-        task: |-
-          ## Let us know who you are.
+    - title: Create Deployment
+      task: |-
+        Create a new deployment called `nginx-deploy`:
 
-          Please open "**User**" Tab and fill required information
+        ## Requirements:
+        - **Name**: `nginx-deploy`
+        - **Image**: `nginx:1.16-alpine`
+        - **Replicas**: `3`
+        - Make sure that pods are running
 
-          `touch /.ok`
-        verify: |-
-          [ -f /opt/.user ]
-      - title: Deployments in namespaces
-        task: |-
-          Examine deployments, replicasets and Pods in different namespaces and answer the questions below.
-          
-          ## Quiz
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 
-          >>Q1: Enter the number of deployments in "default" namespace<<
-          === 0
+      courseData: |-
+        until kubectl get node master -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep True; do sleep 1; done
+        kubectl taint node master node-role.kubernetes.io/master-
+        kubectl label node master node-role.kubernetes.io/worker=
+      foreground: ""
+      verify: |-
+        [ `kubectl get deployment nginx-deploy -o jsonpath='{.metadata.name}'` == "nginx-deploy" ] && 
+        [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
+        [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.replicas}'` == 3 ] &&
+        [ `kubectl get deployment nginx-deploy -o jsonpath='{.status.readyReplicas}'` == 3 ]
 
-          >>Q2: Enter the number of replicasets in "default" namespace<<
-          === 0
+    - title: Deleting Pods
+      task: |-
+        Check our pods of this deplyment.<br>Please, delete one of pods and let's check what heppens.
 
-          >>Q4: Enter the number of deployments in "kube-system" namespace<<
-          === 1
+        ReplicaSet which is creatted by deplyment will create new one. Right?
 
-          >>Q5: Enter the name of deployment in "kube-system" namespace<<
-          === coredns
+        ## Task:
+        - Delete one of pods and verivy that the new one has been created.
+      courseData: ""
+      foreground: ""
+      verify: |-
+        rs=$(kubectl get rs | grep nginx-deploy | awk '{print $1}')
+        kubectl get events | grep replicaset/$rs | wc -l | xargs -IF [ F -gt 3 ]
 
-          >>Q6: Enter the name of replicaset in "kube-system" namespace<<
-          =~= coredns
+    - title: Updating Deployment
+      task: |-
+        Use rolling upgrade to provide it with the `1.17` version of `nginx:alpine`.<br>Please check ReplicaSets status.
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-      - title: Simple Deployment
-        task: |-
-          Create a new deployment called `nginx-deploy`:
+        ## Requirements:
+        - current deployment image is `nginx:1.16-alpine`
+        - new deployment has been upgraded to version `1.17-alpine` using rolling update
 
-          ## Requirements:
-          - name: `nginx-deploy`
-          - image: `nginx:1.16-alpine`
-          - replicas: 3
-          - make sure that deployment and pod are running
+        ## Commands:
+        - `kubectl set image <<resource>> <<resource name>> <<contanier>>=<<new image>>`
+        - `kubectl describe <<resource>> <<resource name>>`
+        - `kubectl get rs <<replicaset name>>`
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-        verify: |-
-          [ `kubectl get deployment nginx-deploy -o jsonpath='{.metadata.name}'` == "nginx-deploy" ] && 
-          [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
-          [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.replicas}'` == 3 ] &&
-          [ `kubectl get deployment nginx-deploy -o jsonpath='{.status.readyReplicas}'` == 3 ]
-      - title: Rolling update
-        task: |-
-          Record current version of `nginx-deploy` deployment. Use rolling upgrade to provide it with the `1.17` version of `nginx:alpine`. Make sure, that both `1.16` and `1.17` versions are in the rollout history. Then, rollback to `1.16` version
+        ## Note:
+        - You can easily roll back with the command `kubectl rollout undo <<resource>> <<deployment name>>`
 
-          ## Requirements:
-          - deployment image is `nginx:1.16-alpine`
-          - deployment has been upgraded to version `1.17-alpine` using rolling update
-          - upgraded version is recorded in the resource annotation
-          - deployment has been rollbacked to version `1.16`
+        ## Verification:
+        - There should be 2 replicas like here:
+        > ```
+        > kubectl get rs -o wide
+        > NAME                      DESIRED   CURRENT   READY   ...   IMAGES              ...
+        > nginx-deploy-5ffcd8bc7f   0         0         0       ...   nginx:1.16-alpine   ...
+        > nginx-deploy-698fdf9b46   3         3         3       ...   nginx:1.17-alpine   ...
+        > ```
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-        verify: |-
-          [ `kubectl get deployment nginx-deploy -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
-          [ `kubectl rollout history deployment nginx-deploy | grep -c "nginx:1.16-alpine"` -ge 1 ] && 
-          [ `kubectl rollout history deployment nginx-deploy | grep -c "nginx:1.17-alpine"` -ge 1 ] &&
-          [ `kubectl rollout history deployment nginx-deploy | grep -c "set image"` -ge 2 ]
-      - title: Broken deployment
-        task: |-
-          New deployment has been created, but it doesn't work properly. Find out and fix the issue.
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 
-          ## Requirements:
-          - deployment "orange" is running
-          - pod, associated with this deployment, is up and running
-          - pod waits for 10 seconds before creating a container
+      courseData: ""
+      foreground: ""
+      verify: |-
+        rs16=$(kubectl get rs -o wide | grep 'nginx:1.16-alpine' | awk '{print $1}')
+        rs17=$(kubectl get rs -o wide | grep 'nginx:1.17-alpine' | awk '{print $1}')
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-        courseData: |-
-          kubectl create ns orange &&
-          cat << EOF | kubectl apply -n orange -f-
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            namespace: orange
-            labels:
+        [ -n "$rs16" ] && [ -n "$rs17" ] &&
+        kubectl get rs | grep -v NAME | wc  -l | grep '^2$' &&
+        [ $(kubectl get rs/${rs17} -o jsonpath='{.status.availableReplicas}') -eq 3 ]
+
+    - title: Rolling Back
+      task: |-
+        Now please roll back to previous version of the deployment: `nginx:1.17-alpine`
+
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+      courseData: ""
+      foreground: ""
+      verify: |-
+        rs16=$(kubectl get rs -o wide | grep 'nginx:1.16-alpine' | awk '{print $1}')
+        rs17=$(kubectl get rs -o wide | grep 'nginx:1.17-alpine' | awk '{print $1}')
+
+        [ -n "$rs16" ] && [ -n "$rs17" ] &&
+        kubectl get rs | grep -v NAME | wc  -l | grep '^2$' &&
+        [ $(kubectl get rs/${rs16} -o jsonpath='{.status.availableReplicas}') -eq 3 ]
+
+    - title: Troubleshooting Deployments
+      task: |-
+        New deployment has been created, but it doesn't work properly. Find out and fix the issue.
+
+        ## Requirements:
+        - Deployment `orange` is running
+        - Pod, associated with this deployment, is up and running
+        - Pod waits for 10 seconds before creating a container
+        - Please, change only necessary parameters
+
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+      courseData: |-
+        kubectl create ns orange &&
+        cat << EOF | kubectl apply -n orange -f-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          namespace: orange
+          labels:
+            run: orange
+          name: orange
+        spec:
+          replicas: 2
+          selector:
+            matchLabels:
               run: orange
-            name: orange
-          spec:
-            replicas: 2
-            selector:
-              matchLabels:
+          template:
+            metadata:
+              labels:
                 run: orange
-            template:
-              metadata:
-                labels:
-                  run: orange
-              spec:
-                containers:
-                - image: nginx
-                  name: orange
-                initContainers:
-                - image: busybox:latest-alpine
-                  name: busybox
-                  command:
-                  - s11eep
-                  - "10"
-          EOF
-        verify: |-
-          [ `kubectl get deployment orange -n orange -o jsonpath='{.metadata.name}'` == "orange" ] && 
-          [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx" ] && 
-          [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.replicas}'` == 2 ] &&
-          [ `kubectl get deployment orange -n orange -o jsonpath='{.status.readyReplicas}'` == 2 ] &&
-          [[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].image}'` =~ "busybox" ]] &&
-          [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].command[1]}'` == 10 ]
-      - title: Managing replicas
-        task: |-
-          New deployment has been created, but there are no `replcaSet`s associated with it. Find out and fix the issue
+            spec:
+              containers:
+              - image: nginx:1.16-alpine
+                name: orange
+              initContainers:
+              - image: busybox:alpine
+                name: busybox
+                command:
+                - s11eep
+                - "10"
+        EOF
+      foreground: ""
+      verify: |-
+        [ `kubectl get deployment orange -n orange -o jsonpath='{.metadata.name}'` == "orange" ] && 
+        [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx:1.16-alpine" ] && 
+        [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.replicas}'` == 2 ] &&
+        [ `kubectl get deployment orange -n orange -o jsonpath='{.status.readyReplicas}'` == 2 ] &&
+        [[ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].image}'` =~ "busybox" ]] &&
+        [ `kubectl get deployment orange -n orange -o jsonpath='{.spec.template.spec.initContainers[0].command[1]}'` == 10 ]
 
-          ## Requirements:
-          - deployment `lemon` is up and running
-          - deployment has 1 `replicaSet` associated with it
-          - there are 3 pods managed by this replicaSet
+    - title: Troubleshooting Deployments
+      task: |-
+        New deployment has been created, but there are no `replcaSet`s associated with it. Find out and fix the issue
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
-        courseData: |-
-          kubectl create ns lemon &&
-          cat << EOF | kubectl apply -n lemon -f-
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            namespace: lemon
-            labels:
+        ## Requirements:
+        - deployment `lemon` is up and running
+        - deployment has 1 `replicaSet` associated with it
+        - there are 3 pods managed by this replicaSet
+
+        ## Documentation:
+        - https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+      courseData: |-
+        kubectl create ns lemon &&
+        cat << EOF | kubectl apply -n lemon -f-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          namespace: lemon
+          labels:
+            run: lemon
+          name: lemon
+        spec:
+          replicas: 0
+          selector:
+            matchLabels:
               run: lemon
-            name: lemon
-          spec:
-            replicas: 0
-            selector:
-              matchLabels:
+          template:
+            metadata:
+              labels:
                 run: lemon
-            template:
-              metadata:
-                labels:
-                  run: lemon
-              spec:
-                containers:
-                - image: nginx
-                  name: lemon
-          EOF
-        foreground: 
-        verify: |-
-          [ `kubectl get deployment lemon -n lemon -o jsonpath='{.metadata.name}'` == "lemon" ] && 
-          [ `kubectl get deployment lemon -n lemon -o jsonpath='{.spec.template.spec.containers[0].image}'` == "nginx" ] && 
-          [ `kubectl get deployment lemon -n lemon -o jsonpath='{.spec.replicas}'` == 3 ] &&
-          [ `kubectl get deployment lemon -n lemon -o jsonpath='{.status.readyReplicas}'` == 3 ]
+            spec:
+              containers:
+              - image: nginx
+                name: lemon
+        EOF
+      foreground: ""
+      verify: ""
+
+    - title: Troubleshooting Deployments
+      task: |-
+        There's manifest `/opt/practice/tomato.yaml`. It needs some key details. Please add necessary configuration and deploy it.
+      courseData: |-
+        kubectl create ns tomato
+        mkdir /opt/practice/
+        cat << EOF > /opt/practice/tomato.yaml
+        apiVersion: apps/v1
+        kind: deployment
+        metadata:
+          namespace: tomato
+          labels:
+            vegetable: tomato
+          name: tomato
+        spec:
+          replicas: 1
+          template:
+            spec:
+              containers:
+              - image: nginx:1.16-alpine
+                name: tomato
+        EOF
+      foreground: ""
+      verify: |-
+        kubectl get deployments. -n tomato tomato -o jsonpath='{.status.readyReplicas}' | grep '^1$' &&
+        kubectl get deployments. -n tomato tomato -o jsonpath='{.metadata.labels.vegetable}' | grep '^tomato$'
+
     intro: |-
-      # In this section you will do following:
+      # In this section you will deal with Deployments:
 
-      - working with deployments
-      - rollout deployments
-      - scaling deployments
-      - troubleshooting deployments
+      - Creating Deployments
+      - Troubleshooting various issues with Deployments
+      - Getting familiar with how Kubernetes manages this workload
 
-      # Good Luck!
+      ### Good Luck!
+
     finish: |-
-      # It's Done!
-
-      Some useful commands to know:
-
-      <pre class="file">
-
-      kubectl get deployments
-      kubectl describe deployments web
-
-      kubectl run nginx-deploy --image=nginx --restart=Always --replicas=3
-      kubectl create deployment nginx --image=nginx --dry-run -o yaml
-
-      kubectl set image deployment/nginx-deployment nginx=nginx:1.91 --record
-      kubectl rollout hostory deployment nginx
-
-      kubectl scale deployment nginx-deploy --replicas=10
-
-      </pre>
+      # Here we are
     environment:
       hideintro: false
       showdashboards: true
       uilayout: terminal-iframe
-      imageid: kubernetes-cluster
+      imageid: kubernetes
       dashboards:
         - name: User
           port: 8080
-  - course_id: k8s-volumes
-    title: Volumes Game
-    description: Managing Volumes and all about them
-    difficulty: beginner
-    time: 40 minutes
-    steps:
-      - title: Welcome
-        task: |-
-          ## Let us know who you are.
+        - name: localhost
+          port: 32768
 
-          Please open "**User**" Tab and fill required information
+  # - course_id: 04-services
+  #   title: Kubernetes Services
+  #   difficulty: beginner
+  #   time: 45 minutes
+  #   steps:
 
-          `touch /.ok`
-        verify: |-
-          [ -f /opt/.user ]
-      - title: Volumes in default namespace
-        task: |-
-          Examine persistent volumes in `default` namespace and answer the questions below.
 
-          >>Q1: Enter the number of persistent volumes in default namespace<<
-          === 0
 
-          >>Q2: Enter the number of persistent volume claims in default namespace<<
-          === 0
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/storage/volumes/
-          - https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-      - title: Quiz
-        task: |-
-          Examine existing persistent volumes and answer the questions below:
 
-          >>Q1. Enter the number of persistent volumes<<
-          === 5
 
-          >>Q2. Enter the size of biggest volume<<
-          ( ) 20
-          ( ) 30
-          ( ) 5
-          (*) 10
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/storage/volumes/
-          - https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-        courseData: |-
-          for item in {1..5}; do
-          mkdir /opt/data${item}
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: PersistentVolume
-          metadata:
-            name: pv-${item}
-            labels:
-              type: local
-          spec:
-            storageClassName: manual
-            capacity:
-              storage: 10Mi
-            accessModes:
-            - ReadWriteOnce
-            hostPath:
-              path: "/opt/data${item}"
-          EOF
-          done
-        foreground: |-
-          clear && echo -n "Prepairing" &&
-          until $(kubectl get pv pv-5 > /dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c; clear; echo "Time to rock!"
-      - title: Pod
-        task: |-
-          Create persistent volume `pv-first`. Create claim `pvc-first` which will bound this volume. Attach created volume to pod `nginx-pod`.
 
-          ## Requirements:
-          - persistent volume `pv-first`:
-            - capacity: `30Mi`
-            - mounted to `nginx-pod`
-            - reclaim policy `Retain` 
-            - access mode `ReadWriteOnce`
-            - host path `/opt/data1`
-          - persistent volume claim `pvc-first`
-            - status: `Bound` to `pv-first` volume
-          - Pod `nginx-pod`:
-            - image: `nginx:mainline-perl`
-            - pod mounts volume to `/opt/`
-            
 
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/storage/volumes/
-          - https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-        verify: |-
-          [[ $(kubectl get pod nginx-pod -o jsonpath='{.spec.phase}') == "Running" ]] &&
-          [[ $(kubectl get pod nginx-pod -o jsonpath='{.spec.volumes[?(@.persistentVolumeClaim.claimName=="pvc-first")].persistentVolumeClaim.claimName}') == "pvc-first" ]] &&
-          [[ $(kubectl get pvc pvc-first -o jsonpath='{.status.phase}') == "Bound" ]] &&
-          [[ $(kubectl get pvc pvc-first -o jsonpath='{.spec.volumeName}') == "pv-first" ]] &&
-          [[ $(kubectl get pv pv-first -o jsonpath='{.status.phase}') == "Bound" ]] &&
-          [[ $(kubectl get pv pv-first -o jsonpath='{.spec.capacity.storage}') == "30Mi" ]] &&
-          [[ $(kubectl get pv pv-first -o jsonpath='{.spec.claimRef.name}') == "pvc-first" ]]
-    intro: |-
-      # In this section you will do following:
 
-      - working with persistent volumes
-      - working with persistent volume claims
 
-      # Good Luck!
-    finish: |-
-      # It's Done!
 
-      Some useful commands to know:
 
-      <pre class="file">
 
-      kubectl get pv
-      kubectl get pv -o yaml
 
-      kubectl get pvc
-      kubectl get pvc -o yaml
 
-      </pre>
-    environment:
-      hideintro: false
-      showdashboards: true
-      uilayout: terminal-iframe
-      imageid: kubernetes-cluster
-      dashboards:
-        - name: User
-          port: 8080
-  - course_id: k8s-services
-    title: Services
-    description: Services in Kubernetes
-    difficulty: beginner
-    time: 45 minutes
-    steps:
-      - title: Welcome
-        task: |-
-          ## Let us know who you are.
 
-          Please open "**User**" Tab and fill required information
 
-          `touch /.ok`
-        verify: |-
-          [ -f /opt/.user ]
-      - title: Services in default namespace
-        task: |-
-          Examine the services in cluster and answer the questions below.
-
-          >>Q1: Enter the number of services in default namespace<<
-          === 1
-
-          >>Q2: What name of the service?<<
-          === kubernetes
-
-          >>Q3: What type of the service?<<
-          === ClusterIP
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-      - title: Services in different namespaces
-        task: |-
-          Examine the services in cluster and answer the questions below.
-
-          >>Q1: How many services are there in all namespaces<<
-          === 5
-
-          >>Q2: What types of ports are there in "red" namespace<<
-          [*] LoadBalancer
-          [ ] TelePort
-          [*] ClusterIP
-          [*] NodePort 
-
-          >>Q3: What the nodePort of "red-cluster-svc" service?<<
-          ( ) 6443
-          ( ) 32435
-          (*) service doesn't have nodePort
-          ( ) 31200
-
-          >>Q4: What the nodePort of "red-node-svc" service?<<
-          ( ) 6443
-          ( ) 32435
-          ( ) service doesn't have nodePort
-          (*) 31200
-
-          >>Q5: What the targetPort of "red-lb-svc" service?<<
-          (*) 8000
-          ( ) 32435
-          ( ) service doesn't have targetPort
-          ( ) 31200
-
-          >>Q6: What the selector does "red-cluster-svc" service have?<<
-          (*) app: red-pod
-          ( ) run: red-pod
-          ( ) app: red-cluster-svc
-          ( ) run: red-cluster-svc
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |-
-          kubectl create ns red &&
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-cluster-svc
-            namespace: red
-          spec:
-            type: ClusterIP
-            selector:
-              app: red-pod
-            ports:
-              - port: 80
-          ---
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-node-svc
-            namespace: red
-          spec:
-            type: NodePort
-            selector:
-              app: red-pod
-            ports:
-              - port: 8080
-                targetPort: 80
-                nodePort: 31200
-          ---
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: red-lb-svc
-            namespace: red
-          spec:
-            type: LoadBalancer
-            selector:
-              app: red-pod
-            ports:
-              - port: 80
-                targetPort: 8000
-          EOF
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get svc -n red red-lb-svc >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-      - title: Exposing Pods. Create Pod
-        task: |-
-          Create a Pod with the following parameters:
-
-          - Pod name: `green-pod`
-          - namespace: `default`
-          - Pod image: `nginx`
-          - Pod should have port with parameters:
-            - name: `nginx-port`
-            - container port: `80`
-          - label: `app: green-pod`
-          - make sure Pod has `Running` state
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |-
-          [[ $(kubectl get pods green-pod -o jsonpath='{.status.phase}') == 'Running' ]] &&
-          [[ $(kubectl get pods green-pod -o jsonpath='{.metadata.labels.app}') == "green-pod" ]] &&
-          [[ $(kubectl get pods green-pod -o jsonpath='{.spec.containers[?(@.image=="nginx")].ports[?(@.name=="nginx-port")].containerPort}') == '80' ]]
-      - title: Exposing Pods. Expose Pod
-        task: |-
-          Using `kubectl` expose the `green-pod` with following parameters:
-
-          - service name: `green-svc`
-          - type: `NodePort`
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |-
-          [[ $(kubectl get svc green-svc -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
-          [[ $(kubectl get svc green-svc -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
-          [[ $(kubectl get svc green-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]
-      - title: Exposing Pods. Checking
-        task: |-
-          Find out the `nodePort` value of `green-svc` service.  
-          Go to the `Green` tab and enter the nodePort value into box.  
-
-          Make sure start page of nginx is available.  
-
-
-          Moreover, you can reach nginx page with curl:  
-          `curl hostIP:nodePort`  
-          where `hostIP` is from `.status.hostIP` section of our Pod (`green-pod`)  
-                `nodePort` the value from `green-svc` service.  
-
-          Try to execute it.
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-      - title: Manually service creating
-        task: |-
-          Using `yaml` definition create another service which will be exposing `green-pod` Pod with the following requirements:
-
-          - namespace: `default`
-          - service name: `green-svc-2`
-          - selector: `app: green-pod`
-          - type: `NodePort`
-          - nodePort: 32005
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |-
-          [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.type}') == 'NodePort' ]] &&
-          [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.selector.app}') == 'green-pod' ]] &&
-          [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].targetPort}') == '80' ]] &&
-          [[ $(kubectl get svc green-svc-2 -o jsonpath='{.spec.ports[].nodePort}') == '32005' ]]
-      - title: Manually service creating. Checking
-        task: |-
-          Go to the `Green` tab again and enter the earlier set nodePort value into box. (click refresh button in tab title for reset to default port)  
-
-          Make sure start page of nginx is available again.  
-
-
-          Moreover, you can reach nginx page with curl:  
-          `curl hostIP:nodePort`  
-          where `hostIP` is from `.status.hostIP` section of our Pod (`green-pod`)  
-                `nodePort` the value from `green-svc-2` service.  
-          Try to execute it.
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-      - title: Exposing service to another site
-        task: |-
-          Create service which will make redirecting to `tut.by` site.
-
-          Requirements:
-          - service nodePort: 32500
-
-          For self-cheking open `tut.by` tab. You should see `tut.by` homepage.
-
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-        verify: |-
-          $(curl -Ls 127.0.0.1:32500 | grep "title.*TUT.BY" >/dev/null 2>&1)
-      - title: Headless service
-        task: |-
-          You are given a `headless-pod` Pod. Create a headless service for exposing `headless-pod`.
-
-          Requirements:
-          - service name: `headless-svc`
-          - namespace: `headless`
-
-          For self-checking run another pod with `centos` image and try to get content of `headless-pod`:  
-          `curl headless-svc.headless.svc.cluster.local`  
-
-          You should see nginx default page.
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |-
-          kubectl create namespace headless
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Pod
-          metadata:
-            labels:
-              app: headless-pod
-            name: headless-pod
-            namespace: headless
-          spec:
-            containers:
-            - image: nginx
-              name: headless-pod
-              ports:
-              - name: headless-port
-                containerPort: 80
-          EOF
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && sleep 5 && until [[ $(kubectl get pods -n headless headless-pod -o jsonpath='{.status.phase}') == 'Running' ]]; do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.selector.app}') == 'headless-pod' ]] &&
-          [[ $(kubectl get svc -n headless headless-svc -o jsonpath='{.spec.ports[].targetPort}') == '80' ]]
-      - title: Troubleshooting
-        task: |-
-          You are given the `trouble-dep` deployment and `trouble-svc` service which should expose that deployment. But something with the service went wrong. Find and correct mistakes.  
-          For self-checking use `Trouble` tab. You should see nginx default page from `troule-dep`.  
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/service/
-        courseData: |-
-          kubectl create namespace trouble
-          kubectl run trouble-dep --namespace=trouble --image=nginx --restart=Always --replicas=3 --labels="app=trouble"
-          cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: trouble-svc
-            namespace: trouble
-          spec:
-            type: NodePort
-            ports:
-              - nodePort: 32200
-                protocol: TCP
-                port: 80
-          EOF
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && sleep 5 && until [[ $(kubectl get deployments -n trouble trouble-dep | awk 'FNR==2 {print $2}') == '3/3' ]]; do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(kubectl get svc -n trouble trouble-svc -o jsonpath='{.spec.selector.app}') == 'trouble' ]]
-    intro: |-
-      # In this section you will do following:
-
-      - explore services in different namespaces
-      - find out services parameters
-      - expose Pods/Deployments with services
-      - make service which redirects to external site
-      - make headless service
-      - troubleshoot services
-
-
-      # Good Luck!
-    finish: |-
-      # It's Done!
-
-      Some useful commands to know:
-
-      <pre class="file">
-
-      kubectl get services
-      kubectl get services --all-namespaces
-      kubectl get services -n <namespaceName>
-
-      kubectl expose pod green-pod --name=green-svc --target-port=80 --type=NodePort
-      kubectl expose deployment green-dep --name=green-svc-2 --target-port=80 --type=LoadBalancer
-
-
-      </pre>
-    environment:
-      hideintro: false
-      showdashboards: true
-      uilayout: terminal-iframe
-      imageid: kubernetes-cluster
-      dashboards:
-        - name: User
-          port: 8080
-        - name: Green
-          port: 32000
-        - name: tut.by
-          port: 32500
-        - name: Trouble
-          port: 32200
-  - course_id: k8s-secrets
-    title: Secrets in Kubernetes
-    description: Working with secrets in Kubernetes
-    difficulty: beginner
-    time: 40 minutes
-    steps:
-      - title: Welcome
-        task: |-
-          ## Let us know who you are.
-
-          Please open "**User**" Tab and fill required information
-
-          `touch /.ok`
-        verify: |-
-          [ -f /opt/.user ]
-      - title: Secrets in default namespace
-        task: |-
-          Examine the secrets in `default` namespace and answer the questions below.
-
-          >>Q1: Enter the number of secrets in default namespace<<
-          === 1
-
-          >>Q2: Enter the type of secret(s) in default namespace<<
-          === kubernetes.io/service-account-token
-
-          >>Q3: The secret has three fields in "data" section. What of the following is redundant?<<
-          ( ) namespace
-          ( ) token
-          (*) cluster
-          ( ) ca.crt
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/configuration/secret/
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(cat /tmp/secrets_default) == '1' ]]
-      - title: Secrets in other namespaces
-        task: |-
-          Examine the secrets in `safe` namespace and answer the questions below.
-
-          >>Q1: Enter the number of secrets in safe namespace<<
-          === 6
-
-          >>Q2: Enter the type of recipe* secret(s) in safe namespace<<
-          === Opaque
-
-          >>Q3: Examine and decode the content of ingridients field in data section of recipe5 secret<<
-          === flour_sugar_and_5_apples
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/configuration/secret/
-        courseData: |-
-          kubectl create ns safe &&
-          for item in {1..5}; do
-            cat << EOF | kubectl apply --namespace=safe -f-
-          apiVersion: v1
-          kind: Secret
-          metadata:
-            name: recipe${item}
-          type: Opaque
-          data:
-            author: $(echo -n 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' | base64 -w0)
-            ingridients: $(echo -n "flour_sugar_and_${item}_apples" | base64 -w0)
-          EOF
-          done
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get secrets -n safe recipe5 >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(cat /tmp/secrets_safe) == '6' ]]
-      - title: Creating secrets from files
-        task: |-
-          You are given `username_file` and `password_file` in `/data` directory. With `kubectl` create a secret using these files.
-
-          ## Requiremets
-          - secret name: `admin-secret`
-          - namespace: `default`
-          - from files: `/data/username_file`, `password_file`
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/configuration/secret/
-        courseData: |-
-          mkdir /data &&
-          echo "superhacker.$(hostname -I | awk '{print $1}')" > /data/username_file &&
-          echo "verystrongpassword.$(hostname -I | awk '{print $1}')" > /data/password_file
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $([ -f "/data/username_file" ] && [ -f "/data/password_file" ]); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(kubectl get secrets admin-secret -o yaml -o jsonpath='{.data.username_file}' | base64 -d) == $(cat /data/username_file) ]] &&
-          [[ $(kubectl get secrets admin-secret -o yaml -o jsonpath='{.data.password_file}' | base64 -d) == $(cat /data/password_file) ]]
-      - title: Secrets creating
-        task: |-
-          Create a simple secret with the following requirements:
-
-          ## Requirements
-          - secret name: `devops-secret`
-          - namespace: `default`
-          - type: `Opaque`
-          - `username` field: `devops`
-          - `password` field: `devops_password`
-          - `email` field: `devops@devops.dev`
-          - all string data schould be encoded (using base64)
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/configuration/secret/
-        verify: |-
-          [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}' | base64 -d) == "devops" ]] &&
-          [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.password}' | base64 -d) == "devops_password" ]] &&
-          [[ $(kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.email}' | base64 -d) == "devops@devops.dev" ]]
-      - title: Secrets in environvent variables
-        task: |-
-          Create a simple pod with name `email-pod` which get only `email` field from `devops-secret` as environment variable with name `EMAIL`:
-
-          ## Requirements
-          - namespace: `default`
-          - pod name: `email-pod`
-          - image: `busybox`
-          - comand: `sleep 4800`
-          - pod should have env variable `EMAIL` with value from `devops-secret` secret
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/configuration/secret/
-        verify: |-
-          [[ $(kubectl get pods email-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
-          [[ $(kubectl get pods email-pod -o jsonpath='{.spec.containers[?(@.name=="email-pod")].image}') == "busybox" ]] &&
-          [[ $(kubectl get pods email-pod -o jsonpath='{.spec.containers[?(@.name=="email-pod")].env[?(@.name=="EMAIL")].valueFrom.secretKeyRef.name}') == "devops-secret" ]] &&
-          [[ $(kubectl get pods email-pod -o jsonpath='{.spec.containers[?(@.name=="email-pod")].env[?(@.name=="EMAIL")].valueFrom.secretKeyRef.key}') == "email" ]]
-      - title: Secrets in environment variables 2
-        task: |-
-          Create a simple pod with name `dev-pod` which get all fields from `devops-secret` as environment variable with names `USERNAME`, `PASSWORD`, `EMAIL` correspondingly.
-
-          ## Requirements
-          - namespace: `default`
-          - pod name: `dev-pod`
-          - image: `busybox`
-          - command: `sleep 4800`
-          - pod should have env variables `USERNAME`, `PASSWORD`, `EMAIL` with values from `devops-secret` secret correspondingly (hint: envFrom).
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/configuration/secret/
-        verify: |-
-          [[ $(kubectl get pods dev-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
-          [[ $(kubectl get pods dev-pod -o jsonpath='{.spec.containers[?(@.name=="dev-pod")].image}') == "busybox" ]] &&
-          [[ $(kubectl get pods dev-pod -o jsonpath='{.spec.containers[?(@.name=="dev-pod")].envFrom[0].secretRef.name}') == "devops-secret" ]]
-      - title: Secrets as volume
-        task: |-
-          Create a simple pod with name `dev-volume-pod` which will use `devops-secret` secret as volume.
-
-          ## Requirements
-          - namespace: `default`
-          - pod name: `dev-volume-pod`
-          - image: `busybox`
-          - command: `sleep 3600`
-          - pod should use `devops-secret` as attached volume
-          - volume name: `devops-volume`
-          - mountPath: `/etc/devops-secret`
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/configuration/secret/
-        verify: |-
-          [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
-          [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.spec.containers[?(@.name=="dev-volume-pod")].image}') == "busybox" ]] &&
-          [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.spec.volumes[?(@.name=="devops-volume")].secret.secretName}') == "devops-secret" ]] &&
-          [[ $(kubectl get pods dev-volume-pod -o jsonpath='{.spec.containers[?(@.name=="dev-volume-pod")].volumeMounts[?(@.name=="devops-volume")].mountPath}') == "/etc/devops-secret" ]]
-    intro: |-
-      # In this section you will do following:
-
-      - discover secrets in different namespaces
-      - create secret
-      - pass the secrets data to environment variables
-      - mount secrets as volume
-
-      # Good Luck!
-    finish: |-
-      # It's Done!
-
-      Some useful commands to know:
-
-      <pre class="file">
-
-      kubectl get secrets
-      kubectl get secrets -n namespace
-      kubectl get secrets --all-namespaces
-
-      kubectl get secrets -n namespace secretname -o yaml
-
-      echo -n 'username' | base64 -w0   # dXNlcm5hbWU=
-      echo 'dXNlcm5hbWU=' | base64 -d   # username
-
-      kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}'               # dXNlcm5hbWU=
-      kubectl get secrets devops-secret -o yaml -o jsonpath='{.data.username}' | base64 -d   # username
-
-      </pre>
-    environment:
-      hideintro: false
-      showdashboards: true
-      uilayout: terminal-iframe
-      imageid: kubernetes-cluster
-      dashboards:
-        - name: User
-          port: 8080
-  - course_id: k8s-configmaps
-    title: ConfigMaps in Kubernetes
-    description: Working with ConfigMaps in Kubernetes
-    difficulty: beginner
-    time: 40 minutes
-    steps:
-      - title: Welcome
-        task: |-
-          ## Let us know who you are.
-
-          Please open "**User**" Tab and fill required information
-
-          `touch /.ok`
-        verify: |-
-          [ -f /opt/.user ]
-      - title: ConfigMaps in default namespace
-        task: |-
-          Examine the ConfigMaps in cluster and answer the questions below.
-
-          >>Q1: Enter the number of ConfigMaps in default namespace<<
-          === 0
-
-          ## Documentation:
-          - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(cat /tmp/secrets_default) == '1' ]]
-      - title: Configmaps in different namespaces
-        task: |-
-          Examine the ConfigMaps in cluster and answer the questions below.
-
-          >>Q1: Enter the number of ConfigMaps in all namespaces<<
-          === 12
-
-          >>Q2: Enter the number of ConfigMaps in "safe" namespace<<
-          === 5
-
-          >>Q3: What data is safed in "ingridients" field of "recipe3" ConfigMap?<<
-          === flour_sugar_and_3_apples
-
-          >>Q4: Find out "dnsDomain" value of cluster in "kubeadm-config" ConfigMap<<
-          === cluster.local
-
-          >>Q5: ConfigMaps can store yaml definitions as data. (hint: explore ClusterConfiguration in "kubeadm-config" ConfigMap)<<
-          (*) True
-          ( ) False
-
-
-          ## Documentation:
-          - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get configmaps -n safe recipe5 >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        courseData: |-
-          kubectl create ns safe &&
-          for item in {1..5}; do
-            cat << EOF | kubectl apply -f-
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: recipe${item}
-            namespace: safe
-          data:
-            author: devops-${item}th
-            ingridients: flour_sugar_and_${item}_apples
-          EOF
-          done 
-      - title: Creating ConfigMaps from files
-        task: |-
-          You are given `/data/data_file` file. With `kubectl` create a secret using that file.
-
-          ## Requiremets
-          - ConfigMap name: `os-config`
-          - namespace: `default`
-          - from files: `/data/data_file`
-
-          ## Documentation:
-          - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        courseData: |-
-          mkdir /data &&
-          echo "IP=$(hostname -I | awk '{print $1}')" > /data/data_file &&
-          echo "$(cat /etc/os-release | awk 'FNR==1')" >> /data/data_file &&
-          echo "$(cat /etc/os-release | awk 'FNR==2')" >> /data/data_file &&
-          echo "$(cat /etc/os-release | awk 'FNR==5')" >> /data/data_file
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $([ -f "/data/data_file" ]); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(kubectl get configmaps os-config -o jsonpath='{.data.data_file}' | awk 'FNR==2') == $(cat /etc/os-release | awk 'FNR==1') ]]
-      - title: ConfigMaps creating
-        task: |-
-          Create a simple ConfigMap with the following requirements:
-
-          ## Requirements
-          - ConfigMap name: `users-cm`
-          - namespace: `default`
-          - data field:
-            - `cluster-admin` field: `admin`
-            - `devops` field: `devops`
-            - `db-admin` field: `db-admin`
-            - `user1` field: `Jack`
-            - `user2` field: `John`
-
-          ## Documentation:
-          https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        verify: |-
-          [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.cluster-admin}') == "admin" ]] &&
-          [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.devops}') == "devops" ]] &&
-          [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.db-admin}') == "db-admin" ]] &&
-          [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user1}') == "Jack" ]] &&
-          [[ $(kubectl get configmaps users-cm -o jsonpath='{.data.user2}') == "John" ]]
-      - title: ConfigMaps in environvent variables
-        task: |-
-          Create a simple pod with name `user-pod` which get only `user1` and `user2` fields from `users-cm` as environment variable with names `USER1` and `USER2` correspondingly:
-
-          ## Requirements
-          - namespace: `default`
-          - pod name: `user-pod`
-          - image: `busybox`
-          - comand: `sleep 4800`
-          - pod should have env variable `USER1` with value from `user1` field of `users-cm` ConfigMap
-          - pod should have env variable `USER2` with value from `user2` field of `users-cm` ConfigMap
-          - other values shouldn't be in env variables of `user-pod`
-
-          ## Documentation:
-          - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-
-        verify: |-
-          [[ $(kubectl get pods user-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
-          [[ $(kubectl get pods user-pod -o jsonpath='{.spec.containers[].env[?(@.name=="USER1")].valueFrom.configMapKeyRef.key}') == "user1" ]] &&
-          [[ $(kubectl get pods user-pod -o jsonpath='{.spec.containers[].env[?(@.name=="USER2")].valueFrom.configMapKeyRef.key}') == "user2" ]]
-      - title: ConfigMaps in environment variables 2
-        task: |-
-          Create a simple pod with name `team-pod` which get all fields from `users-cm` ConfigMap as environment variable.
-
-          ## Requirements
-          - namespace: `default`
-          - pod name: `team-pod`
-          - image: `busybox`
-          - command: `sleep 4800`
-          - pod should have env variables from all `users-cm` ConfigMap fields (hint: envFrom).
-
-          ## Documentation:
-          - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-        verify: |-
-          [[ $(kubectl get pods team-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
-          [[ $(kubectl get pods team-pod -o jsonpath='{.spec.containers[?(@.name=="team-pod")].image}') == "busybox" ]] &&
-          [[ $(kubectl get pods team-pod -o jsonpath='{.spec.containers[?(@.name=="team-pod")].envFrom[0].configMapRef.name}') == "users-cm" ]]
-      - title: ConfigMaps as volume
-        task: |-
-          Create a simple pod with name `team-volume-pod` which will use `users-cm` ConfigMap as volume.
-
-          ## Requirements
-          - namespace: `default`
-          - pod name: `team-volume-pod`
-          - image: `busybox`
-          - command: `sleep 3600`
-          - pod should use `users-cm` ConfigMap as attached volume
-          - volume name: `team-volume`
-          - mountPath: `/etc/team-members`
-
-          ## Documentation:
-          - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
-
-        verify: |-
-          [[ $(kubectl get pods team-volume-pod -o jsonpath='{.status.phase}') == "Running" ]] &&
-          [[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.containers[?(@.name=="team-volume-pod")].image}') == "busybox" ]] &&
-          [[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.volumes[?(@.name=="team-volume")].configMap.name}') == "users-cm" ]] &&
-          [[ $(kubectl get pods team-volume-pod -o jsonpath='{.spec.containers[?(@.name=="team-volume-pod")].volumeMounts[?(@.name=="team-volume")].mountPath}') == "/etc/team-members" ]]
-    intro: |-
-      # In this section you will do following:
-
-      - discover ConfigMaps in different namespaces
-      - create ConfigMaps
-      - pass the ConfigMaps data to environment variables
-      - mount ConfigMaps as volume
-
-      # Good Luck!
-    finish: |-
-      # It's Done!
-
-      Some useful commands to know:
-
-      <pre class="file">
-
-      kubectl get configmaps
-      kubectl get configmaps -n <namespace>
-      kubectl get configmaps --all-namespaces
-
-      kubectl get configmaps -n <namespace> configmapname -o yaml
-
-      kubectl get configmaps devops-configmap -o yaml -o jsonpath='{.data.username}'   # devops
-
-      </pre>
-    environment:
-      hideintro: false
-      showdashboards: true
-      uilayout: terminal-iframe
-      imageid: kubernetes-cluster
-      dashboards:
-        - name: User
-          port: 8080
-  - course_id: k8s-ingresses
-    title: Ingress in Kubernetes
-    description: Working with Ingress in Kubernetes
-    difficulty: beginner
-    time: 40 minutes
-    steps:
-      - title: Welcome
-        task: |-
-          ## Let us know who you are.
-
-          Please open "**User**" Tab and fill required information
-
-          `touch /.ok`
-        courseData: |-
-          kubectl taint nodes node01 key=value:NoSchedule
-        verify: |-
-          [ -f /opt/.user ]
-      - title: Deploying nginx ingress controller
-        task: |-
-          Deploy nginx ingress-controller using the following sources:
-          - [Mandatory](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml)
-          - [Service](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml)
-
-          Make sure **nginx-ingress-controller-...** Pod is running in **ingress-nginx** namespace. Also you should see **ingress-nginx** service in **ingress-nginx** namespace.  
-
-          Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).   
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/ingress/
-          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-          - https://kubernetes.github.io/ingress-nginx/
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-        verify: |-
-          [[ $(kubectl get deployments -n ingress-nginx nginx-ingress-controller -o jsonpath='{.status.readyReplicas}') == '1' ]] &&
-          $(kubectl get svc -n ingress-nginx ingress-nginx >/dev/null 2>&1)
-      - title: Ingress creating
-        task: |-
-          You are given a three Pods: **red**, **green** and **yellow**.  
-          Expose given Pods with services (type - **ClusterIP**).
-
-          Create **Ingress** which will redirect to these Pods depends on URL path:  
-          - `/red` path - to **red** Pod
-          - `/green` path - to **green** Pod
-          - `/yellow` path - to **yellow** Pod
-
-          Explore NodePort of **ingress-nginx** service. Open **Ingress** tab and enter **ingress-nginx** NodePort. You should see nginx ingress controller default page (*etc. openresty*).  
-          Add to URL address `/red`, `/green` and `/yellow` paths and check the results.  
-          You should see **red**, **green** and **yellow** page correspondingly.  
-
-          ## Documentation:
-          - https://kubernetes.io/docs/concepts/services-networking/ingress/
-          - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-          - https://kubernetes.github.io/ingress-nginx/
-        courseData: |-
-          kubectl run red --restart=Never --image=adalimayeu/webapp-color --env="COLOR=red" --port=80 && kubectl run green --restart=Never --image=adalimayeu/webapp-color --env="COLOR=green" --port=80 && kubectl run yellow --restart=Never --image=adalimayeu/webapp-color --env="COLOR=yellow" --port=80
-        verify: |-
-          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/red | grep -c red) -ge 1 ]] &&
-          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/green | grep -c green) -ge 1 ]] &&
-          [[ $(curl -s $(hostname -I | cut -d' ' -f1):$(kubectl get svc -n ingress-nginx ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')/yellow | grep -c yellow) -ge 1 ]]
-        foreground: |-
-          clear && echo -n "Prepairing Environment " && until [[ $(kubectl get pods yellow -o jsonpath='{.status.phase}') == "Running" ]]; do echo -n .; sleep 1; done; echo; history -c
-    intro: |-
-      # In this section you will do following:
-
-      - discover ingress and ingress-controllers
-      - create ingresses to different services
-
-      # Good Luck!
-    finish: |-
-      # It's Done!
-
-      Some useful commands to know:
-
-      <pre class="file">
-
-      kubectl get ingress 
-      kubectl get ingress -n <namespace>
-      kubectl get ingress --all-namespaces
-
-      </pre>
-    environment:
-      hideintro: false
-      showdashboards: true
-      uilayout: terminal-iframe
-      imageid: kubernetes-cluster
-      dashboards:
-        - name: User
-          port: 8080
-        - name: Ingress
-          port: 32000
-  - course_id: k8s-exam-1
-    title: Exam 1
-    description: Exam 1
-    difficulty: beginner
-    time: 30 minutes
-    steps:
-      - title: Welcome
-        task: |-
-          ## Let us know who you are.
-
-          Please open "**User**" Tab and fill required information
-
-          `touch /.ok`
-        verify: |-
-          [ -f /opt/.user ]
-      - title: Initialize Kubernetes Control Plain
-        task: |-
-          ![alt text](https://sbeliakou-labs.github.io/k/css/images/e1.png)
-
-
-          **Architecture Requirements:**
-
-          <details><summary><b>Namespace</b></summary><p>
-
-          Name: ns-DzxKZMQfYr
-          </p></details>
-
-
-          <details><summary><b>Persistent Volume</b></summary><p>
-
-          Configure drupal-pv with hostPath = /drupal-data (create the directory on Worker Nodes)
-          Configure drupal-mysql-pv with hostPath = /drupal-mysql-data (create the directory on Worker Nodes)
-          </p></details>
-    intro: |-
-      # Good Luck!
-    finish: |-
-      # It's Done!
-    environment:
-      hideintro: false
-      showdashboards: true
-      uilayout: terminal-iframe
-      imageid: kubernetes-cluster
-      dashboards:
-        - name: User
-          port: 8080
-  - course_id: k8s-node-bootstrap
-    title: Node Bootstrapping
-    description: TLS Bootstraping
-    difficulty: beginner
-    time: 1 hour
-    steps:
-      - title: Welcome
-        task: |-
-          ## Join Node01 with TLS Bootstrap
-
-
-          ### Based on following documentation
-          - https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/
-          - https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/
-
-
-          ### Steps:
-
-          <details><summary>1. Create Bootstrap Token</summary><p>
-
-          **Requirements:**
-          <ul style="list-style-type:circle;">
-            <li>Token ID: 07401b</li>
-            <li>Token Secret: f395accd246ae52d</li>
-            <li>auth-extra-groups: system:bootstrappers:node01</li>
-            <li>Namespace: kube-system</li>
-          </ul>
-
-          <details><summary>Solution:</summary><p>
-
-          ```
-          cat <<EOF | kubectl apply -f -
-          apiVersion: v1
-          kind: Secret
-          metadata:
-            # Name MUST be of form "bootstrap-token-<token id>"
-            name: bootstrap-token-07401b
-            namespace: kube-system
-
-          # Type MUST be 'bootstrap.kubernetes.io/token'
-          type: bootstrap.kubernetes.io/token
-          stringData:
-            # Human readable description. Optional.
-            description: "The default bootstrap token generated by 'kubeadm init'."
-
-            # Token ID and secret. Required.
-            token-id: 07401b
-            token-secret: f395accd246ae52d
-
-            # Allowed usages.
-            usage-bootstrap-authentication: "true"
-            usage-bootstrap-signing: "true"
-
-            # Extra groups to authenticate the token as. Must start with "system:bootstrappers:"
-            auth-extra-groups: system:bootstrappers:node01
-          EOF
-          ```
-          </p></details>
-          </p></details>
-
-          <details><summary>2. Create Signing ConfigMap</summary><p>
-
-          **Requirements:**
-          <ul style="list-style-type:circle;">
-            <li>Namespace: kube-public</li>
-            <li>Name: cluster-info</li>
-          </ul>
-
-
-          <details><summary>Solution:</summary><p>
-          ```
-          cat <<EOF | kubectl apply -f -
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: cluster-info
-            namespace: kube-public
-          data:
-            kubeconfig: |
-              apiVersion: v1
-              clusters:
-              - cluster:
-                  certificate-authority-data: $(kubectl config view --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')
-                  server: $(kubectl config view -o jsonpath='{.clusters[0].cluster.server}')
-                name: ""
-              contexts: []
-              current-context: ""
-              kind: Config
-              preferences: {}
-              users: []
-          EOF
-          ```
-          </p></details>
-          </p></details>
-
-
-          <details><summary>3. Authorize kubelet to create CSR</summary><p>
-
-          **Requirements:**
-          <ul style="list-style-type:circle;">
-            <li>ClusterRoleBinding Name: create-csrs-for-bootstrapping</li>
-            <li>ClusterRole: system:node-bootstrapper</li>
-            <li>Group: system:bootstrappers</li>
-          </ul>
-
-          <details><summary>Solution:</summary><p>
-          ```
-          kubectl create \
-            clusterrolebinding create-csrs-for-bootstrapping \
-            --clusterrole=system:node-bootstrapper \
-            --group=system:bootstrappers
-          ```
-          </br>
-          </br>
-          It will create following configuration:
-          ```
-          apiVersion: rbac.authorization.k8s.io/v1
-          kind: ClusterRoleBinding
-          metadata:
-            name: create-csrs-for-bootstrapping
-          subjects:
-          - kind: Group
-            name: system:bootstrappers
-            apiGroup: rbac.authorization.k8s.io
-          roleRef:
-            kind: ClusterRole
-            name: system:node-bootstrapper
-            apiGroup: rbac.authorization.k8s.io
-          ```
-          </p></details>
-          </p></details>
-
-
-          <details><summary>4. Create Kubelet Bootstrap Configuration</summary><p>
-
-          **Requirements:**
-          <ul style="list-style-type:circle;">
-            <li>Host: node01</li>
-            <li>Filename: /etc/kubernetes/bootstrap-kubelet.conf</li>
-            <li>Bootstrap file: /etc/kubernetes/bootstrap-kubelet.conf</li>
-          </ul>
-
-          <details><summary>Solution:</summary><p>
-
-          On `master` node:
-          ```
-          kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
-            set-cluster bootstrap \
-            --server=$(kubectl config view -o jsonpath='{.clusters[0].cluster.server}') \
-            --certificate-authority=/etc/kubernetes/pki/ca.crt \
-            --embed-certs=true
-
-          kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
-            set-credentials kubelet-bootstrap \
-            --token=07401b.f395accd246ae52d
-
-          kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
-            set-context bootstrap \
-            --user=kubelet-bootstrap \
-            --cluster=bootstrap
-
-          kubectl config --kubeconfig=/tmp/bootstrap-kubelet.conf \
-            use-context bootstrap
-          ```
-
-          </br>
-          </br>
-          Then, copy it to `node01`:
-          ```
-          scp -o StrictHostKeyChecking=no /tmp/bootstrap-kubelet.conf node01:/etc/kubernetes/bootstrap-kubelet.conf
-          ```
-          </p></details>
-          </p></details>
-
-
-          <details><summary>5. Configure Kubelet to run in bootstrap mode</summary><p>
-
-          **Requirements:**
-          <ul style="list-style-type:circle;">
-            <li>Host: node01</li>
-            <li>Service file: /lib/systemd/system/kubelet.service</li>
-            <li>Bootstrap file: /etc/kubernetes/bootstrap-kubelet.conf</li>
-            <li>CGroup Driver: systemd</li>
-          </ul>
-
-
-          <details><summary>Solution:</summary><p>
-
-          /lib/systemd/system/kubelet.service
-          ```
-          [Unit]
-          Description=kubelet: The Kubernetes Node Agent
-          Documentation=https://kubernetes.io/docs/home/
-
-          [Service]
-          ExecStart=/usr/bin/kubelet \
-            --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf \
-            --kubeconfig=/etc/kubernetes/kubelet.conf \
-            --cgroup-driver=systemd
-          Restart=always
-          StartLimitInterval=0
-          RestartSec=10
-
-          [Install]
-          WantedBy=multi-user.target
-          ```
-          </p></details>
-          </p></details>
-
-
-          <details><summary>6. Check that node01 sent CSR for approval</summary><p>
-
-          **Requirements:**
-          <ul style="list-style-type:circle;">
-            <li>Host: master</li>
-          </ul>
-
-
-          <details><summary>Solution:</summary><p>
-
-          ```
-          kubectl get csr
-          ```
-          </p></details>
-          </p></details>
-
-          <details><summary>7. Approve CSRs automatically</summary><p>
-
-          **Requirements:**
-          <ul style="list-style-type:circle;">
-            <li>ClusterRoleBinding Name: auto-approve-csrs-for-group</li>
-            <li>ClusterRole: system:certificates.k8s.io:certificatesigningrequests:nodeclient</li>
-            <li>Group: system:bootstrappers</li>
-          </ul>
-
-
-          <details><summary>Solution:</summary><p>
-
-          ```
-          kubectl create \
-            clusterrolebinding auto-approve-csrs-for-group \
-            --clusterrole=system:certificates.k8s.io:certificatesigningrequests:nodeclient \
-            --group=system:bootstrappers
-          ```
-
-          </br>
-          </br>
-          It will create following configuration:
-          ```
-          apiVersion: rbac.authorization.k8s.io/v1
-          kind: ClusterRoleBinding
-          metadata:
-            name: auto-approve-csrs-for-group
-          subjects:
-          - kind: Group
-            name: system:bootstrappers
-            apiGroup: rbac.authorization.k8s.io
-          roleRef:
-            kind: ClusterRole
-            name: system:certificates.k8s.io:certificatesigningrequests:nodeclient
-            apiGroup: rbac.authorization.k8s.io
-          ```
-          </p></details>
-          </p></details>
-
-
-          <details><summary>8. Approve Renewal CSRs</summary><p>
-
-          **Requirements:**
-          <ul style="list-style-type:circle;">
-            <li>ClusterRoleBinding Name: auto-approve-renewals-for-nodes</li>
-            <li>ClusterRole: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient</li>
-            <li>Group: system:nodes</li>
-          </ul>
-
-
-          <details><summary>Solution:</summary><p>
-
-          ```
-          kubectl create \
-            clusterrolebinding auto-approve-renewals-for-nodes \
-            --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeclient \
-            --group=system:nodes
-          ```
-
-          </br>
-          </br>
-          It will create following configuration:
-          ```
-          apiVersion: rbac.authorization.k8s.io/v1
-          kind: ClusterRoleBinding
-          metadata:
-            name: auto-approve-renewals-for-nodes
-          subjects:
-          - kind: Group
-            name: system:nodes
-            apiGroup: rbac.authorization.k8s.io
-          roleRef:
-            kind: ClusterRole
-            name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient
-            apiGroup: rbac.authorization.k8s.io
-          ```
-          </p></details>
-          </p></details>
-
-
-          <details><summary>9. Restart Kubelet on Node01 and Check CSR Status</summary><p>
-
-
-          <details><summary>Solution:</summary><p>
-
-          ```
-          ssh -o StrictHostKeyChecking=no node01 'systemctl restart kubelet'
-          ```
-          </br>
-          ```
-          kubectl get csr
-          ```
-          </p></details>
-          </p></details>
-
-          <details><summary>10. Check cluster nodes</summary><p>
-
-
-          <details><summary>Solution:</summary><p>
-
-          ```
-          kubectl get nodes
-          ```
-          </p></details>
-          </p></details>
-
-        verify: |-
-          [[ $(kubectl get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}') == "True True" ]]
-        courseData: |-
-          #ping -c1 node01 || ( echo "Something went wrong, sorry" && shutdown -r now )
-
-          #/opt/launch-kubeadm.sh
-          kubectl delete configmap -n kube-public cluster-info
-          kubectl delete secret -n kube-system bootstrap-token-96771a
-
-          ssh -o StrictHostKeyChecking=no node01 "mkdir -p /etc/kubernetes"
-          # ssh -o StrictHostKeyChecking=no node01 'echo KUBELET_KUBECONFIG_ARGS=\"--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --cgroup-driver=systemd\"> /etc/default/kubelet'
-          # ssh -o StrictHostKeyChecking=no node01 'echo KUBELET_CONFIG_ARGS=\"\">> /etc/default/kubelet'
-          # ssh -o StrictHostKeyChecking=no node01 'systemctl daemon-reload'
-
-          ssh -o StrictHostKeyChecking=no node01 "rm -rf /etc/systemd/system/kubelet.service.d"
-        foreground: |-
-          clear && echo -n "Preparing Environment " && until $(kubectl get componentstatus >/dev/null 2>&1); do echo -n .; sleep 1; done; echo; history -c
-      - title: Verifying
-        task: |-
-          ## Check That Node01 can Handle Workload
-
-          Run a simple pod and check that it's running on `node01`
-
-          *Requirements:*
-          - pod name: `test`
-          - container image: `alpine:latest`
-          - command: `sleep 1000`
-        verify: |-
-          [[ `kubectl get po test -o jsonpath='{.status.phase}'` == "Running" ]] &&
-          [[ `kubectl get no node01 -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}'` == `kubectl get nodes node01 -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}'` ]] &&
-          [[ "`kubectl get po test -o jsonpath='{.spec.containers[0].image}'`" == "alpine:latest" ]] &&
-          [[ "`kubectl get po test -o jsonpath='{.spec.containers[0].command}'`" == "[sleep 1000]" ]]
-    intro: |-
-      # Good Luck!
-    finish: |-
-      # It's Done!
-    environment:
-      hideintro: false
-      showdashboards: false
-      uilayout: terminal
-      imageid: kubernetes-cluster
-      dashboards:
-        - name: User
-          port: 8080
+  # - course_id: 01-images
+  #   title: Docker images
+  #   difficulty: beginner
+  #   time: 45 minutes
+  #   steps:
+  #   - title: _title
+  #     task: _task
+  #     courseData: ""
+  #     foreground: ""
+  #     verify: ""
+  #   intro: _intro
+  #   finish: _finish
+  #   environment:
+  #     hideintro: false
+  #     showdashboards: true
+  #     uilayout: terminal-iframe
+  #     imageid: kubernetes
+  #     dashboards:
+  #       - name: User
+  #         port: 8080
+  #       - name: localhost
+  #         port: 32768

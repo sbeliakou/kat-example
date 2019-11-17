@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##### preparing for KUBERNETES ####
-{% if module.db_name == "kubernetes" and course.course_id != "k8s-init" and item.0 == 0 %}
+{% if module.db_name == "kubernetes" and course.course_id != "01-cluster" and item.0 == 0 %}
 kubeadm init --token abcdef.0123456789abcdef --token-ttl 0
 mkdir ~/.kube
 cp /etc/kubernetes/admin.conf ~/.kube/config
